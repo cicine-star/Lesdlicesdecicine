@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);}
+nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 8px rgba(92,46,14,.07);}
+.nav-logo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:var(--brun);text-decoration:none;}
+.nav-panier{background:var(--caramel);color:#fff;border-radius:30px;padding:8px 16px;font-weight:700;font-size:.8rem;text-decoration:none;}
+.wrap{max-width:600px;margin:0 auto;padding:20px 16px 60px;}
+.btn{display:block;width:100%;font-weight:700;font-size:.9rem;padding:14px;border-radius:40px;cursor:pointer;border:none;text-align:center;margin-bottom:10px;text-decoration:none;}
+.btn-c{background:var(--caramel);color:#fff;}
+.btn-b{background:var(--brun);color:#fff;}
+.btn-o{background:transparent;color:var(--brun);border:2px solid var(--brun);}
+.btn-wa{background:#25D366;color:#fff;}
+.back{display:inline-flex;align-items:center;gap:5px;color:var(--caramel);font-weight:700;font-size:.82rem;text-decoration:none;margin-bottom:18px;}
+.title{font-family:"Dancing Script",cursive;font-size:2.2rem;color:var(--brun);margin-bottom:4px;}
+.sub{font-size:.84rem;color:var(--doux);margin-bottom:18px;}
+.hdiv{display:flex;align-items:center;gap:8px;margin:10px 0 16px;}
+.hdiv hr{flex:1;border:none;border-top:1px solid var(--fuchsia);opacity:.5;}
+.hdiv span{color:var(--fuchsia);}
+.fg{margin-bottom:10px;}
+.fg label{display:block;font-size:.75rem;font-weight:700;color:var(--texte);margin-bottom:4px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-family:"Lato",sans-serif;font-size:.84rem;color:var(--texte);background:var(--fond);outline:none;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--caramel);}
+.fg textarea{resize:vertical;min-height:65px;}
+.fgr{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.fnote{font-size:.72rem;color:var(--caramel);background:var(--carte);border-left:3px solid var(--caramel);padding:7px 10px;border-radius:0 7px 7px 0;margin-bottom:10px;}
+footer{background:var(--brun);color:#e8d5c8;padding:28px 16px 20px;text-align:center;margin-top:20px;}
+.flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:8px;}
+footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
+.flinks{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
+.flink{color:#e8d5c8;font-size:.75rem;text-decoration:none;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;}
+@media(max-width:400px){.fgr{grid-template-columns:1fr;}}
+</style>
+<title>Commander - Les Délices de Cicine</title>
+<style>
+.ct{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--doux);margin:14px 0 7px;padding-bottom:4px;border-bottom:1px dashed var(--bordure);}
+.ir{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#fff;border-radius:9px;margin-bottom:5px;border:1px solid var(--bordure);}
+.il{display:flex;align-items:center;gap:8px;}
+.il input[type=checkbox]{width:18px;height:18px;accent-color:var(--caramel);cursor:pointer;flex-shrink:0;}
+.in{font-size:.82rem;font-weight:600;color:var(--texte);}
+.ip{font-size:.7rem;color:var(--caramel);}
+.qi{width:60px;height:34px;text-align:center;font-weight:700;font-size:.9rem;color:var(--brun);border:1.5px solid var(--caramel);border-radius:7px;background:#fff;font-family:"Lato",sans-serif;outline:none;padding:0 4px;}
+.total-box{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:16px;margin-top:16px;}
+.total-box h3{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--brun);margin-bottom:10px;}
+.total-line{display:flex;justify-content:space-between;font-size:.82rem;padding:5px 0;border-bottom:1px dashed var(--bordure);}
+.total-line span:last-child{font-weight:700;color:var(--caramel);}
+.total-final{display:flex;justify-content:space-between;font-weight:700;font-size:.95rem;color:var(--brun);padding-top:10px;border-top:2px solid var(--bordure);margin:8px 0 14px;}
+.p2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.p2 .btn{margin-bottom:0;font-size:.78rem;padding:11px;}
+.fg{margin-bottom:10px;}
+.fg label{display:block;font-size:.75rem;font-weight:700;color:var(--texte);margin-bottom:4px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-family:"Lato",sans-serif;font-size:.84rem;color:var(--texte);background:var(--fond);outline:none;}
+.fg input:focus,.fg select:focus{border-color:var(--caramel);}
+.fg textarea{resize:vertical;min-height:65px;}
+.fgr{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.fnote{font-size:.72rem;color:var(--caramel);background:var(--carte);border-left:3px solid var(--caramel);padding:7px 10px;border-radius:0 7px 7px 0;margin-bottom:10px;}
+.vide{font-size:.82rem;color:var(--doux);font-style:italic;text-align:center;padding:10px 0;}
+@media(max-width:400px){.p2{grid-template-columns:1fr;}.fgr{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav><a class="nav-logo" href="index.html">Les D&eacute;lices de Cicine</a><a class="nav-panier" href="panier.html">&#128722; Panier</a></nav>
+<div class="wrap">
+  <a href="index.html" class="back">&#8592; Accueil</a>
+  <h2 class="title">Commander</h2>
+  <p class="sub">Cochez vos produits et saisissez les quantités</p>
+
+  <div class="ct">🥐 Viennoiseries salées</div>
+<div class="ir" data-n="Petit pain" data-p="0.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Petit pain</div>
+      <div class="ip">0,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pain a la saucisse" data-p="1.6">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pain a la saucisse</div>
+      <div class="ip">1,6€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Croissant J-F" data-p="1.6">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Croissant J-F</div>
+      <div class="ip">1,6€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Quiche J/T" data-p="3.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Quiche J/T</div>
+      <div class="ip">3,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Natte J-F" data-p="3.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Natte J-F</div>
+      <div class="ip">3,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Hot-dog" data-p="3.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Hot-dog</div>
+      <div class="ip">3,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pizzas" data-p="3.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pizzas</div>
+      <div class="ip">3,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ct">🍬 Viennoiseries sucrées</div>
+<div class="ir" data-n="Pain au chocolat" data-p="1.2">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pain au chocolat</div>
+      <div class="ip">1,2€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pain aux raisins" data-p="1.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pain aux raisins</div>
+      <div class="ip">1,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pepito" data-p="1.7">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pepito</div>
+      <div class="ip">1,7€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pates goyave banane" data-p="1.6">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pates goyave banane</div>
+      <div class="ip">1,6€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pomme cannelle nature" data-p="1.4">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pomme cannelle nature</div>
+      <div class="ip">1,4€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pomme cannelle pepite" data-p="1.6">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pomme cannelle pepite</div>
+      <div class="ip">1,6€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Natte nature" data-p="1.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Natte nature</div>
+      <div class="ip">1,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Natte pepite" data-p="2.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Natte pepite</div>
+      <div class="ip">2,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ct">🧂 Mignardises salées</div>
+<div class="ir" data-n="Roule saucisse" data-p="0.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Roule saucisse</div>
+      <div class="ip">0,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Allumette fromage" data-p="0.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Allumette fromage</div>
+      <div class="ip">0,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pizzas mignardises" data-p="1.1">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pizzas mignardises</div>
+      <div class="ip">1,1€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Burger boeuf" data-p="1.6">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Burger boeuf</div>
+      <div class="ip">1,6€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Wrap boeuf" data-p="1.6">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Wrap boeuf</div>
+      <div class="ip">1,6€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Friand jambon saucisse" data-p="1.6">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Friand jambon saucisse</div>
+      <div class="ip">1,6€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Hot-dog mignardise" data-p="1.6">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Hot-dog mignardise</div>
+      <div class="ip">1,6€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Croque monsieur" data-p="1.3">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Croque monsieur</div>
+      <div class="ip">1,3€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ct">🍬 Mignardises sucrées</div>
+<div class="ir" data-n="Choux" data-p="1.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Choux</div>
+      <div class="ip">1,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Eclairs" data-p="1.1">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Eclairs</div>
+      <div class="ip">1,1€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Tartelettes" data-p="1.1">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Tartelettes</div>
+      <div class="ip">1,1€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Fondant" data-p="2.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Fondant</div>
+      <div class="ip">2,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Flan coco" data-p="2.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Flan coco</div>
+      <div class="ip">2,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Muffin" data-p="2.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Muffin</div>
+      <div class="ip">2,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Gaufres x2" data-p="2.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Gaufres x2</div>
+      <div class="ip">2,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Verrines mont-blanc foret-noire choco" data-p="2.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Verrines mont-blanc foret-noire choco</div>
+      <div class="ip">2,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Verrines Oreo fraise kinder" data-p="2.8">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Verrines Oreo fraise kinder</div>
+      <div class="ip">2,8€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ct">📦 Délibox</div>
+<div class="ir" data-n="Box Decouverte" data-p="15.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Box Decouverte</div>
+      <div class="ip">15,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Box Petit Dej" data-p="25.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Box Petit Dej</div>
+      <div class="ip">25,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Box Brunch" data-p="30.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Box Brunch</div>
+      <div class="ip">30,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Box Anniversaire" data-p="55.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Box Anniversaire</div>
+      <div class="ip">55,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ct">🍫 Chocolat & Pain au beurre</div>
+<div class="ir" data-n="Chocolat maison 50cl" data-p="5.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Chocolat maison 50cl</div>
+      <div class="ip">5,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Chocolat maison 1L" data-p="13.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Chocolat maison 1L</div>
+      <div class="ip">13,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pain beurre nature 500g" data-p="7.5">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pain beurre nature 500g</div>
+      <div class="ip">7,5€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+<div class="ir" data-n="Pain beurre pepite 500g" data-p="8.0">
+  <div class="il">
+    <input type="checkbox" onchange="maj()"/>
+    <div>
+      <div class="in">Pain beurre pepite 500g</div>
+      <div class="ip">8,0€/pièce</div>
+    </div>
+  </div>
+  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+</div>
+
+
+  <div class="total-box">
+    <h3>🛒 Ma sélection</h3>
+    <div id="lignes"><p class="vide">Cochez des produits pour voir le total</p></div>
+    <div class="total-final">
+      <span>Total estimé</span>
+      <span id="totalAffiche">0,00€</span>
+    </div>
+    <div class="p2">
+      <button class="btn btn-wa" onclick="envoyerWA()">📱 WhatsApp</button>
+      <button class="btn btn-b" onclick="ajouterPanier()">🛒 Ajouter au panier</button>
+    </div>
+    <div class="fg"><label>Prénom &amp; Nom</label><input type="text" id="cNom" placeholder="Votre nom"/></div>
+    <div class="fg"><label>WhatsApp</label><input type="tel" id="cTel" placeholder="0696 XX XX XX"/></div>
+    <div class="fg"><label>Date souhaitée</label><input type="date" id="cDate"/></div>
+    <div class="fg"><label>Récupération</label>
+      <select id="cRecup">
+        <option>📍 Retrait au Vauclin</option>
+        <option>🚚 Livraison (7h30-19h30)</option>
+      </select>
+    </div>
+    <div class="fg"><label>Précisions</label><textarea id="cNote" placeholder="Allergies, adresse, personnalisation..."></textarea></div>
+  </div>
+</div>
+
+<script>
+function maj() {
+  var rows = document.querySelectorAll(".ir");
+  var total = 0;
+  var html = "";
+
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var cb = row.querySelector("input[type=checkbox]");
+    if (cb && cb.checked) {
+      var name = row.getAttribute("data-n");
+      var price = parseFloat(row.getAttribute("data-p"));
+      var qtyEl = row.querySelector(".qi");
+      var qty = parseInt(qtyEl.value);
+      if (isNaN(qty) || qty < 1) qty = 1;
+      var sub = price * qty;
+      total += sub;
+      html += '<div class="total-line"><span>' + qty + 'x ' + name + '</span><span>' + sub.toFixed(2).replace(".", ",") + '€</span></div>';
+    }
+  }
+
+  document.getElementById("lignes").innerHTML = html || '<p class="vide">Cochez des produits pour voir le total</p>';
+  document.getElementById("totalAffiche").textContent = total.toFixed(2).replace(".", ",") + "€";
+}
+
+function ajouterPanier() {
+  var rows = document.querySelectorAll(".ir");
+  var items = [];
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var cb = row.querySelector("input[type=checkbox]");
+    if (cb && cb.checked) {
+      var name = row.getAttribute("data-n");
+      var price = parseFloat(row.getAttribute("data-p"));
+      var qty = parseInt(row.querySelector(".qi").value) || 1;
+      items.push({name: name, price: price, qty: qty});
+    }
+  }
+  if (items.length === 0) {
+    alert("Sélectionnez au moins un produit.");
+    return;
+  }
+  var panier = JSON.parse(localStorage.getItem("panier") || "[]");
+  for (var i = 0; i < items.length; i++) {
+    var found = false;
+    for (var j = 0; j < panier.length; j++) {
+      if (panier[j].name === items[i].name) {
+        panier[j].qty += items[i].qty;
+        found = true;
+        break;
+      }
+    }
+    if (!found) panier.push(items[i]);
+  }
+  localStorage.setItem("panier", JSON.stringify(panier));
+  var cbs = document.querySelectorAll("input[type=checkbox]");
+  for (var i = 0; i < cbs.length; i++) cbs[i].checked = false;
+  maj();
+  alert("✅ Ajouté au panier !");
+}
+
+function envoyerWA() {
+  var rows = document.querySelectorAll(".ir");
+  var items = [];
+  var total = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var cb = row.querySelector("input[type=checkbox]");
+    if (cb && cb.checked) {
+      var name = row.getAttribute("data-n");
+      var price = parseFloat(row.getAttribute("data-p"));
+      var qty = parseInt(row.querySelector(".qi").value) || 1;
+      items.push({name: name, price: price, qty: qty});
+      total += price * qty;
+    }
+  }
+  if (items.length === 0) {
+    alert("Sélectionnez au moins un produit.");
+    return;
+  }
+  var nom = document.getElementById("cNom").value;
+  if (!nom) {
+    alert("Entrez votre nom.");
+    return;
+  }
+  var msg = "Bonjour Cicine ! 🧁\n\n";
+  msg += "=== MA COMMANDE ===\n";
+  for (var i = 0; i < items.length; i++) {
+    var sub = items[i].price * items[i].qty;
+    msg += "- " + items[i].qty + "x " + items[i].name + " = " + sub.toFixed(2).replace(".", ",") + "€\n";
+  }
+  msg += "\nTOTAL : " + total.toFixed(2).replace(".", ",") + "€\n";
+  msg += "===================\n\n";
+  msg += "👤 " + nom + "\n";
+  var tel = document.getElementById("cTel").value;
+  var date = document.getElementById("cDate").value;
+  var recup = document.getElementById("cRecup").value;
+  var note = document.getElementById("cNote").value;
+  if (tel) msg += "📱 " + tel + "\n";
+  if (date) msg += "📅 " + date + "\n";
+  msg += "📍 " + recup + "\n";
+  if (note) msg += "💬 " + note + "\n";
+  msg += "\nMerci ! 😊";
+  window.open("https://wa.me/596696111440?text=" + encodeURIComponent(msg), "_blank");
+}
+</script>
+
+<footer><div class="flogo">Les D&eacute;lices de Cicine</div><div class="flinks"><span class="flink">&#128248; Instagram</span><span class="flink">&#128077; Facebook</span><span class="flink">&#128123; Ticicine</span><a href="https://wa.me/596696111440" class="flink" target="_blank">&#128172; WhatsApp</a></div><p>&#128205; Le Vauclin, Martinique &middot; 0696 11 14 40</p><p>&copy; 2025 Les D&eacute;lices de Cicine</p></footer>
+</body>
+</html>

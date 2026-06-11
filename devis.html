@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);}
+nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 8px rgba(92,46,14,.07);}
+.nav-logo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:var(--brun);text-decoration:none;}
+.nav-panier{background:var(--caramel);color:#fff;border-radius:30px;padding:8px 16px;font-weight:700;font-size:.8rem;text-decoration:none;}
+.wrap{max-width:600px;margin:0 auto;padding:20px 16px 60px;}
+.btn{display:block;width:100%;font-weight:700;font-size:.9rem;padding:14px;border-radius:40px;cursor:pointer;border:none;text-align:center;margin-bottom:10px;text-decoration:none;}
+.btn-c{background:var(--caramel);color:#fff;}
+.btn-b{background:var(--brun);color:#fff;}
+.btn-o{background:transparent;color:var(--brun);border:2px solid var(--brun);}
+.btn-wa{background:#25D366;color:#fff;}
+.back{display:inline-flex;align-items:center;gap:5px;color:var(--caramel);font-weight:700;font-size:.82rem;text-decoration:none;margin-bottom:18px;}
+.title{font-family:"Dancing Script",cursive;font-size:2.2rem;color:var(--brun);margin-bottom:4px;}
+.sub{font-size:.84rem;color:var(--doux);margin-bottom:18px;}
+.hdiv{display:flex;align-items:center;gap:8px;margin:10px 0 16px;}
+.hdiv hr{flex:1;border:none;border-top:1px solid var(--fuchsia);opacity:.5;}
+.hdiv span{color:var(--fuchsia);}
+.fg{margin-bottom:10px;}
+.fg label{display:block;font-size:.75rem;font-weight:700;color:var(--texte);margin-bottom:4px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-family:"Lato",sans-serif;font-size:.84rem;color:var(--texte);background:var(--fond);outline:none;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--caramel);}
+.fg textarea{resize:vertical;min-height:65px;}
+.fgr{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.fnote{font-size:.72rem;color:var(--caramel);background:var(--carte);border-left:3px solid var(--caramel);padding:7px 10px;border-radius:0 7px 7px 0;margin-bottom:10px;}
+footer{background:var(--brun);color:#e8d5c8;padding:28px 16px 20px;text-align:center;margin-top:20px;}
+.flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:8px;}
+footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
+.flinks{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
+.flink{color:#e8d5c8;font-size:.75rem;text-decoration:none;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;}
+@media(max-width:400px){.fgr{grid-template-columns:1fr;}}
+</style><title>Devis &mdash; Les D&eacute;lices de Cicine</title></head><body><nav><a class="nav-logo" href="index.html">Les D&eacute;lices de Cicine</a><a class="nav-panier" href="panier.html">&#128722; Panier</a></nav><div class="wrap"><a href="index.html" class="back">&#8592; Accueil</a>
+<h2 class="title">Demander un devis</h2>
+<p class="sub">Pour vos &eacute;v&eacute;nements et cr&eacute;ations personnalis&eacute;es</p>
+<div class="fnote">&#128172; Aucun paiement sur le site &mdash; lien de paiement envoy&eacute; apr&egrave;s notre &eacute;change WhatsApp</div>
+<div class="fgr"><div class="fg"><label>Pr&eacute;nom &amp; Nom</label><input type="text" id="dN" placeholder="Nom complet"/></div><div class="fg"><label>WhatsApp</label><input type="tel" id="dT" placeholder="0696 XX XX XX"/></div></div>
+<div class="fg"><label>Type de devis</label><select id="dTy"><option value="">-- Choisir --</option><option>Mignardises</option><option>G&acirc;teau personnalis&eacute;</option><option>D&eacute;libox sur mesure</option><option>&#201;v&eacute;nement (mariage, bapt&ecirc;me...)</option><option>Autre</option></select></div>
+<div class="fg"><label>Date de l&apos;&eacute;v&eacute;nement</label><input type="date" id="dD"/></div>
+<div class="fg"><label>Nombre de personnes</label><input type="number" id="dNb" placeholder="Ex : 30" inputmode="numeric"/></div>
+<div class="fg"><label>D&eacute;crivez votre projet</label><textarea id="dM" placeholder="Th&egrave;me, couleurs, saveurs, budget..." style="min-height:90px;"></textarea></div>
+<button class="btn btn-wa" onclick="dWA()">&#128241; Envoyer ma demande</button>
+<script>function dWA(){var n=document.getElementById("dN").value;if(!n){alert("Entrez votre nom.");return;}var t=document.getElementById("dT").value,ty=document.getElementById("dTy").value,d=document.getElementById("dD").value,nb=document.getElementById("dNb").value,m=document.getElementById("dM").value;var txt="Bonjour Cicine ! ✨\n\nJe souhaite demander un devis.\n\n👤 "+n+"\n";if(t)txt+="📱 "+t+"\n";if(ty)txt+="📋 Type : "+ty+"\n";if(d)txt+="📅 Date : "+d+"\n";if(nb)txt+="👥 Personnes : "+nb+"\n";if(m)txt+="💬 Projet : "+m+"\n";txt+="\nMerci ! 😊";window.open("https://wa.me/596696111440?text="+encodeURIComponent(txt),"_blank");}</script></div><footer>
+<div class="flogo">Les D&eacute;lices de Cicine</div>
+<div class="flinks">
+<span class="flink">&#128248; Instagram</span>
+<span class="flink">&#128077; Facebook</span>
+<span class="flink">&#128123; Ticicine</span>
+<a href="https://wa.me/596696111440" class="flink" target="_blank">&#128172; WhatsApp</a>
+</div>
+<p>&#128205; Le Vauclin, Martinique &middot; 0696 11 14 40</p>
+<p>&copy; 2025 Les D&eacute;lices de Cicine &mdash; Fait avec &#10084;&#65039;</p>
+</footer></body></html>
