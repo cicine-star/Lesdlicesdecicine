@@ -69,7 +69,27 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 <div class="wrap">
   <a href="index.html" class="back">&#8592; Accueil</a>
   <h2 class="title">Commander</h2>
-  <p class="sub">Cochez vos produits et saisissez les quantités</p>
+  <p class="sub">Remplissez les infos, cochez vos produits, puis ajoutez au panier</p>
+
+  <!-- Bloc "Pour qui" toujours visible en haut -->
+  <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;">
+    <p style="font-family:'Dancing Script',cursive;font-size:1.2rem;color:var(--brun);margin-bottom:10px;">👤 Pour qui est cette commande ?</p>
+    <div class="fnote" style="margin-bottom:10px;">💡 Vous pouvez ajouter plusieurs commandes avec des noms et dates différents — idéal pour les groupes !</div>
+    <div class="fgr">
+      <div class="fg"><label>Prénom &amp; Nom *</label><input type="text" id="cNom" placeholder="Votre nom"/></div>
+      <div class="fg"><label>Date souhaitée *</label><input type="date" id="cDate"/></div>
+    </div>
+    <div class="fg"><label>Récupération</label>
+      <select id="cRecup">
+        <option>📍 Retrait au Vauclin</option>
+        <option>🚚 Livraison (7h30-19h30)</option>
+      </select>
+    </div>
+    <div class="fgr">
+      <div class="fg"><label>WhatsApp (optionnel)</label><input type="tel" id="cTel" placeholder="0696 XX XX XX"/></div>
+      <div class="fg"><label>Précisions (optionnel)</label><input type="text" id="cNote" placeholder="Allergies, adresse..."/></div>
+    </div>
+  </div>
 
   <div class="ct">🥐 Viennoiseries salées</div>
 <div class="ir" data-n="Petit pain" data-p="0.5">
@@ -487,19 +507,10 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
       <span id="totalAffiche">0,00€</span>
     </div>
     <div class="p2">
-      <button class="btn btn-wa" onclick="envoyerWA()">📱 WhatsApp</button>
+      <button class="btn btn-wa" onclick="envoyerWA()">📱 WhatsApp direct</button>
       <button class="btn btn-b" onclick="ajouterPanier()">🛒 Ajouter au panier</button>
     </div>
-    <div class="fg"><label>Prénom &amp; Nom</label><input type="text" id="cNom" placeholder="Votre nom"/></div>
-    <div class="fg"><label>WhatsApp</label><input type="tel" id="cTel" placeholder="0696 XX XX XX"/></div>
-    <div class="fg"><label>Date souhaitée</label><input type="date" id="cDate"/></div>
-    <div class="fg"><label>Récupération</label>
-      <select id="cRecup">
-        <option>📍 Retrait au Vauclin</option>
-        <option>🚚 Livraison (7h30-19h30)</option>
-      </select>
-    </div>
-    <div class="fg"><label>Précisions</label><textarea id="cNote" placeholder="Allergies, adresse, personnalisation..."></textarea></div>
+    <p style="font-size:.72rem;color:var(--doux);text-align:center;margin-top:4px;">Panier = accumulez plusieurs commandes avant d'envoyer</p>
   </div>
 </div>
 
@@ -529,6 +540,11 @@ function maj() {
 }
 
 function ajouterPanier() {
+  var nom = (document.getElementById("cNom").value || "").trim();
+  if (!nom) { alert("Entrez un prénom/nom pour cette commande."); document.getElementById("cNom").focus(); return; }
+  var date = document.getElementById("cDate").value;
+  if (!date) { alert("Choisissez une date souhaitée."); document.getElementById("cDate").focus(); return; }
+
   var rows = document.querySelectorAll(".ir");
   var items = [];
   for (var i = 0; i < rows.length; i++) {
@@ -541,27 +557,30 @@ function ajouterPanier() {
       items.push({name: name, price: price, qty: qty});
     }
   }
-  if (items.length === 0) {
-    alert("Sélectionnez au moins un produit.");
-    return;
-  }
-  var panier = JSON.parse(localStorage.getItem("panier") || "[]");
-  for (var i = 0; i < items.length; i++) {
-    var found = false;
-    for (var j = 0; j < panier.length; j++) {
-      if (panier[j].name === items[i].name) {
-        panier[j].qty += items[i].qty;
-        found = true;
-        break;
-      }
-    }
-    if (!found) panier.push(items[i]);
-  }
-  localStorage.setItem("panier", JSON.stringify(panier));
+  if (items.length === 0) { alert("Cochez au moins un produit."); return; }
+
+  var total = items.reduce(function(s, x){ return s + x.price * x.qty; }, 0);
+  var groupe = {
+    nom: nom,
+    date: date,
+    recup: document.getElementById("cRecup").value,
+    tel: document.getElementById("cTel").value,
+    note: document.getElementById("cNote").value,
+    items: items,
+    total: total
+  };
+
+  var groupes = JSON.parse(localStorage.getItem("groupes") || "[]");
+  groupes.push(groupe);
+  localStorage.setItem("groupes", JSON.stringify(groupes));
+
+  // Décocher les produits, garder le formulaire prêt pour une autre personne
   var cbs = document.querySelectorAll("input[type=checkbox]");
   for (var i = 0; i < cbs.length; i++) cbs[i].checked = false;
   maj();
-  alert("✅ Ajouté au panier !");
+
+  var nb = groupes.length;
+  alert("✅ Commande de " + nom + " ajoutée au panier ! (" + nb + " commande(s) au total)\n\nChangez le nom et la date pour ajouter une autre commande, ou allez voir le panier.");
 }
 
 function envoyerWA() {
