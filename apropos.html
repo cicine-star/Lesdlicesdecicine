@@ -1,58 +1,192 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<title>À propos — Les Délices de Cicine</title>
 <style>
-:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;}
+:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--rose:#E8407A;--texte:#2A1A14;--doux:#6B4C42;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);}
 nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 8px rgba(92,46,14,.07);}
 .nav-logo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:var(--brun);text-decoration:none;}
 .nav-panier{background:var(--caramel);color:#fff;border-radius:30px;padding:8px 16px;font-weight:700;font-size:.8rem;text-decoration:none;}
 .wrap{max-width:600px;margin:0 auto;padding:20px 16px 60px;}
-.btn{display:block;width:100%;font-weight:700;font-size:.9rem;padding:14px;border-radius:40px;cursor:pointer;border:none;text-align:center;margin-bottom:10px;text-decoration:none;}
-.btn-c{background:var(--caramel);color:#fff;}
-.btn-b{background:var(--brun);color:#fff;}
-.btn-o{background:transparent;color:var(--brun);border:2px solid var(--brun);}
-.btn-wa{background:#25D366;color:#fff;}
 .back{display:inline-flex;align-items:center;gap:5px;color:var(--caramel);font-weight:700;font-size:.82rem;text-decoration:none;margin-bottom:18px;}
 .title{font-family:"Dancing Script",cursive;font-size:2.2rem;color:var(--brun);margin-bottom:4px;}
 .sub{font-size:.84rem;color:var(--doux);margin-bottom:18px;}
-.hdiv{display:flex;align-items:center;gap:8px;margin:10px 0 16px;}
-.hdiv hr{flex:1;border:none;border-top:1px solid var(--fuchsia);opacity:.5;}
-.hdiv span{color:var(--fuchsia);}
-.fg{margin-bottom:10px;}
-.fg label{display:block;font-size:.75rem;font-weight:700;color:var(--texte);margin-bottom:4px;}
-.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-family:"Lato",sans-serif;font-size:.84rem;color:var(--texte);background:var(--fond);outline:none;}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--caramel);}
-.fg textarea{resize:vertical;min-height:65px;}
-.fgr{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.fnote{font-size:.72rem;color:var(--caramel);background:var(--carte);border-left:3px solid var(--caramel);padding:7px 10px;border-radius:0 7px 7px 0;margin-bottom:10px;}
+.hdiv{display:flex;align-items:center;gap:8px;margin:10px 0 18px;}
+.hdiv hr{flex:1;border:none;border-top:1.5px solid var(--rose);opacity:.35;}
+.hdiv span{color:var(--rose);}
+.sec-title{font-family:"Dancing Script",cursive;font-size:1.55rem;color:var(--brun);margin-bottom:10px;}
+.btn{display:block;width:100%;font-weight:700;font-size:.9rem;padding:13px;border-radius:40px;cursor:pointer;border:none;text-align:center;margin-bottom:10px;text-decoration:none;}
+.btn-c{background:var(--caramel);color:#fff;}
+.btn-wa{background:#25D366;color:#fff;}
 footer{background:var(--brun);color:#e8d5c8;padding:28px 16px 20px;text-align:center;margin-top:20px;}
 .flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:8px;}
 footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 .flinks{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
 .flink{color:#e8d5c8;font-size:.75rem;text-decoration:none;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;}
-@media(max-width:400px){.fgr{grid-template-columns:1fr;}}
-</style><title>A propos &mdash; Les D&eacute;lices de Cicine</title></head><body><nav><a class="nav-logo" href="index.html">Les D&eacute;lices de Cicine</a><a class="nav-panier" href="panier.html">&#128722; Panier</a></nav><div class="wrap"><a href="index.html" class="back">&#8592; Accueil</a>
-<h2 class="title">&Agrave; propos</h2>
-<div style="text-align:center;">
-<p style="font-size:.88rem;line-height:1.75;color:var(--doux);margin-bottom:12px;">&#10024; Derri&egrave;re <strong>Les D&eacute;lices de Cicine</strong> se cache une jeune passionn&eacute;e qui pr&eacute;pare g&acirc;teaux, tartes et petites gourmandises pour &eacute;gayer vos moments pr&eacute;cieux.</p>
-<p style="font-size:.88rem;line-height:1.75;color:var(--doux);margin-bottom:12px;">Bas&eacute;e au Vauclin en Martinique, chaque cr&eacute;ation est pr&eacute;par&eacute;e avec amour et des ingr&eacute;dients de qualit&eacute;.</p>
-<p style="font-family:'Dancing Script',cursive;font-size:1.25rem;color:var(--caramel);margin:16px 0;">"Merci de soutenir une petite aventure gourmande faite avec le c&#339;ur &#129392;"</p>
-<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px;">
-<span style="background:none;border:2px solid var(--brun);color:var(--brun);border-radius:30px;padding:8px 16px;font-size:.78rem;font-weight:700;">&#128248; Instagram</span>
-<span style="background:none;border:2px solid var(--brun);color:var(--brun);border-radius:30px;padding:8px 16px;font-size:.78rem;font-weight:700;">&#128077; Facebook</span>
-<span style="background:none;border:2px solid var(--brun);color:var(--brun);border-radius:30px;padding:8px 16px;font-size:.78rem;font-weight:700;">&#128123; Ticicine</span>
-<a href="https://wa.me/596696111440" target="_blank" style="background:var(--caramel);color:#fff;border-radius:30px;padding:8px 16px;font-size:.78rem;font-weight:700;text-decoration:none;">&#128172; WhatsApp</a>
+
+/* Hero about */
+.about-hero{background:linear-gradient(140deg,var(--fond2),var(--carte));border-radius:18px;padding:28px 20px;text-align:center;margin-bottom:20px;border:1.5px solid var(--bordure);}
+.about-avatar{font-size:5rem;margin-bottom:12px;display:block;}
+.about-hero h2{font-family:"Dancing Script",cursive;font-size:1.7rem;color:var(--brun);margin-bottom:8px;}
+.about-hero p{font-size:.85rem;color:var(--doux);line-height:1.7;}
+.quote{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--caramel);margin:16px 0 0;display:block;}
+
+/* Values */
+.values{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.val-card{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:16px 12px;text-align:center;}
+.val-icon{font-size:1.7rem;margin-bottom:6px;}
+.val-title{font-family:"Dancing Script",cursive;font-size:1.05rem;color:var(--brun);margin-bottom:4px;}
+.val-desc{font-size:.74rem;color:var(--doux);line-height:1.5;}
+
+/* Story */
+.story-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:18px 16px;margin-bottom:16px;}
+.story-card p{font-size:.84rem;color:var(--doux);line-height:1.75;margin-bottom:8px;}
+.story-card p:last-child{margin-bottom:0;}
+.story-card strong{color:var(--brun);}
+
+/* Contact / info */
+.info-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.info-item{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:14px 14px;}
+.info-icon{font-size:1.4rem;flex-shrink:0;}
+.info-body strong{display:block;font-size:.82rem;color:var(--brun);}
+.info-body span{font-size:.78rem;color:var(--doux);}
+
+/* Social buttons */
+.social-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.soc-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 10px;border-radius:12px;font-weight:700;font-size:.8rem;text-decoration:none;color:#fff;border:none;cursor:pointer;}
+.soc-insta{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
+.soc-fb{background:#1877F2;}
+.soc-tiktok{background:#010101;}
+.soc-wa{background:#25D366;}
+
+@media(max-width:360px){.values,.social-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Les Délices de Cicine</a>
+  <a class="nav-panier" href="panier.html">🛒 Panier</a>
+</nav>
+
+<div class="wrap">
+  <a href="index.html" class="back">← Accueil</a>
+  <h2 class="title">À propos</h2>
+  <p class="sub">L'histoire derrière les délices 💕</p>
+
+  <!-- About hero -->
+  <div class="about-hero">
+    <span class="about-avatar">👩‍🍳</span>
+    <h2>Bonjour, moi c'est Cicine !</h2>
+    <p>Passionnée de pâtisserie depuis toujours, je prépare chaque création avec amour dans ma cuisine au <strong>Vauclin, en Martinique</strong>. Des mignardises aux gâteaux d'anniversaire, chaque bouchée est pensée pour émerveiller et régaler.</p>
+    <span class="quote">"Parce que chaque moment mérite un délice unique." ✨</span>
+  </div>
+
+  <!-- Values -->
+  <h3 class="sec-title">Mes valeurs</h3>
+  <div class="hdiv"><hr/><span>♡</span><hr/></div>
+  <div class="values">
+    <div class="val-card">
+      <div class="val-icon">🏠</div>
+      <div class="val-title">Fait maison</div>
+      <div class="val-desc">Tout est préparé avec soin dans ma cuisine, avec des ingrédients de qualité.</div>
+    </div>
+    <div class="val-card">
+      <div class="val-icon">❤️</div>
+      <div class="val-title">Avec amour</div>
+      <div class="val-desc">Chaque création est unique et préparée avec passion pour chaque client.</div>
+    </div>
+    <div class="val-card">
+      <div class="val-icon">🎨</div>
+      <div class="val-title">Sur mesure</div>
+      <div class="val-desc">Personnalisation selon vos goûts, couleurs, thèmes et occasions.</div>
+    </div>
+    <div class="val-card">
+      <div class="val-icon">⭐</div>
+      <div class="val-title">Qualité</div>
+      <div class="val-desc">Des produits frais, savoureux et présentés avec soin pour vos moments précieux.</div>
+    </div>
+  </div>
+
+  <!-- Story -->
+  <h3 class="sec-title">Mon histoire</h3>
+  <div class="hdiv"><hr/><span>♡</span><hr/></div>
+  <div class="story-card">
+    <p>✨ Derrière <strong>Les Délices de Cicine</strong> se cache une jeune femme passionnée qui a transformé son amour de la pâtisserie en une belle aventure gourmande.</p>
+    <p>🌴 Basée au <strong>Vauclin, en Martinique</strong>, je crée des mignardises salées et sucrées, des gâteaux d'anniversaire, des box gourmandes et bien plus encore — tout fait maison, avec des recettes qui régalent familles et amis depuis des années.</p>
+    <p>🧁 Ce qui me tient à cœur, c'est de vous offrir des créations qui correspondent exactement à vos envies. Chaque commande est unique, préparée avec attention aux détails et toujours avec le sourire !</p>
+    <p>💕 <em>Merci de soutenir une petite aventure gourmande faite avec le cœur.</em></p>
+  </div>
+
+  <!-- Contact info -->
+  <h3 class="sec-title">Informations &amp; contact</h3>
+  <div class="hdiv"><hr/><span>♡</span><hr/></div>
+  <div class="info-list">
+    <div class="info-item">
+      <span class="info-icon">📍</span>
+      <div class="info-body">
+        <strong>Localisation</strong>
+        <span>Le Vauclin, Martinique · Retrait sur place ou livraison</span>
+      </div>
+    </div>
+    <div class="info-item">
+      <span class="info-icon">📱</span>
+      <div class="info-body">
+        <strong>WhatsApp &amp; appels</strong>
+        <span>0696 11 14 40</span>
+      </div>
+    </div>
+    <div class="info-item">
+      <span class="info-icon">⏱️</span>
+      <div class="info-body">
+        <strong>Délai minimum</strong>
+        <span>72h à l'avance pour les commandes · 1 semaine pour les gâteaux</span>
+      </div>
+    </div>
+    <div class="info-item">
+      <span class="info-icon">🚚</span>
+      <div class="info-body">
+        <strong>Livraison</strong>
+        <span>Disponible entre 7h30 et 19h30 (selon disponibilités)</span>
+      </div>
+    </div>
+    <div class="info-item">
+      <span class="info-icon">⚠️</span>
+      <div class="info-body">
+        <strong>Confirmation de commande</strong>
+        <span>La commande est confirmée après réception de l'acompte</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social links -->
+  <h3 class="sec-title">Retrouvez-moi</h3>
+  <div class="hdiv"><hr/><span>♡</span><hr/></div>
+  <div class="social-grid">
+    <a href="#" class="soc-btn soc-insta" target="_blank" rel="noopener">📷 Instagram</a>
+    <a href="#" class="soc-btn soc-fb" target="_blank" rel="noopener">👍 Facebook</a>
+    <a href="#" class="soc-btn soc-tiktok" target="_blank" rel="noopener">🎵 Ticicine</a>
+    <a href="https://wa.me/596696111440" class="soc-btn soc-wa" target="_blank" rel="noopener">💬 WhatsApp</a>
+  </div>
+
+  <a href="commander.html" class="btn btn-c">🧁 Commander maintenant</a>
+  <a href="https://wa.me/596696111440" class="btn btn-wa" target="_blank" rel="noopener">💬 Écrire sur WhatsApp</a>
 </div>
-</div></div><footer>
-<div class="flogo">Les D&eacute;lices de Cicine</div>
-<div class="flinks">
-<span class="flink">&#128248; Instagram</span>
-<span class="flink">&#128077; Facebook</span>
-<span class="flink">&#128123; Ticicine</span>
-<a href="https://wa.me/596696111440" class="flink" target="_blank">&#128172; WhatsApp</a>
-</div>
-<p>&#128205; Le Vauclin, Martinique &middot; 0696 11 14 40</p>
-<p>&copy; 2025 Les D&eacute;lices de Cicine &mdash; Fait avec &#10084;&#65039;</p>
-</footer></body></html>
+
+<footer>
+  <div class="flogo">Les Délices de Cicine</div>
+  <div class="flinks">
+    <a href="#" class="flink">📷 Instagram</a>
+    <a href="#" class="flink">👍 Facebook</a>
+    <a href="#" class="flink">🎵 Ticicine</a>
+    <a href="https://wa.me/596696111440" class="flink" target="_blank" rel="noopener">💬 WhatsApp</a>
+  </div>
+  <p>📍 Le Vauclin, Martinique · 0696 11 14 40</p>
+  <p>© 2025 Les Délices de Cicine — Fait avec ❤️</p>
+</footer>
+</body>
+</html>
