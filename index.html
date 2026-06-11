@@ -4,70 +4,42 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
-<title>Les Délices de Cicine — Vauclin, Martinique</title>
-<meta name="description" content="Mignardises, gâteaux et gourmandises faits maison au Vauclin, Martinique. Commandez via WhatsApp."/>
 <style>
-:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--rose:#E8407A;--texte:#2A1A14;--doux:#6B4C42;}
+:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);overflow-x:hidden;}
+body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);}
 nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 8px rgba(92,46,14,.07);}
-.nav-logo{font-family:"Dancing Script",cursive;font-size:1.45rem;color:var(--brun);text-decoration:none;}
+.nav-logo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:var(--brun);text-decoration:none;}
 .nav-panier{position:relative;background:var(--caramel);color:#fff;border-radius:30px;padding:8px 16px;font-weight:700;font-size:.8rem;text-decoration:none;}
-.cart-badge{position:absolute;top:-6px;right:-6px;background:var(--rose);color:#fff;border-radius:50%;width:18px;height:18px;font-size:.62rem;font-weight:700;display:none;align-items:center;justify-content:center;}
-.hero{background:linear-gradient(160deg,var(--fond2) 0%,var(--fond) 65%);padding:28px 20px 24px;text-align:center;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:var(--bordure);opacity:.22;}
-.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:150px;height:150px;border-radius:50%;background:var(--bordure);opacity:.16;}
-.mascot-wrap{display:inline-block;animation:bob 3.2s ease-in-out infinite;margin-bottom:8px;}
-@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
-.mascot-svg .sp{animation:sparkle 2.8s ease-in-out infinite;}
-.mascot-svg .sp2{animation-delay:.7s;}
-.mascot-svg .sp3{animation-delay:1.4s;}
-.mascot-svg .sp4{animation-delay:2.1s;}
-@keyframes sparkle{0%,100%{opacity:0;transform:scale(.4);}50%{opacity:1;transform:scale(1);}}
-.hero-title{font-family:"Dancing Script",cursive;font-size:2.6rem;color:var(--brun);line-height:1.15;margin-bottom:6px;}
-.hero-sub{font-size:.88rem;color:var(--doux);font-style:italic;margin-bottom:10px;}
-.hero-loc{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;color:var(--caramel);font-weight:700;background:#fff;padding:5px 14px;border-radius:20px;border:1.5px solid var(--bordure);margin-bottom:22px;}
-.hero-btns{display:flex;flex-direction:column;gap:10px;max-width:340px;margin:0 auto;}
-.btn{display:block;font-weight:700;font-size:.9rem;padding:14px 20px;border-radius:40px;border:none;text-align:center;text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .15s;}
-.btn:active{transform:scale(.97);}
-.btn-c{background:var(--caramel);color:#fff;box-shadow:0 4px 14px rgba(160,82,45,.3);}
-.btn-b{background:var(--brun);color:#fff;box-shadow:0 4px 14px rgba(92,46,14,.25);}
-.btn-wa{background:#25D366;color:#fff;box-shadow:0 4px 14px rgba(37,211,102,.28);}
-.highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.hl{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:14px 8px;text-align:center;}
-.hl-icon{font-size:1.5rem;margin-bottom:4px;}
-.hl-val{font-family:"Dancing Script",cursive;font-size:1.25rem;color:var(--brun);}
-.hl-lab{font-size:.69rem;color:var(--doux);line-height:1.3;}
-.section{max-width:600px;margin:0 auto;padding:22px 16px;}
-.sec-title{font-family:"Dancing Script",cursive;font-size:1.85rem;color:var(--brun);text-align:center;margin-bottom:5px;}
-.hdiv{display:flex;align-items:center;gap:8px;margin:4px 0 20px;}
-.hdiv hr{flex:1;border:none;border-top:1.5px solid var(--rose);opacity:.35;}
-.hdiv span{color:var(--rose);}
-.steps{display:flex;flex-direction:column;gap:12px;}
-.step{display:flex;align-items:flex-start;gap:14px;background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px 14px;}
-.step-num{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--rose);color:#fff;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;}
-.step-body h4{font-size:.88rem;font-weight:700;color:var(--brun);margin-bottom:3px;}
-.step-body p{font-size:.79rem;color:var(--doux);line-height:1.55;}
-.page-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.page-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:18px 12px;text-align:center;text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;gap:5px;transition:transform .2s,box-shadow .2s;}
-.page-card:active{transform:scale(.96);}
-.pc-icon{font-size:2rem;}
-.pc-name{font-family:"Dancing Script",cursive;font-size:1.1rem;color:var(--brun);}
-.pc-desc{font-size:.72rem;color:var(--doux);line-height:1.4;}
-.cta-banner{background:var(--brun);color:#fff;border-radius:16px;text-align:center;padding:22px 18px;}
-.cta-banner p{font-size:.84rem;color:#e8d5c8;margin-bottom:12px;line-height:1.6;}
-.cta-banner a{display:inline-block;background:#25D366;color:#fff;font-weight:700;font-size:.85rem;padding:10px 22px;border-radius:30px;text-decoration:none;}
-footer{background:var(--brun);color:#e8d5c8;padding:30px 16px 36px;text-align:center;margin-top:28px;}
-.flogo{font-family:"Dancing Script",cursive;font-size:1.6rem;color:#f0e0d6;margin-bottom:12px;}
+.cart-badge{position:absolute;top:-6px;right:-6px;background:var(--fuchsia);color:#fff;border-radius:50%;width:18px;height:18px;font-size:.62rem;font-weight:700;display:none;align-items:center;justify-content:center;}
+.wrap{max-width:600px;margin:0 auto;padding:20px 16px 60px;}
+.btn{display:block;width:100%;font-weight:700;font-size:.9rem;padding:14px;border-radius:40px;cursor:pointer;border:none;text-align:center;margin-bottom:10px;text-decoration:none;}
+.btn-c{background:var(--caramel);color:#fff;}
+.btn-b{background:var(--brun);color:#fff;}
+.btn-o{background:transparent;color:var(--brun);border:2px solid var(--brun);}
+.btn-wa{background:#25D366;color:#fff;}
+.hdiv{display:flex;align-items:center;gap:8px;margin:10px 0 16px;}
+.hdiv hr{flex:1;border:none;border-top:1px solid var(--fuchsia);opacity:.5;}
+.hdiv span{color:var(--fuchsia);}
+footer{background:var(--brun);color:#e8d5c8;padding:28px 16px 20px;text-align:center;margin-top:20px;}
+.flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:8px;}
+footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 .flinks{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
 .flink{color:#e8d5c8;font-size:.75rem;text-decoration:none;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;}
-footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
-.fnote-f{font-size:.73rem;color:#c4a898;background:rgba(255,255,255,.07);border-radius:8px;padding:8px 12px;margin-top:10px;display:inline-block;}
-@media(max-width:360px){.hero-title{font-size:2.1rem;}.page-grid{grid-template-columns:1fr;}.highlights{grid-template-columns:1fr 1fr;}}
+.hero-top{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+.mascotte{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid var(--bordure);flex-shrink:0;animation:fl 3s ease-in-out infinite;}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.hero-txt h1{font-family:"Dancing Script",cursive;font-size:2.2rem;color:var(--brun);line-height:1.1;}
+.hero-txt p{font-family:"Dancing Script",cursive;font-size:1rem;color:var(--caramel);margin-top:4px;}
+.s3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}
+.sb{background:#fff;border:1px solid var(--bordure);border-radius:12px;padding:12px;text-align:center;}
+.sn{width:26px;height:26px;border-radius:50%;background:var(--caramel);color:#fff;font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;}
+.sb p{font-size:.73rem;color:var(--doux);line-height:1.4;}
+@media(max-width:400px){.s3{grid-template-columns:1fr;}}
 </style>
+<title>Les Délices de Cicine</title>
 </head>
 <body>
-
 <nav>
   <a class="nav-logo" href="index.html">Les Délices de Cicine</a>
   <a class="nav-panier" href="panier.html" id="navCart">
@@ -75,179 +47,47 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
     <span class="cart-badge" id="cartBadge"></span>
   </a>
 </nav>
-
-<div class="hero">
-  <div class="mascot-wrap">
-    <svg class="mascot-svg" viewBox="0 0 180 222" width="162" height="200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <g class="sp" style="transform-origin:20px 58px"><text x="10" y="66" font-size="17" font-family="sans-serif">✨</text></g>
-      <g class="sp sp2" style="transform-origin:153px 44px"><text x="143" y="53" font-size="15" font-family="sans-serif">⭐</text></g>
-      <g class="sp sp3" style="transform-origin:158px 112px"><text x="150" y="121" font-size="12" font-family="sans-serif">✨</text></g>
-      <g class="sp sp4" style="transform-origin:8px 125px"><text x="1" y="133" font-size="11" font-family="sans-serif">⭐</text></g>
-      <ellipse cx="90" cy="56" rx="41" ry="9" fill="#EDD5D2"/>
-      <rect x="57" y="21" width="66" height="38" rx="11" fill="#FFFFFF" stroke="#EDD5D2" stroke-width="1.5"/>
-      <ellipse cx="90" cy="21" rx="33" ry="14" fill="#FFFFFF" stroke="#EDD5D2" stroke-width="1.5"/>
-      <path d="M82,35 C82,30 87,26 90,30 C93,26 98,30 98,35 L90,44 Z" fill="#E8407A"/>
-      <circle cx="90" cy="100" r="42" fill="#FDD9B5"/>
-      <ellipse cx="90" cy="83" rx="18" ry="10" fill="#FDDFC8" opacity="0.5"/>
-      <ellipse cx="65" cy="111" rx="12" ry="8" fill="#FFB3C6" opacity="0.55"/>
-      <ellipse cx="115" cy="111" rx="12" ry="8" fill="#FFB3C6" opacity="0.55"/>
-      <path d="M73,91 Q80,84 87,91" fill="none" stroke="#5C2E0E" stroke-width="3" stroke-linecap="round"/>
-      <path d="M93,91 Q100,84 107,91" fill="none" stroke="#5C2E0E" stroke-width="3" stroke-linecap="round"/>
-      <path d="M75,115 Q90,131 105,115" fill="none" stroke="#5C2E0E" stroke-width="2.5" stroke-linecap="round"/>
-      <ellipse cx="90" cy="190" rx="46" ry="48" fill="#E8407A"/>
-      <ellipse cx="90" cy="187" rx="26" ry="32" fill="#FFFFFF" opacity="0.88"/>
-      <path d="M82,182 C82,177 86.5,173 90,177 C93.5,173 98,177 98,182 L90,190 Z" fill="#E8407A" opacity="0.8"/>
-      <rect x="34" y="153" width="21" height="45" rx="10.5" fill="#E8407A" transform="rotate(18 44.5 153)"/>
-      <rect x="125" y="153" width="21" height="45" rx="10.5" fill="#E8407A" transform="rotate(-18 135.5 153)"/>
-      <circle cx="37" cy="197" r="12" fill="#FDD9B5"/>
-      <circle cx="143" cy="197" r="12" fill="#FDD9B5"/>
-      <rect x="17" y="196" width="40" height="22" rx="5" fill="#A0522D"/>
-      <line x1="25" y1="196" x2="25" y2="218" stroke="rgba(0,0,0,.12)" stroke-width="1.5"/>
-      <line x1="31" y1="196" x2="31" y2="218" stroke="rgba(0,0,0,.12)" stroke-width="1.5"/>
-      <line x1="37" y1="196" x2="37" y2="218" stroke="rgba(0,0,0,.12)" stroke-width="1.5"/>
-      <line x1="43" y1="196" x2="43" y2="218" stroke="rgba(0,0,0,.12)" stroke-width="1.5"/>
-      <line x1="49" y1="196" x2="49" y2="218" stroke="rgba(0,0,0,.12)" stroke-width="1.5"/>
-      <ellipse cx="37" cy="196" rx="21" ry="11" fill="#FFC0CB"/>
-      <ellipse cx="37" cy="184" rx="14" ry="14" fill="#FF89AC"/>
-      <ellipse cx="37" cy="174" rx="10" ry="11" fill="#FF69B4"/>
-      <ellipse cx="37" cy="167" rx="7" ry="8" fill="#E8407A"/>
-      <circle cx="37" cy="161" r="6" fill="#CC0000"/>
-      <path d="M37,161 Q45,152 51,154" fill="none" stroke="#2D7A2D" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="52" cy="153" r="3.5" fill="#1A5E1A"/>
-    </svg>
+<div class="wrap">
+  <div class="hero-top">
+    <img src="mascotte.png" class="mascotte" alt="Cicine"/>
+    <div class="hero-txt">
+      <h1>Les Délices<br/>de Cicine</h1>
+      <p>Douceurs faites maison ❤️</p>
+    </div>
   </div>
-
-  <h1 class="hero-title">Les Délices de Cicine</h1>
-  <p class="hero-sub">Mignardises salées &amp; sucrées faites maison ✨</p>
-  <span class="hero-loc">📍 Le Vauclin, Martinique</span>
-
-  <div class="hero-btns">
-    <a href="commander.html" class="btn btn-c">🧁 Commander maintenant</a>
-    <a href="devis.html" class="btn btn-b">✨ Demander un devis</a>
-    <a href="https://wa.me/596696111440" class="btn btn-wa" target="_blank" rel="noopener">💬 WhatsApp · 0696 11 14 40</a>
+  <p style="font-size:.85rem;line-height:1.65;color:var(--doux);margin-bottom:14px;">📍 Le Vauclin, Martinique — Une jeune passionnée qui prépare gâteaux, tartes et gourmandises pour égayer vos moments précieux.</p>
+  <div class="hdiv"><hr/><span>♡</span><hr/><span>♡</span><hr/></div>
+  <a href="commander.html" class="btn btn-c">🧁 Commander</a>
+  <a href="devis.html" class="btn btn-b">✨ Demander un devis</a>
+  <a href="produits.html" class="btn btn-o">🛍️ Voir tous les produits</a>
+  <a href="paiement.html" class="btn btn-o">💳 Moyens de paiement</a>
+  <a href="realisations.html" class="btn btn-o">📸 Nos réalisations</a>
+  <a href="avis.html" class="btn btn-o">⭐ Avis clients</a>
+  <a href="apropos.html" class="btn btn-o">💕 À propos</a>
+  <div class="hdiv" style="margin-top:20px;"><hr/><span>♡</span><hr/><span>♡</span><hr/></div>
+  <p style="font-family:'Dancing Script',cursive;font-size:1.5rem;color:var(--brun);text-align:center;margin-bottom:12px;">Comment commander ?</p>
+  <div class="s3">
+    <div class="sb"><div class="sn">1</div><p>Choisissez vos <strong>produits</strong> et quantités</p></div>
+    <div class="sb"><div class="sn">2</div><p>Envoyez via <strong>WhatsApp</strong> — réponse sous 48h</p></div>
+    <div class="sb"><div class="sn">3</div><p>Réglez l'<strong>acompte</strong> puis récupérez ou livraison</p></div>
   </div>
 </div>
-
-<div class="section" style="padding-top:18px;padding-bottom:10px;">
-  <div class="highlights">
-    <div class="hl">
-      <div class="hl-icon">⏱️</div>
-      <div class="hl-val">72h</div>
-      <div class="hl-lab">minimum à l'avance</div>
-    </div>
-    <div class="hl">
-      <div class="hl-icon">🍰</div>
-      <div class="hl-val">7</div>
-      <div class="hl-lab">catégories de produits</div>
-    </div>
-    <div class="hl">
-      <div class="hl-icon">🏠</div>
-      <div class="hl-val">100%</div>
-      <div class="hl-lab">fait maison avec amour</div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <h2 class="sec-title">Comment commander ?</h2>
-  <div class="hdiv"><hr/><span>♡</span><hr/></div>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <h4>🛍️ Choisissez vos produits</h4>
-        <p>Parcourez le catalogue ou utilisez la page <strong>Commander</strong> pour cocher vos produits et saisir vos quantités. Le total se calcule automatiquement.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <h4>💬 Envoyez sur WhatsApp</h4>
-        <p>Votre commande est transmise directement à Cicine par WhatsApp. <strong>Minimum 72h à l'avance</strong> (1 semaine pour les gâteaux d'anniversaire).</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <h4>💳 Confirmez avec l'acompte</h4>
-        <p>Un lien SumUp vous est envoyé pour l'acompte. La commande est confirmée après paiement. Retrait au Vauclin ou livraison possible entre 7h30 et 19h30.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="section" style="padding-bottom:14px;">
-  <h2 class="sec-title">Explorez le site</h2>
-  <div class="hdiv"><hr/><span>♡</span><hr/></div>
-  <div class="page-grid">
-    <a href="produits.html" class="page-card">
-      <span class="pc-icon">🛍️</span>
-      <span class="pc-name">Nos produits</span>
-      <span class="pc-desc">Catalogue complet avec tous les prix</span>
-    </a>
-    <a href="commander.html" class="page-card">
-      <span class="pc-icon">🧁</span>
-      <span class="pc-name">Commander</span>
-      <span class="pc-desc">Choisissez &amp; envoyez sur WhatsApp</span>
-    </a>
-    <a href="panier.html" class="page-card">
-      <span class="pc-icon">🛒</span>
-      <span class="pc-name">Mon panier</span>
-      <span class="pc-desc">Récapitulatif &amp; envoi final</span>
-    </a>
-    <a href="devis.html" class="page-card">
-      <span class="pc-icon">✨</span>
-      <span class="pc-name">Devis</span>
-      <span class="pc-desc">Événements &amp; créations sur mesure</span>
-    </a>
-    <a href="paiement.html" class="page-card">
-      <span class="pc-icon">💳</span>
-      <span class="pc-name">Paiement</span>
-      <span class="pc-desc">Comment régler votre commande</span>
-    </a>
-    <a href="realisations.html" class="page-card">
-      <span class="pc-icon">📸</span>
-      <span class="pc-name">Réalisations</span>
-      <span class="pc-desc">Galerie de nos créations</span>
-    </a>
-    <a href="avis.html" class="page-card">
-      <span class="pc-icon">⭐</span>
-      <span class="pc-name">Avis clients</span>
-      <span class="pc-desc">Témoignages de nos clientes</span>
-    </a>
-    <a href="apropos.html" class="page-card">
-      <span class="pc-icon">💕</span>
-      <span class="pc-name">À propos</span>
-      <span class="pc-desc">Notre histoire &amp; nos valeurs</span>
-    </a>
-  </div>
-</div>
-
-<div class="section" style="padding-top:0;padding-bottom:20px;">
-  <div class="cta-banner">
-    <p>Des bouchées gourmandes pour accompagner chaque moment ✨<br/>Commandez uniquement par message privé ou WhatsApp</p>
-    <a href="https://wa.me/596696111440" target="_blank" rel="noopener">💬 Écrire sur WhatsApp</a>
-  </div>
-</div>
-
 <footer>
   <div class="flogo">Les Délices de Cicine</div>
   <div class="flinks">
     <a href="#" class="flink">📷 Instagram</a>
     <a href="#" class="flink">👍 Facebook</a>
     <a href="#" class="flink">🎵 Ticicine</a>
-    <a href="https://wa.me/596696111440" class="flink" target="_blank" rel="noopener">💬 WhatsApp</a>
+    <a href="https://wa.me/596696111440" class="flink" target="_blank">💬 WhatsApp</a>
   </div>
   <p>📍 Le Vauclin, Martinique · 0696 11 14 40</p>
   <p>© 2025 Les Délices de Cicine — Fait avec ❤️</p>
-  <div class="fnote-f">⚠️ La commande est confirmée après acompte.</div>
 </footer>
-
 <script>
 (function(){
   try{
-    var p=JSON.parse(localStorage.getItem("panier")||"[]");
-    var n=p.reduce(function(a,x){return a+(parseInt(x.qty)||1);},0);
+    var g=JSON.parse(localStorage.getItem("groupes")||"[]");
+    var n=g.length;
     if(n>0){var b=document.getElementById("cartBadge");b.textContent=n>9?"9+":n;b.style.display="flex";}
   }catch(e){}
 })();

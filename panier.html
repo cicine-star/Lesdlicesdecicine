@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
 <style>
@@ -12,100 +15,186 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .btn{display:block;width:100%;font-weight:700;font-size:.9rem;padding:14px;border-radius:40px;cursor:pointer;border:none;text-align:center;margin-bottom:10px;text-decoration:none;}
 .btn-c{background:var(--caramel);color:#fff;}
 .btn-b{background:var(--brun);color:#fff;}
-.btn-o{background:transparent;color:var(--brun);border:2px solid var(--brun);}
 .btn-wa{background:#25D366;color:#fff;}
+.btn-o{background:transparent;color:var(--brun);border:2px solid var(--brun);}
 .back{display:inline-flex;align-items:center;gap:5px;color:var(--caramel);font-weight:700;font-size:.82rem;text-decoration:none;margin-bottom:18px;}
 .title{font-family:"Dancing Script",cursive;font-size:2.2rem;color:var(--brun);margin-bottom:4px;}
 .sub{font-size:.84rem;color:var(--doux);margin-bottom:18px;}
-.hdiv{display:flex;align-items:center;gap:8px;margin:10px 0 16px;}
-.hdiv hr{flex:1;border:none;border-top:1px solid var(--fuchsia);opacity:.5;}
-.hdiv span{color:var(--fuchsia);}
-.fg{margin-bottom:10px;}
-.fg label{display:block;font-size:.75rem;font-weight:700;color:var(--texte);margin-bottom:4px;}
-.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-family:"Lato",sans-serif;font-size:.84rem;color:var(--texte);background:var(--fond);outline:none;}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--caramel);}
-.fg textarea{resize:vertical;min-height:65px;}
-.fgr{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.fnote{font-size:.72rem;color:var(--caramel);background:var(--carte);border-left:3px solid var(--caramel);padding:7px 10px;border-radius:0 7px 7px 0;margin-bottom:10px;}
+.fnote{font-size:.72rem;color:var(--caramel);background:var(--carte);border-left:3px solid var(--caramel);padding:7px 10px;border-radius:0 7px 7px 0;margin-bottom:12px;}
 footer{background:var(--brun);color:#e8d5c8;padding:28px 16px 20px;text-align:center;margin-top:20px;}
 .flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:8px;}
 footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 .flinks{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
 .flink{color:#e8d5c8;font-size:.75rem;text-decoration:none;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;}
-@media(max-width:400px){.fgr{grid-template-columns:1fr;}}
-</style><title>Panier</title>
-<style>
-.pi{background:#fff;border:1px solid var(--bordure);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.pn{font-weight:700;color:var(--brun);font-size:.85rem;}
-.pd{font-size:.74rem;color:var(--doux);}
-.ps{font-weight:700;color:var(--caramel);font-size:.88rem;}
-.brm{background:none;border:none;color:#cc4444;font-size:.72rem;cursor:pointer;text-decoration:underline;margin-top:3px;display:block;}
-.gt{background:var(--carte);border:1.5px solid var(--bordure);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;font-weight:700;font-size:.95rem;color:var(--brun);margin:12px 0;}
-.pf{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:18px;margin-bottom:14px;}
-.pf h3{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--brun);margin-bottom:12px;}
-</style></head><body>
-<nav><a class="nav-logo" href="index.html">Les D&eacute;lices de Cicine</a><a class="nav-panier" href="panier.html">&#128722; Panier</a></nav>
+
+/* Groupe commande */
+.groupe{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;margin-bottom:14px;overflow:hidden;}
+.groupe-header{background:var(--carte);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;}
+.groupe-nom{font-family:"Dancing Script",cursive;font-size:1.2rem;color:var(--brun);}
+.groupe-meta{font-size:.74rem;color:var(--doux);margin-top:2px;}
+.groupe-del{background:none;border:none;color:#cc4444;font-size:.78rem;cursor:pointer;font-weight:700;padding:4px 10px;border-radius:20px;border:1px solid #cc4444;}
+.groupe-body{padding:10px 14px 14px;}
+.gi{display:flex;justify-content:space-between;align-items:center;font-size:.81rem;padding:5px 0;border-bottom:1px dashed var(--bordure);}
+.gi:last-of-type{border-bottom:none;}
+.gi-del{background:none;border:none;color:#cc4444;font-size:.7rem;cursor:pointer;margin-left:8px;text-decoration:underline;}
+.gsub{display:flex;justify-content:space-between;font-weight:700;font-size:.84rem;color:var(--caramel);margin-top:8px;padding-top:8px;border-top:2px solid var(--bordure);}
+
+/* Total général */
+.total-general{background:var(--brun);color:#fff;border-radius:14px;padding:16px;margin:6px 0 14px;display:flex;justify-content:space-between;align-items:center;}
+.total-general span:first-child{font-size:.9rem;font-weight:700;}
+.total-general span:last-child{font-family:"Dancing Script",cursive;font-size:1.6rem;}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Les Délices de Cicine</a>
+  <a class="nav-panier" href="panier.html">🛒 Panier</a>
+</nav>
 <div class="wrap">
-<a href="index.html" class="back">&#8592; Accueil</a>
-<h2 class="title">Mon panier</h2>
-<div id="pC"></div>
+  <a href="index.html" class="back">← Accueil</a>
+  <h2 class="title">Mon panier</h2>
+  <p class="sub">Récapitulatif de toutes les commandes</p>
+  <div id="panierContent"></div>
 </div>
+
 <script>
 function f(n){return n.toFixed(2).replace(".",",")+"€";}
-function load(){
-var p=JSON.parse(localStorage.getItem("panier")||"[]");
-var el=document.getElementById("pC");
-if(!p.length){el.innerHTML='<p style="text-align:center;padding:30px 0;color:var(--doux);">Votre panier est vide.<br/><br/><a href="commander.html" class="btn btn-c" style="width:auto;display:inline-block;padding:12px 24px;">🧁 Commander</a></p>';return;}
-var tot=0,h="";
-p.forEach(function(x,i){var s=x.price*x.qty;tot+=s;h+='<div class="pi"><div><div class="pn">'+x.name+'</div><div class="pd">'+x.qty+" × "+f(x.price)+'</div><button class="brm" onclick="rm('+i+')">&#10005; Retirer</button></div><span class="ps">'+f(s)+'</span></div>';});
-h+='<div class="gt"><span>Total estimé</span><span>'+f(tot)+'</span></div>';
-h+='<div class="pf"><h3>Vos informations</h3><div class="fnote">💬 Aucun paiement sur le site — lien SumUp envoyé après échange WhatsApp</div><div class="fgr"><div class="fg"><label>Prénom</label><input type="text" id="p1" placeholder="Prénom"/></div><div class="fg"><label>Nom</label><input type="text" id="p2" placeholder="Nom"/></div></div><div class="fg"><label>WhatsApp</label><input type="tel" id="p3" placeholder="0696 XX XX XX"/></div><div class="fg"><label>Date souhaitée</label><input type="date" id="p4"/></div><div class="fg"><label>Récupération</label><select id="p5"><option>📍 Retrait Vauclin</option><option>🚚 Livraison 7h30-19h30</option></select></div><div class="fg"><label>Précisions</label><textarea id="p6" placeholder="Allergies, adresse..."></textarea></div><button class="btn btn-wa" onclick="sWA()">&#128241; Envoyer sur WhatsApp</button></div>';
-el.innerHTML=h;
-}
-function rm(i){var p=JSON.parse(localStorage.getItem("panier")||"[]");p.splice(i,1);localStorage.setItem("panier",JSON.stringify(p));load();}
-function sWA(){
-var p=JSON.parse(localStorage.getItem("panier")||"[]");
-var pr=document.getElementById("p1").value;
-if(!pr){alert("Entrez votre prénom.");return;}
-var nom=pr+" "+document.getElementById("p2").value;
-var tot=0,det="";
-p.forEach(function(x){var s=x.price*x.qty;tot+=s;det+="• "+x.qty+"× "+x.name+" — "+f(x.price)+" × "+x.qty+" = "+f(s)+"
-";});
-var tel=document.getElementById("p3").value,dt=document.getElementById("p4").value,rc=document.getElementById("p5").value,mg=document.getElementById("p6").value;
-var txt="Bonjour Cicine ! 🧁
 
-━━━━━━━━
-🛒 MON PANIER
-━━━━━━━━
-"+det+"
-💰 TOTAL : "+f(tot)+"
-━━━━━━━━
-
-👤 "+nom.trim()+"
-";
-if(tel)txt+="📱 "+tel+"
-";
-if(dt)txt+="📅 "+dt+"
-";
-txt+="📍 "+rc+"
-";
-if(mg)txt+="💬 "+mg+"
-";
-txt+="
-Merci ! 😊";
-window.open("https://wa.me/596696111440?text="+encodeURIComponent(txt),"_blank");
+function fmtDate(d){
+  if(!d) return "";
+  var p=d.split("-");
+  return p[2]+"/"+p[1]+"/"+p[0];
 }
-load();
+
+function sauver(g){localStorage.setItem("groupes",JSON.stringify(g));}
+
+function supprimerGroupe(idx){
+  if(!confirm("Supprimer toute la commande de ce client ?")) return;
+  var g=JSON.parse(localStorage.getItem("groupes")||"[]");
+  g.splice(idx,1);
+  sauver(g);
+  render();
+}
+
+function supprimerItem(gIdx,iIdx){
+  var g=JSON.parse(localStorage.getItem("groupes")||"[]");
+  g[gIdx].items.splice(iIdx,1);
+  if(g[gIdx].items.length===0){g.splice(gIdx,1);}
+  else{g[gIdx].total=g[gIdx].items.reduce(function(s,x){return s+x.price*x.qty;},0);}
+  sauver(g);
+  render();
+}
+
+function envoyerTout(){
+  var g=JSON.parse(localStorage.getItem("groupes")||"[]");
+  if(!g.length){alert("Le panier est vide.");return;}
+
+  var msg="Bonjour Cicine ! 🧁\n\n";
+  var grandTotal=0;
+  for(var i=0;i<g.length;i++){
+    var gr=g[i];
+    msg+="━━━━━━━━━━━━━━━━━━\n";
+    msg+="🧑 "+gr.nom;
+    if(gr.date) msg+=" · 📅 "+fmtDate(gr.date);
+    msg+="\n";
+    msg+=gr.recup+"\n";
+    if(gr.tel) msg+="📱 "+gr.tel+"\n";
+    msg+="━━━━━━━━━━━━━━━━━━\n";
+    for(var j=0;j<gr.items.length;j++){
+      var it=gr.items[j];
+      var sub=it.price*it.qty;
+      msg+="• "+it.qty+"× "+it.name+" = "+f(sub)+"\n";
+    }
+    msg+="Sous-total : "+f(gr.total)+"\n";
+    if(gr.note) msg+="💬 "+gr.note+"\n";
+    msg+="\n";
+    grandTotal+=gr.total;
+  }
+  msg+="💰 TOTAL GÉNÉRAL : "+f(grandTotal)+"\n\nMerci ! 😊";
+  window.open("https://wa.me/596696111440?text="+encodeURIComponent(msg),"_blank");
+}
+
+function viderPanier(){
+  if(!confirm("Vider tout le panier ?")) return;
+  localStorage.removeItem("groupes");
+  render();
+}
+
+function render(){
+  var g=JSON.parse(localStorage.getItem("groupes")||"[]");
+  var el=document.getElementById("panierContent");
+
+  if(!g.length){
+    el.innerHTML='<div style="text-align:center;padding:30px 0;color:var(--doux);">'
+      +'<div style="font-size:2.5rem;margin-bottom:10px;">🛒</div>'
+      +'<p style="margin-bottom:16px;">Votre panier est vide.</p>'
+      +'<a href="commander.html" class="btn btn-c" style="display:inline-block;width:auto;padding:12px 28px;">🧁 Commander</a>'
+      +'</div>';
+    return;
+  }
+
+  var html='<div class="fnote">💬 Aucun paiement sur le site — lien SumUp envoyé après échange WhatsApp</div>';
+
+  var grandTotal=0;
+  for(var i=0;i<g.length;i++){
+    var gr=g[i];
+    grandTotal+=gr.total;
+    html+='<div class="groupe">';
+    html+='<div class="groupe-header">';
+    html+='<div>';
+    html+='<div class="groupe-nom">👤 '+gr.nom+'</div>';
+    var meta='';
+    if(gr.date) meta+='📅 '+fmtDate(gr.date)+'  ';
+    meta+=gr.recup;
+    if(gr.tel) meta+='  📱 '+gr.tel;
+    html+='<div class="groupe-meta">'+meta+'</div>';
+    html+='</div>';
+    html+='<button class="groupe-del" onclick="supprimerGroupe('+i+')">✕ Supprimer</button>';
+    html+='</div>';
+    html+='<div class="groupe-body">';
+    for(var j=0;j<gr.items.length;j++){
+      var it=gr.items[j];
+      var sub=it.price*it.qty;
+      html+='<div class="gi">'
+        +'<span>'+it.qty+'× '+it.name+'</span>'
+        +'<span style="display:flex;align-items:center;gap:6px;">'
+        +'<strong style="color:var(--caramel);">'+f(sub)+'</strong>'
+        +'<button class="gi-del" onclick="supprimerItem('+i+','+j+')">retirer</button>'
+        +'</span>'
+        +'</div>';
+    }
+    if(gr.note){
+      html+='<p style="font-size:.74rem;color:var(--doux);margin-top:6px;font-style:italic;">💬 '+gr.note+'</p>';
+    }
+    html+='<div class="gsub"><span>Sous-total</span><span>'+f(gr.total)+'</span></div>';
+    html+='</div></div>';
+  }
+
+  html+='<div class="total-general">'
+    +'<span>💰 Total général ('+g.length+' commande'+(g.length>1?'s':'')+')</span>'
+    +'<span>'+f(grandTotal)+'</span>'
+    +'</div>';
+
+  html+='<button class="btn btn-wa" onclick="envoyerTout()">📱 Envoyer tout sur WhatsApp</button>';
+  html+='<a href="commander.html" class="btn btn-b">➕ Ajouter une commande</a>';
+  html+='<button class="btn btn-o" onclick="viderPanier()" style="font-size:.8rem;padding:10px;">🗑️ Vider le panier</button>';
+
+  el.innerHTML=html;
+}
+
+render();
 </script>
+
 <footer>
-<div class="flogo">Les D&eacute;lices de Cicine</div>
-<div class="flinks">
-<a href="#" class="flink">📷 Instagram</a>
-<a href="#" class="flink">👍 Facebook</a>
-<a href="#" class="flink">🎵 Ticicine</a>
-<a href="https://wa.me/596696111440" class="flink" target="_blank">&#128172; WhatsApp</a>
-</div>
-<p>&#128205; Le Vauclin, Martinique &middot; 0696 11 14 40</p>
-<p>&copy; 2025 Les D&eacute;lices de Cicine &mdash; Fait avec &#10084;&#65039;</p>
+  <div class="flogo">Les Délices de Cicine</div>
+  <div class="flinks">
+    <a href="#" class="flink">📷 Instagram</a>
+    <a href="#" class="flink">👍 Facebook</a>
+    <a href="#" class="flink">🎵 Ticicine</a>
+    <a href="https://wa.me/596696111440" class="flink" target="_blank">💬 WhatsApp</a>
+  </div>
+  <p>📍 Le Vauclin, Martinique · 0696 11 14 40</p>
+  <p>© 2025 Les Délices de Cicine — Fait avec ❤️</p>
 </footer>
-</body></html>
+</body>
+</html>
