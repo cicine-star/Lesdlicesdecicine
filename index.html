@@ -35,6 +35,12 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 .sb{background:#fff;border:1px solid var(--bordure);border-radius:12px;padding:12px;text-align:center;}
 .sn{width:26px;height:26px;border-radius:50%;background:var(--caramel);color:#fff;font-weight:700;font-size:.75rem;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;}
 .sb p{font-size:.73rem;color:var(--doux);line-height:1.4;}
+.btn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:10px;}
+.btn-sq{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 6px;border-radius:14px;font-size:.68rem;font-weight:700;text-decoration:none;text-align:center;line-height:1.2;border:none;cursor:pointer;}
+.btn-sq-icon{font-size:1.5rem;}
+.sq-c{background:var(--caramel);color:#fff;}
+.sq-b{background:var(--brun);color:#fff;}
+.sq-o{background:#fff;color:var(--brun);border:1.5px solid var(--bordure);}
 @media(max-width:400px){.s3{grid-template-columns:1fr;}}
 </style>
 <title>Les D'lices de Cicine</title>
@@ -64,13 +70,15 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
     <div class="sb"><div class="sn">3</div><p>Réglez l'<strong>acompte</strong> puis récupérez ou livraison</p></div>
   </div>
   <div class="hdiv" style="margin-top:20px;"><hr/><span>♡</span><hr/><span>♡</span><hr/></div>
-  <a href="commander.html" class="btn btn-c">🧁 Commander</a>
-  <a href="devis.html" class="btn btn-b">✨ Demander un devis</a>
-  <a href="produits.html" class="btn btn-o">🛍️ Voir tous les produits</a>
-  <a href="paiement.html" class="btn btn-o">💳 Moyens de paiement</a>
-  <a href="realisations.html" class="btn btn-o">📸 Nos réalisations</a>
-  <a href="avis.html" class="btn btn-o">⭐ Avis clients</a>
-  <a href="apropos.html" class="btn btn-o">💕 À propos</a>
+  <div class="btn-grid">
+    <a href="commander.html" class="btn-sq sq-c"><span class="btn-sq-icon">🧁</span>Commander</a>
+    <a href="devis.html" class="btn-sq sq-b"><span class="btn-sq-icon">✨</span>Devis</a>
+    <a href="produits.html" class="btn-sq sq-o"><span class="btn-sq-icon">🛍️</span>Produits</a>
+    <a href="paiement.html" class="btn-sq sq-o"><span class="btn-sq-icon">💳</span>Paiement</a>
+    <a href="realisations.html" class="btn-sq sq-o"><span class="btn-sq-icon">📸</span>Réalisations</a>
+    <a href="avis.html" class="btn-sq sq-o"><span class="btn-sq-icon">⭐</span>Avis</a>
+    <a href="apropos.html" class="btn-sq sq-o"><span class="btn-sq-icon">💕</span>À propos</a>
+  </div>
 </div>
 <footer>
   <div class="flogo">Les D'lices de Cicine</div>
