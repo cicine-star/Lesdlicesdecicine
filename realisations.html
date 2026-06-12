@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
-<title>Réalisations — Les d'lices de Cicine</title>
+<title>Réalisations — Les D'lices de Cicine</title>
 <style>
 :root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--rose:#E8407A;--texte:#2A1A14;--doux:#6B4C42;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -16,7 +16,6 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .btn{display:block;width:100%;font-weight:700;font-size:.9rem;padding:14px;border-radius:40px;cursor:pointer;border:none;text-align:center;margin-bottom:10px;text-decoration:none;}
 .btn-c{background:var(--caramel);color:#fff;}
 .btn-wa{background:#25D366;color:#fff;}
-.btn-o{background:transparent;color:var(--brun);border:2px solid var(--brun);}
 .back{display:inline-flex;align-items:center;gap:5px;color:var(--caramel);font-weight:700;font-size:.82rem;text-decoration:none;margin-bottom:18px;}
 .title{font-family:"Dancing Script",cursive;font-size:2.2rem;color:var(--brun);margin-bottom:4px;}
 .sub{font-size:.84rem;color:var(--doux);margin-bottom:18px;}
@@ -32,10 +31,11 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 /* Gallery grid */
 .gallery-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
 .gcard{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;overflow:hidden;text-align:center;}
-.gcard-img{background:linear-gradient(135deg,var(--fond2),var(--carte));height:150px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden;}
+.gcard-photo{cursor:pointer;transition:opacity .15s;}
+.gcard-photo:hover{opacity:.88;}
+.gcard-img{background:linear-gradient(135deg,var(--fond2),var(--carte));height:160px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;overflow:hidden;}
 .gcard-img img{width:100%;height:100%;object-fit:cover;display:block;}
-.gcard-label{padding:10px 10px 4px;font-family:"Dancing Script",cursive;font-size:1.1rem;color:var(--brun);}
-.gcard-sub{font-size:.72rem;color:var(--doux);padding:0 10px 12px;line-height:1.4;}
+.gcard-label{padding:10px 10px 12px;font-family:"Dancing Script",cursive;font-size:1.1rem;color:var(--brun);}
 
 /* Social CTA */
 .social-cta{background:linear-gradient(135deg,var(--brun),#7A3B1E);border-radius:16px;padding:22px 18px;text-align:center;margin-bottom:20px;}
@@ -45,24 +45,24 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 .soc-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:30px;font-weight:700;font-size:.83rem;text-decoration:none;border:none;cursor:pointer;}
 .soc-insta{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
 .soc-fb{background:#1877F2;color:#fff;}
-.soc-tiktok{background:#010101;color:#fff;}
+.soc-snap{background:#FFFC00;color:#111;}
 .soc-wa{background:#25D366;color:#fff;}
-
-/* Category filter */
-.cat-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-.cat-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--bordure);background:#fff;color:var(--doux);font-size:.76rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
-.cat-btn.active{background:var(--rose);color:#fff;border-color:var(--rose);}
 
 /* Coming soon notice */
 .notice{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:20px 16px;text-align:center;margin-bottom:20px;}
 .notice-icon{font-size:2.5rem;margin-bottom:8px;}
 .notice h3{font-family:"Dancing Script",cursive;font-size:1.4rem;color:var(--brun);margin-bottom:6px;}
 .notice p{font-size:.81rem;color:var(--doux);line-height:1.6;}
+
+/* Lightbox */
+#lb{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+#lb img{max-width:95%;max-height:85vh;border-radius:10px;object-fit:contain;}
+#lb-close{color:#fff;font-size:.8rem;letter-spacing:.05em;opacity:.7;padding:6px 14px;border:1px solid rgba(255,255,255,.3);border-radius:20px;}
 </style>
 </head>
 <body>
 <nav>
-  <a class="nav-logo" href="index.html">Les d'lices de Cicine</a>
+  <a class="nav-logo" href="index.html">Les D'lices de Cicine</a>
   <a class="nav-panier" href="panier.html">🛒 Panier</a>
 </nav>
 
@@ -76,86 +76,90 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
     <h3>📸 Retrouvez toutes nos photos !</h3>
     <p>Suivez-nous sur nos réseaux pour voir toutes nos créations en temps réel — gâteaux, mignardises, box et bien plus encore.</p>
     <div class="social-btns">
-      <a href="#" class="soc-btn soc-insta" target="_blank" rel="noopener">
-        📷 Instagram — @lesdlicesdecicine
+      <a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="soc-btn soc-insta" target="_blank" rel="noopener">
+        📸 Instagram — @lesdelices_de_cicine
       </a>
-      <a href="#" class="soc-btn soc-fb" target="_blank" rel="noopener">
-        👍 Facebook — Les d'lices de Cicine
+      <a href="https://www.facebook.com/profile.php?id=61586132193455" class="soc-btn soc-fb" target="_blank" rel="noopener">
+        👍 Facebook — Les D'lices de Cicine
       </a>
-      <a href="#" class="soc-btn soc-tiktok" target="_blank" rel="noopener">
-        🎵 TikTok — @ticicine
+      <a href="https://snapchat.com/t/KKWM8AMZ" class="soc-btn soc-snap" target="_blank" rel="noopener">
+        👻 Snapchat
       </a>
     </div>
   </div>
 
-  <!-- Gallery categories -->
+  <!-- Gallery -->
   <h3 style="font-family:'Dancing Script',cursive;font-size:1.4rem;color:var(--brun);margin-bottom:10px;">Nos créations par catégorie</h3>
   <div class="hdiv"><hr/><span>♡</span><hr/></div>
 
   <div class="gallery-grid">
-    <div class="gcard">
+    <div class="gcard gcard-photo" onclick="openLb('photos/layer-cake.jpeg')">
       <div class="gcard-img"><img src="photos/layer-cake.jpeg" alt="Layer cake"/></div>
-      <div class="gcard-label">Layer cake</div>
-      <div class="gcard-sub">Gâteau d'anniversaire dès 42€</div>
+      <div class="gcard-label">Layer cake 🎂</div>
     </div>
-    <div class="gcard">
+    <div class="gcard gcard-photo" onclick="openLb('photos/bento-cake.jpeg')">
       <div class="gcard-img"><img src="photos/bento-cake.jpeg" alt="Bento cake"/></div>
-      <div class="gcard-label">Bento cake</div>
-      <div class="gcard-sub">Mini gâteau personnalisé dès 14€</div>
+      <div class="gcard-label">Bento cake 🎀</div>
     </div>
-    <div class="gcard">
+    <div class="gcard gcard-photo" onclick="openLb('photos/cupcakes.jpeg')">
       <div class="gcard-img"><img src="photos/cupcakes.jpeg" alt="Cupcakes"/></div>
-      <div class="gcard-label">Cupcakes</div>
-      <div class="gcard-sub">Dès 2,20€ pièce · Décoration sur mesure</div>
+      <div class="gcard-label">Cupcakes 🧁</div>
     </div>
-    <div class="gcard">
+    <div class="gcard gcard-photo" onclick="openLb('photos/box-decouverte.jpeg')">
       <div class="gcard-img"><img src="photos/box-decouverte.jpeg" alt="Box découverte"/></div>
-      <div class="gcard-label">Box découverte</div>
-      <div class="gcard-sub">Mignardises salées &amp; sucrées assorties</div>
+      <div class="gcard-label">Box découverte 📦</div>
     </div>
     <div class="gcard">
       <div class="gcard-img">🥐</div>
       <div class="gcard-label">Viennoiseries</div>
-      <div class="gcard-sub">Salées &amp; sucrées faites maison</div>
     </div>
     <div class="gcard">
       <div class="gcard-img">🥪</div>
       <div class="gcard-label">Mignardises salées</div>
-      <div class="gcard-sub">Roulés, allumettes, burgers, wraps…</div>
     </div>
     <div class="gcard">
       <div class="gcard-img">🍫</div>
       <div class="gcard-label">Chocolat maison</div>
-      <div class="gcard-sub">50cl à 5€ · 1L à 13€</div>
     </div>
     <div class="gcard">
       <div class="gcard-img">🍞</div>
       <div class="gcard-label">Pain au beurre</div>
-      <div class="gcard-sub">Nature &amp; pépite · 500g à partir de 7,50€</div>
     </div>
   </div>
 
-  <!-- Upcoming photos notice -->
+  <!-- Notice -->
   <div class="notice">
     <div class="notice-icon">📸</div>
     <h3>Galerie en cours d'enrichissement !</h3>
-    <p>D'autres photos arrivent bientôt. Retrouvez toutes nos créations en temps réel sur Instagram et Facebook.</p>
+    <p>D'autres photos arrivent bientôt. Retrouvez toutes nos créations en temps réel sur Instagram, Facebook et Snapchat.</p>
   </div>
 
   <a href="commander.html" class="btn btn-c">🧁 Commander maintenant</a>
   <a href="https://wa.me/596696111440" class="btn btn-wa" target="_blank" rel="noopener">💬 WhatsApp · 0696 11 14 40</a>
 </div>
 
+<!-- Lightbox -->
+<div id="lb" onclick="closeLb()">
+  <img id="lbImg" src="" alt=""/>
+  <span id="lb-close">✕ Appuyer pour fermer</span>
+</div>
+
+<script>
+function openLb(src){var lb=document.getElementById("lb");document.getElementById("lbImg").src=src;lb.style.display="flex";}
+function closeLb(){document.getElementById("lb").style.display="none";}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeLb();});
+</script>
+
 <footer>
-  <div class="flogo">Les d'lices de Cicine</div>
+  <div class="flogo">Les D'lices de Cicine</div>
   <div class="flinks">
-    <a href="#" class="flink">📷 Instagram</a>
-    <a href="#" class="flink">👍 Facebook</a>
-    <a href="#" class="flink">🎵 Ticicine</a>
+    <a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="flink" target="_blank" rel="noopener">📸 Instagram</a>
+    <a href="https://www.facebook.com/profile.php?id=61586132193455" class="flink" target="_blank" rel="noopener">👍 Facebook</a>
+    <a href="https://snapchat.com/t/KKWM8AMZ" class="flink" target="_blank" rel="noopener">👻 Snapchat</a>
     <a href="https://wa.me/596696111440" class="flink" target="_blank" rel="noopener">💬 WhatsApp</a>
   </div>
   <p>📍 Le Vauclin, Martinique · 0696 11 14 40</p>
-  <p>© 2025 Les d'lices de Cicine — Fait avec ❤️</p>
+  <p>© 2025 Les D'lices de Cicine — Fait avec ❤️</p>
 </footer>
 </body>
 </html>
