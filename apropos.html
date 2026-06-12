@@ -31,7 +31,8 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 
 /* Hero about */
 .about-hero{background:linear-gradient(140deg,var(--fond2),var(--carte));border-radius:18px;padding:28px 20px;text-align:center;margin-bottom:20px;border:1.5px solid var(--bordure);}
-.about-avatar{font-size:5rem;margin-bottom:12px;display:block;}
+.about-avatar{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--bordure);margin:0 auto 16px;display:block;animation:fl 3s ease-in-out infinite;}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .about-hero h2{font-family:"Dancing Script",cursive;font-size:1.7rem;color:var(--brun);margin-bottom:8px;}
 .about-hero p{font-size:.85rem;color:var(--doux);line-height:1.7;}
 .quote{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--caramel);margin:16px 0 0;display:block;}
@@ -80,7 +81,7 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 
   <!-- About hero -->
   <div class="about-hero">
-    <span class="about-avatar">👩‍🍳</span>
+    <img src="mascotte.png" class="about-avatar" alt="Cicine"/>
     <h2>Bonjour, moi c'est Cicine !</h2>
     <p>Passionnée de pâtisserie depuis toujours, je prépare chaque création avec amour dans ma cuisine au <strong>Vauclin, en Martinique</strong>. Des mignardises aux gâteaux d'anniversaire, chaque bouchée est pensée pour émerveiller et régaler.</p>
     <span class="quote">"Parce que chaque moment mérite un délice unique." ✨</span>
