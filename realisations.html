@@ -32,9 +32,10 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 /* Gallery grid */
 .gallery-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
 .gcard{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;overflow:hidden;text-align:center;}
-.gcard-img{background:linear-gradient(135deg,var(--fond2),var(--carte));height:130px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;}
-.gcard-label{padding:10px 10px 12px;font-family:"Dancing Script",cursive;font-size:1.1rem;color:var(--brun);}
-.gcard-sub{font-size:.72rem;color:var(--doux);padding-bottom:10px;line-height:1.4;}
+.gcard-img{background:linear-gradient(135deg,var(--fond2),var(--carte));height:150px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden;}
+.gcard-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.gcard-label{padding:10px 10px 4px;font-family:"Dancing Script",cursive;font-size:1.1rem;color:var(--brun);}
+.gcard-sub{font-size:.72rem;color:var(--doux);padding:0 10px 12px;line-height:1.4;}
 
 /* Social CTA */
 .social-cta{background:linear-gradient(135deg,var(--brun),#7A3B1E);border-radius:16px;padding:22px 18px;text-align:center;margin-bottom:20px;}
@@ -93,14 +94,24 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 
   <div class="gallery-grid">
     <div class="gcard">
-      <div class="gcard-img">🎂</div>
-      <div class="gcard-label">Gâteaux d'anniversaire</div>
-      <div class="gcard-sub">Layer cake dès 42€ · Traditionnel dès 21€</div>
+      <div class="gcard-img"><img src="photos/layer-cake.jpeg" alt="Layer cake"/></div>
+      <div class="gcard-label">Layer cake</div>
+      <div class="gcard-sub">Gâteau d'anniversaire dès 42€</div>
     </div>
     <div class="gcard">
-      <div class="gcard-img">🧁</div>
-      <div class="gcard-label">Cupcakes &amp; Bento</div>
-      <div class="gcard-sub">Cupcakes dès 2,20€ · Bento cake dès 14€</div>
+      <div class="gcard-img"><img src="photos/bento-cake.jpeg" alt="Bento cake"/></div>
+      <div class="gcard-label">Bento cake</div>
+      <div class="gcard-sub">Mini gâteau personnalisé dès 14€</div>
+    </div>
+    <div class="gcard">
+      <div class="gcard-img"><img src="photos/cupcakes.jpeg" alt="Cupcakes"/></div>
+      <div class="gcard-label">Cupcakes</div>
+      <div class="gcard-sub">Dès 2,20€ pièce · Décoration sur mesure</div>
+    </div>
+    <div class="gcard">
+      <div class="gcard-img"><img src="photos/box-decouverte.jpeg" alt="Box découverte"/></div>
+      <div class="gcard-label">Box découverte</div>
+      <div class="gcard-sub">Mignardises salées &amp; sucrées assorties</div>
     </div>
     <div class="gcard">
       <div class="gcard-img">🥐</div>
@@ -111,16 +122,6 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
       <div class="gcard-img">🥪</div>
       <div class="gcard-label">Mignardises salées</div>
       <div class="gcard-sub">Roulés, allumettes, burgers, wraps…</div>
-    </div>
-    <div class="gcard">
-      <div class="gcard-img">🍰</div>
-      <div class="gcard-label">Mignardises sucrées</div>
-      <div class="gcard-sub">Choux, éclairs, tartelettes, verrines…</div>
-    </div>
-    <div class="gcard">
-      <div class="gcard-img">📦</div>
-      <div class="gcard-label">Les Délibox</div>
-      <div class="gcard-sub">Box Découverte, Brunch, Anniversaire…</div>
     </div>
     <div class="gcard">
       <div class="gcard-img">🍫</div>
@@ -137,8 +138,8 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
   <!-- Upcoming photos notice -->
   <div class="notice">
     <div class="notice-icon">📸</div>
-    <h3>Photos bientôt disponibles !</h3>
-    <p>Nous enrichissons régulièrement cette galerie. En attendant, retrouvez toutes nos créations en temps réel sur Instagram et Facebook.</p>
+    <h3>Galerie en cours d'enrichissement !</h3>
+    <p>D'autres photos arrivent bientôt. Retrouvez toutes nos créations en temps réel sur Instagram et Facebook.</p>
   </div>
 
   <a href="commander.html" class="btn btn-c">🧁 Commander maintenant</a>
