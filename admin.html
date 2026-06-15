@@ -119,7 +119,11 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       🧁 Les Douceurs de Cicine
       <span class="badge-pending" id="navBadge" style="display:none"></span>
     </div>
-    <button class="nav-logout" onclick="logout()">Déconnexion</button>
+    <div style="display:flex;align-items:center;gap:7px;">
+      <a href="caisse.html" style="color:rgba(255,255,255,.85);font-size:.72rem;font-weight:700;text-decoration:none;padding:5px 11px;border-radius:20px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);">🛒 Caisse</a>
+      <a href="stocks.html" style="color:rgba(255,255,255,.85);font-size:.72rem;font-weight:700;text-decoration:none;padding:5px 11px;border-radius:20px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);">📦 Stocks</a>
+      <button class="nav-logout" onclick="logout()">Déconnexion</button>
+    </div>
   </nav>
   <div class="wrap">
     <div class="stats-bar">
