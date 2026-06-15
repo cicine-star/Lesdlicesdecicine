@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧁</text></svg>"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon.png"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Les Douceurs de Cicine"/>
+<meta name="theme-color" content="#5C2E0E"/>
+<title>Initialisation stocks — Les Douceurs de Cicine</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Lato",sans-serif;background:#FBE9E7;color:#2A1A14;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;border-radius:20px;padding:36px 28px;max-width:420px;width:100%;box-shadow:0 4px 24px rgba(92,46,14,.12);text-align:center;}
+.logo{font-size:2.8rem;margin-bottom:8px;}
+h1{font-size:1.2rem;color:#5C2E0E;font-weight:700;margin-bottom:4px;}
+.sub{font-size:.85rem;color:#6B4C42;margin-bottom:24px;}
+.progress-wrap{background:#EDD5D2;border-radius:20px;height:12px;overflow:hidden;margin:16px 0 8px;}
+.progress-bar{height:100%;background:#E8407A;border-radius:20px;transition:width .3s ease;width:0%;}
+.pct{font-size:.78rem;color:#6B4C42;margin-bottom:20px;}
+#log{text-align:left;background:#FBE9E7;border-radius:12px;padding:14px;font-size:.75rem;color:#5C2E0E;max-height:200px;overflow-y:auto;line-height:1.8;}
+.done-msg{display:none;margin-top:20px;}
+.done-msg p{font-size:.9rem;color:#16a34a;font-weight:700;margin-bottom:12px;}
+.btn{display:inline-block;background:#5C2E0E;color:#fff;border-radius:30px;padding:12px 28px;font-weight:700;font-size:.9rem;text-decoration:none;margin-top:8px;}
+.err{color:#dc2626;font-weight:700;font-size:.85rem;margin-top:12px;display:none;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">🧁</div>
+  <h1>Initialisation des stocks</h1>
+  <p class="sub">Ajout de toutes tes matières premières et emballages…</p>
+  <div class="progress-wrap"><div class="progress-bar" id="bar"></div></div>
+  <div class="pct" id="pct">0 / 47</div>
+  <div id="log"></div>
+  <div class="done-msg" id="doneMsgOk">
+    <p>✅ Tous les articles ont été ajoutés !</p>
+    <a href="stocks.html" class="btn">Voir mes stocks →</a>
+  </div>
+  <div class="err" id="errMsg"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+var SB_URL="https://uousxxvrgcyvyaahdtda.supabase.co";
+var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
+var sb=supabase.createClient(SB_URL,SB_KEY);
+
+var MP=[
+  {name:"Farine T55 (pain, viennoiseries)",unit:"kg",current_qty:5,min_qty:2,unit_cost:1.20,category:"matiere_premiere"},
+  {name:"Farine T45 (pâtisseries, gâteaux)",unit:"kg",current_qty:3,min_qty:1.5,unit_cost:1.50,category:"matiere_premiere"},
+  {name:"Maïzena",unit:"g",current_qty:200,min_qty:50,unit_cost:0.012,category:"matiere_premiere"},
+  {name:"Beurre doux",unit:"kg",current_qty:2,min_qty:0.5,unit_cost:8.50,category:"matiere_premiere"},
+  {name:"Huile végétale",unit:"L",current_qty:1,min_qty:0.5,unit_cost:2.50,category:"matiere_premiere"},
+  {name:"Sucre en poudre",unit:"kg",current_qty:3,min_qty:1,unit_cost:1.10,category:"matiere_premiere"},
+  {name:"Sucre glace",unit:"kg",current_qty:1,min_qty:0.3,unit_cost:1.80,category:"matiere_premiere"},
+  {name:"Lait entier",unit:"L",current_qty:4,min_qty:1,unit_cost:1.30,category:"matiere_premiere"},
+  {name:"Crème liquide entière",unit:"L",current_qty:1,min_qty:0.5,unit_cost:2.50,category:"matiere_premiere"},
+  {name:"Lait de coco",unit:"L",current_qty:1,min_qty:0.5,unit_cost:2.00,category:"matiere_premiere"},
+  {name:"Œufs",unit:"unité",current_qty:30,min_qty:12,unit_cost:0.25,category:"matiere_premiere"},
+  {name:"Levure boulangère sèche",unit:"g",current_qty:200,min_qty:50,unit_cost:0.02,category:"matiere_premiere"},
+  {name:"Levure chimique",unit:"g",current_qty:100,min_qty:30,unit_cost:0.025,category:"matiere_premiere"},
+  {name:"Sel fin",unit:"g",current_qty:500,min_qty:100,unit_cost:0.002,category:"matiere_premiere"},
+  {name:"Chocolat noir (tablettes)",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:12.00,category:"matiere_premiere"},
+  {name:"Pépites de chocolat",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:10.00,category:"matiere_premiere"},
+  {name:"Cacao en poudre",unit:"g",current_qty:200,min_qty:50,unit_cost:0.03,category:"matiere_premiere"},
+  {name:"Extrait de vanille",unit:"mL",current_qty:100,min_qty:30,unit_cost:0.08,category:"matiere_premiere"},
+  {name:"Cannelle en poudre",unit:"g",current_qty:50,min_qty:15,unit_cost:0.05,category:"matiere_premiere"},
+  {name:"Confiture de goyave",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:5.00,category:"matiere_premiere"},
+  {name:"Bananes",unit:"kg",current_qty:1,min_qty:0.5,unit_cost:1.50,category:"matiere_premiere"},
+  {name:"Pommes",unit:"kg",current_qty:1,min_qty:0.5,unit_cost:2.00,category:"matiere_premiere"},
+  {name:"Raisins secs",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:4.50,category:"matiere_premiere"},
+  {name:"Noix de coco râpée",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:4.00,category:"matiere_premiere"},
+  {name:"Crème de marrons",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:6.00,category:"matiere_premiere"},
+  {name:"Fraises",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:4.00,category:"matiere_premiere"},
+  {name:"Biscuits Oreo",unit:"paquet",current_qty:3,min_qty:1,unit_cost:2.50,category:"matiere_premiere"},
+  {name:"Kinder Bueno",unit:"unité",current_qty:10,min_qty:4,unit_cost:0.70,category:"matiere_premiere"},
+  {name:"Saucisses cocktail",unit:"unité",current_qty:40,min_qty:15,unit_cost:0.40,category:"matiere_premiere"},
+  {name:"Jambon tranché",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:9.00,category:"matiere_premiere"},
+  {name:"Fromage râpé (Emmental)",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:8.00,category:"matiere_premiere"},
+  {name:"Fromage à tartiner",unit:"kg",current_qty:0.2,min_qty:0.1,unit_cost:7.00,category:"matiere_premiere"},
+  {name:"Bœuf haché",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:9.00,category:"matiere_premiere"},
+  {name:"Thon en boîte",unit:"boîte",current_qty:4,min_qty:2,unit_cost:1.80,category:"matiere_premiere"},
+  {name:"Sauce tomate",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:2.00,category:"matiere_premiere"},
+];
+
+var EMB=[
+  {name:"Boîtes individuelles S (mignardises)",unit:"unité",current_qty:100,min_qty:30,unit_cost:0.35,category:"emballage"},
+  {name:"Boîtes M (4-6 pièces)",unit:"unité",current_qty:50,min_qty:15,unit_cost:0.55,category:"emballage"},
+  {name:"Boîtes L (Box Anniversaire / Brunch)",unit:"unité",current_qty:20,min_qty:5,unit_cost:1.20,category:"emballage"},
+  {name:"Sacs kraft S",unit:"unité",current_qty:100,min_qty:30,unit_cost:0.12,category:"emballage"},
+  {name:"Sacs kraft M",unit:"unité",current_qty:50,min_qty:15,unit_cost:0.18,category:"emballage"},
+  {name:"Verrines transparentes (pots 100mL)",unit:"unité",current_qty:40,min_qty:15,unit_cost:0.25,category:"emballage"},
+  {name:"Barquettes transparentes",unit:"unité",current_qty:50,min_qty:15,unit_cost:0.20,category:"emballage"},
+  {name:"Film alimentaire",unit:"m",current_qty:30,min_qty:10,unit_cost:0.05,category:"emballage"},
+  {name:"Papier sulfurisé",unit:"m",current_qty:20,min_qty:5,unit_cost:0.08,category:"emballage"},
+  {name:"Étiquettes personnalisées (logo Cicine)",unit:"unité",current_qty:200,min_qty:50,unit_cost:0.08,category:"emballage"},
+  {name:"Rubans décoratifs",unit:"m",current_qty:10,min_qty:3,unit_cost:0.30,category:"emballage"},
+  {name:"Sachets zip transparents",unit:"unité",current_qty:50,min_qty:20,unit_cost:0.10,category:"emballage"},
+];
+
+var ALL=MP.concat(EMB);
+var done=0;
+var total=ALL.length;
+
+function log(msg){
+  var el=document.getElementById("log");
+  el.innerHTML+='<div>'+msg+'</div>';
+  el.scrollTop=el.scrollHeight;
+}
+
+function setProgress(n){
+  done=n;
+  var pct=Math.round(n/total*100);
+  document.getElementById("bar").style.width=pct+"%";
+  document.getElementById("pct").textContent=n+" / "+total;
+}
+
+async function run(){
+  log("🔍 Vérification de la base de données…");
+
+  // Check if table exists and if items already present
+  var {data:existing,error:existErr}=await sb.from("stock_items").select("id").limit(1);
+  if(existErr&&existErr.code==="42P01"){
+    document.getElementById("errMsg").style.display="block";
+    document.getElementById("errMsg").textContent="❌ La table stock_items n'existe pas encore. Crée-la d'abord dans Supabase (voir stocks.html pour le SQL).";
+    return;
+  }
+  if(existing&&existing.length>0){
+    log("⚠️ Des articles existent déjà. Ajout des nouveaux uniquement…");
+    var {data:names}=await sb.from("stock_items").select("name");
+    var existingNames=new Set((names||[]).map(function(r){return r.name;}));
+    ALL=ALL.filter(function(item){return !existingNames.has(item.name);});
+    total=ALL.length;
+    if(total===0){
+      log("✅ Tous les articles sont déjà présents !");
+      document.getElementById("doneMsgOk").style.display="block";
+      return;
+    }
+    log("➕ "+total+" article(s) à ajouter…");
+    document.getElementById("pct").textContent="0 / "+total;
+  } else {
+    log("✅ Table vide — ajout de "+total+" articles…");
+  }
+
+  for(var i=0;i<ALL.length;i++){
+    var item=ALL[i];
+    var {error}=await sb.from("stock_items").insert({
+      name:item.name,
+      unit:item.unit,
+      current_qty:item.current_qty,
+      min_qty:item.min_qty,
+      unit_cost:item.unit_cost,
+      category:item.category
+    });
+    if(error){
+      log("❌ Erreur sur "+item.name+": "+error.message);
+    } else {
+      var icon=item.category==="emballage"?"📦":"🌾";
+      log(icon+" "+item.name+" — OK");
+    }
+    setProgress(i+1);
+    await new Promise(function(r){setTimeout(r,120);});
+  }
+
+  log("🎉 Terminé !");
+  document.getElementById("doneMsgOk").style.display="block";
+}
+
+window.addEventListener("load",run);
+</script>
+</body>
+</html>
