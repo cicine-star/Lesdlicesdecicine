@@ -253,34 +253,66 @@ create policy "allow_all_stock_movements" on public.stock_movements
   for all using (true) with check (true);`;
 
 var DEFAULT_ITEMS_MP=[
-  {name:"Farine de blé",unit:"kg",current_qty:5,min_qty:2,unit_cost:1.20},
-  {name:"Sucre",unit:"kg",current_qty:3,min_qty:1,unit_cost:1.10},
-  {name:"Beurre",unit:"kg",current_qty:2,min_qty:0.5,unit_cost:8.50},
+  /* ── Farines & féculents ── */
+  {name:"Farine T55 (pain, viennoiseries)",unit:"kg",current_qty:5,min_qty:2,unit_cost:1.20},
+  {name:"Farine T45 (pâtisseries, gâteaux)",unit:"kg",current_qty:3,min_qty:1.5,unit_cost:1.50},
+  {name:"Maïzena",unit:"g",current_qty:200,min_qty:50,unit_cost:0.012},
+  /* ── Matières grasses ── */
+  {name:"Beurre doux",unit:"kg",current_qty:2,min_qty:0.5,unit_cost:8.50},
+  {name:"Huile végétale",unit:"L",current_qty:1,min_qty:0.5,unit_cost:2.50},
+  /* ── Sucres ── */
+  {name:"Sucre en poudre",unit:"kg",current_qty:3,min_qty:1,unit_cost:1.10},
+  {name:"Sucre glace",unit:"kg",current_qty:1,min_qty:0.3,unit_cost:1.80},
+  /* ── Produits laitiers ── */
+  {name:"Lait entier",unit:"L",current_qty:4,min_qty:1,unit_cost:1.30},
+  {name:"Crème liquide entière",unit:"L",current_qty:1,min_qty:0.5,unit_cost:2.50},
+  {name:"Lait de coco",unit:"L",current_qty:1,min_qty:0.5,unit_cost:2.00},
+  /* ── Œufs ── */
   {name:"Œufs",unit:"unité",current_qty:30,min_qty:12,unit_cost:0.25},
-  {name:"Lait",unit:"L",current_qty:4,min_qty:1,unit_cost:1.30},
-  {name:"Crème fraîche",unit:"L",current_qty:1,min_qty:0.5,unit_cost:3.50},
-  {name:"Levure boulangère",unit:"g",current_qty:200,min_qty:50,unit_cost:0.02},
-  {name:"Chocolat noir",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:12.00},
-  {name:"Sel",unit:"g",current_qty:500,min_qty:100,unit_cost:0.003},
-  {name:"Vanille",unit:"g",current_qty:20,min_qty:5,unit_cost:0.50},
+  /* ── Levures & agents levants ── */
+  {name:"Levure boulangère sèche",unit:"g",current_qty:200,min_qty:50,unit_cost:0.02},
+  {name:"Levure chimique",unit:"g",current_qty:100,min_qty:30,unit_cost:0.025},
+  {name:"Sel fin",unit:"g",current_qty:500,min_qty:100,unit_cost:0.002},
+  /* ── Chocolat & cacao ── */
+  {name:"Chocolat noir (tablettes)",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:12.00},
   {name:"Pépites de chocolat",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:10.00},
-  {name:"Noix de coco râpée",unit:"kg",current_qty:0.2,min_qty:0.1,unit_cost:5.00},
-  {name:"Saucisses",unit:"unité",current_qty:20,min_qty:10,unit_cost:0.60},
-  {name:"Jambon",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:9.00},
-  {name:"Fromage râpé",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:8.00},
+  {name:"Cacao en poudre",unit:"g",current_qty:200,min_qty:50,unit_cost:0.03},
+  /* ── Arômes & épices ── */
+  {name:"Extrait de vanille",unit:"mL",current_qty:100,min_qty:30,unit_cost:0.08},
+  {name:"Cannelle en poudre",unit:"g",current_qty:50,min_qty:15,unit_cost:0.05},
+  /* ── Fruits & garnitures sucrées ── */
+  {name:"Confiture de goyave",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:5.00},
+  {name:"Bananes",unit:"kg",current_qty:1,min_qty:0.5,unit_cost:1.50},
+  {name:"Pommes",unit:"kg",current_qty:1,min_qty:0.5,unit_cost:2.00},
+  {name:"Raisins secs",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:4.50},
+  {name:"Noix de coco râpée",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:4.00},
+  {name:"Crème de marrons",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:6.00},
+  {name:"Fraises",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:4.00},
+  {name:"Biscuits Oreo",unit:"paquet",current_qty:3,min_qty:1,unit_cost:2.50},
+  {name:"Kinder Bueno",unit:"unité",current_qty:10,min_qty:4,unit_cost:0.70},
+  /* ── Produits salés ── */
+  {name:"Saucisses cocktail",unit:"unité",current_qty:40,min_qty:15,unit_cost:0.40},
+  {name:"Jambon tranché",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:9.00},
+  {name:"Fromage râpé (Emmental)",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:8.00},
+  {name:"Fromage à tartiner",unit:"kg",current_qty:0.2,min_qty:0.1,unit_cost:7.00},
+  {name:"Bœuf haché",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:9.00},
+  {name:"Thon en boîte",unit:"boîte",current_qty:4,min_qty:2,unit_cost:1.80},
+  {name:"Sauce tomate",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:2.00},
 ];
 
 var DEFAULT_ITEMS_EMB=[
-  {name:"Boîtes à gâteaux S",unit:"unité",current_qty:50,min_qty:20,unit_cost:0.35},
-  {name:"Boîtes à gâteaux M",unit:"unité",current_qty:30,min_qty:10,unit_cost:0.55},
-  {name:"Boîtes à gâteaux L",unit:"unité",current_qty:20,min_qty:5,unit_cost:0.80},
-  {name:"Sacs kraft",unit:"unité",current_qty:100,min_qty:30,unit_cost:0.12},
-  {name:"Barquettes plastique",unit:"unité",current_qty:50,min_qty:15,unit_cost:0.20},
+  {name:"Boîtes individuelles S (mignardises)",unit:"unité",current_qty:100,min_qty:30,unit_cost:0.35},
+  {name:"Boîtes M (4-6 pièces)",unit:"unité",current_qty:50,min_qty:15,unit_cost:0.55},
+  {name:"Boîtes L (Box Anniversaire / Brunch)",unit:"unité",current_qty:20,min_qty:5,unit_cost:1.20},
+  {name:"Sacs kraft S",unit:"unité",current_qty:100,min_qty:30,unit_cost:0.12},
+  {name:"Sacs kraft M",unit:"unité",current_qty:50,min_qty:15,unit_cost:0.18},
+  {name:"Verrines transparentes (pots 100mL)",unit:"unité",current_qty:40,min_qty:15,unit_cost:0.25},
+  {name:"Barquettes transparentes",unit:"unité",current_qty:50,min_qty:15,unit_cost:0.20},
   {name:"Film alimentaire",unit:"m",current_qty:30,min_qty:10,unit_cost:0.05},
   {name:"Papier sulfurisé",unit:"m",current_qty:20,min_qty:5,unit_cost:0.08},
-  {name:"Étiquettes autocollantes",unit:"unité",current_qty:200,min_qty:50,unit_cost:0.05},
-  {name:"Piques décoratives",unit:"unité",current_qty:50,min_qty:20,unit_cost:0.10},
+  {name:"Étiquettes personnalisées (logo Cicine)",unit:"unité",current_qty:200,min_qty:50,unit_cost:0.08},
   {name:"Rubans décoratifs",unit:"m",current_qty:10,min_qty:3,unit_cost:0.30},
+  {name:"Sachets zip transparents",unit:"unité",current_qty:50,min_qty:20,unit_cost:0.10},
 ];
 
 function euro(v){return parseFloat(v||0).toFixed(2).replace(".",",")+"€";}
