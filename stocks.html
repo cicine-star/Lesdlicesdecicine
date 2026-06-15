@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<title>Stocks — Les Douceurs de Cicine</title>
+<style>
+:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;--vert:#16a34a;--rouge:#dc2626;--orange:#ea580c;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);font-size:16px;min-height:100vh;}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--fond);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-card{background:#fff;border:1.5px solid var(--bordure);border-radius:20px;padding:40px 32px;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 32px rgba(92,46,14,.13);}
+.login-card h1{font-family:"Dancing Script",cursive;font-size:2rem;color:var(--brun);margin-bottom:6px;}
+.login-card p{font-size:.84rem;color:var(--doux);margin-bottom:24px;}
+.login-card input{width:100%;padding:12px 14px;border:1.5px solid var(--bordure);border-radius:10px;font-size:.95rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);margin-bottom:12px;}
+.login-card input:focus{border-color:var(--caramel);}
+.login-card button{width:100%;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:40px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.login-err{color:#dc2626;font-size:.8rem;margin-top:8px;display:none;}
+#app{display:none;}
+
+/* NAV */
+.top-nav{position:sticky;top:0;z-index:100;background:var(--brun);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:11px 14px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.nav-logo{font-family:"Dancing Script",cursive;font-size:1.2rem;color:#f0e0d6;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-link{color:rgba(255,255,255,.85);font-size:.7rem;font-weight:700;text-decoration:none;padding:5px 10px;border-radius:20px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);}
+.nav-logout{background:none;color:rgba(255,255,255,.65);border:none;font-size:.7rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+
+/* ALERT BANNER */
+.alert-banner{background:#fff3cd;border-bottom:2px solid #ffc107;padding:10px 14px;display:none;align-items:center;gap:8px;}
+.alert-banner.show{display:flex;}
+.alert-icon{font-size:1.1rem;}
+.alert-text{font-size:.8rem;color:#856404;font-weight:700;flex:1;}
+.alert-count{background:#ffc107;color:#1a1a00;border-radius:20px;font-size:.7rem;font-weight:700;padding:2px 8px;}
+
+/* STATS */
+.stats-bar{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:12px 14px 0;}
+.stat-card{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:10px 12px;text-align:center;}
+.stat-n{font-size:1.4rem;font-weight:700;color:var(--brun);}
+.stat-l{font-size:.62rem;color:var(--doux);margin-top:2px;}
+
+/* CATEGORY TABS */
+.cat-tabs{display:flex;border-bottom:1.5px solid var(--bordure);background:#fff;margin-top:10px;}
+.cat-tab{flex:1;padding:11px 8px;border:none;background:none;font-family:"Lato",sans-serif;font-size:.82rem;font-weight:700;color:var(--doux);cursor:pointer;border-bottom:3px solid transparent;transition:.15s;}
+.cat-tab.active{color:var(--brun);border-bottom-color:var(--caramel);}
+
+/* WRAP */
+.wrap{max-width:860px;margin:0 auto;padding:14px 14px 100px;}
+
+/* SEARCH BAR */
+.search-bar{display:flex;gap:8px;margin-bottom:12px;align-items:center;}
+.search-inp{flex:1;padding:9px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.84rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:#fff;}
+.search-inp:focus{border-color:var(--caramel);}
+.btn-add{padding:9px 16px;background:var(--brun);color:#fff;border:none;border-radius:30px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;white-space:nowrap;}
+.btn-add:hover{background:var(--c2);}
+
+/* ITEM CARDS */
+.items-grid{display:flex;flex-direction:column;gap:8px;}
+.item-card{background:#fff;border:1.5px solid var(--bordure);border-radius:13px;padding:13px 14px;position:relative;}
+.item-card.low-stock{border-color:#ffc107;background:#fffbeb;}
+.item-card.out-stock{border-color:#dc2626;background:#fff5f5;}
+.item-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.item-name{font-weight:700;font-size:.9rem;color:var(--texte);line-height:1.3;}
+.item-meta{font-size:.7rem;color:var(--doux);margin-top:2px;}
+.item-badges{display:flex;gap:5px;align-items:center;flex-shrink:0;margin-left:8px;}
+.badge-ok{background:#d1fae5;color:#065f46;border-radius:20px;font-size:.62rem;font-weight:700;padding:2px 8px;}
+.badge-low{background:#fef9c3;color:#854d0e;border-radius:20px;font-size:.62rem;font-weight:700;padding:2px 8px;}
+.badge-out{background:#fee2e2;color:#991b1b;border-radius:20px;font-size:.62rem;font-weight:700;padding:2px 8px;}
+.item-body{display:flex;align-items:center;gap:12px;}
+.qty-display{flex:1;}
+.qty-current{font-size:1.8rem;font-weight:700;color:var(--brun);line-height:1;}
+.qty-unit{font-size:.72rem;color:var(--doux);margin-left:3px;}
+.qty-min{font-size:.68rem;color:var(--doux);margin-top:2px;}
+.item-progress{flex:1;height:6px;background:var(--fond2);border-radius:10px;overflow:hidden;margin-top:4px;}
+.item-progress-bar{height:100%;border-radius:10px;transition:width .3s;}
+.progress-ok{background:var(--vert);}
+.progress-low{background:#ffc107;}
+.progress-out{background:var(--rouge);}
+.item-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.qty-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--bordure);background:var(--fond);color:var(--brun);font-size:1.1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.qty-btn:hover{background:var(--fond2);}
+.qty-btn.plus{background:var(--brun);color:#fff;border-color:var(--brun);}
+.qty-btn.plus:hover{background:var(--c2);}
+.btn-icon{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--bordure);background:var(--fond);color:var(--doux);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.btn-icon:hover{background:var(--fond2);}
+.cost-tag{font-size:.68rem;color:var(--doux);background:var(--fond2);border-radius:20px;padding:2px 8px;margin-top:6px;display:inline-block;}
+.empty-state{text-align:center;padding:40px 20px;font-size:.88rem;color:var(--doux);font-style:italic;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-sheet{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 36px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;}
+.modal-handle{width:38px;height:4px;background:var(--bordure);border-radius:4px;margin:0 auto 16px;}
+.modal-title{font-family:"Dancing Script",cursive;font-size:1.4rem;color:var(--brun);margin-bottom:16px;}
+.fg{margin-bottom:11px;}
+.fg label{display:block;font-size:.75rem;font-weight:700;color:var(--texte);margin-bottom:4px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.88rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--caramel);}
+.fgr{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.modal-btns{display:flex;gap:8px;margin-top:4px;}
+.btn-annuler{flex:1;padding:13px;background:#fff;color:var(--brun);border:2px solid var(--bordure);border-radius:40px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.btn-valider{flex:2;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:40px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.btn-valider:hover{background:var(--c2);}
+.btn-delete{padding:13px;background:#fee2e2;color:#991b1b;border:2px solid #fca5a5;border-radius:40px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.mv-type-row{display:flex;gap:8px;margin-bottom:12px;}
+.mv-type-btn{flex:1;padding:10px 6px;border:2px solid var(--bordure);border-radius:10px;background:#fff;font-size:.75rem;font-weight:700;color:var(--doux);cursor:pointer;text-align:center;}
+.mv-type-btn.active-entree{border-color:var(--vert);background:#d1fae5;color:#065f46;}
+.mv-type-btn.active-sortie{border-color:var(--rouge);background:#fee2e2;color:#991b1b;}
+.mv-type-btn.active-inventaire{border-color:var(--caramel);background:var(--fond2);color:var(--brun);}
+.mvt-list{margin-top:14px;}
+.mvt-title{font-size:.78rem;font-weight:700;color:var(--texte);margin-bottom:8px;}
+.mvt-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed var(--bordure);font-size:.75rem;}
+.mvt-row:last-child{border-bottom:none;}
+.mvt-type-entree{color:var(--vert);}
+.mvt-type-sortie{color:var(--rouge);}
+.mvt-type-inventaire{color:var(--caramel);}
+.mvt-date{color:var(--doux);font-size:.65rem;}
+.mvt-empty{font-size:.75rem;color:var(--doux);font-style:italic;text-align:center;padding:10px 0;}
+
+/* SETUP GUIDE */
+.setup-guide{background:#fff3cd;border:1.5px solid #ffc107;border-radius:12px;padding:14px 16px;margin:14px 0;}
+.setup-guide h3{font-size:.88rem;font-weight:700;color:#856404;margin-bottom:6px;}
+.setup-guide p{font-size:.78rem;color:#6b5303;margin-bottom:8px;line-height:1.5;}
+.setup-code{background:#1e1e1e;color:#d4edda;border-radius:8px;padding:10px;font-size:.65rem;font-family:monospace;overflow-x:auto;white-space:pre;margin-bottom:8px;max-height:200px;overflow-y:auto;}
+.btn-copy-sql{padding:7px 14px;background:#ffc107;color:#1a1a00;border:none;border-radius:20px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+
+/* TOAST */
+.toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);background:var(--brun);color:#fff;padding:10px 20px;border-radius:12px;font-size:.84rem;font-weight:700;z-index:9998;box-shadow:0 4px 18px rgba(0,0,0,.22);animation:slideDown .3s ease;white-space:nowrap;pointer-events:none;}
+@keyframes slideDown{from{opacity:0;top:50px;}to{opacity:1;top:68px;}}
+
+@media(min-width:600px){
+  .items-grid{display:grid;grid-template-columns:repeat(2,1fr);}
+  .stats-bar{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <h1>📦 Les Douceurs de Cicine</h1>
+    <p>Gestion des stocks — accès réservé</p>
+    <input type="password" id="pwInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button onclick="doLogin()">Se connecter</button>
+    <p class="login-err" id="loginErr">Mot de passe incorrect.</p>
+  </div>
+</div>
+
+<div id="app">
+  <nav class="top-nav">
+    <div class="nav-logo">📦 Stocks</div>
+    <div class="nav-links">
+      <a href="caisse.html" class="nav-link">🛒 Caisse</a>
+      <a href="admin.html" class="nav-link">⚙️ Admin</a>
+      <button class="nav-logout" onclick="logout()">Déco.</button>
+    </div>
+  </nav>
+
+  <div class="alert-banner" id="alertBanner">
+    <span class="alert-icon">⚠️</span>
+    <span class="alert-text" id="alertText">Stocks bas</span>
+    <span class="alert-count" id="alertCount">0</span>
+  </div>
+
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-card"><div class="stat-n" id="statTotal">0</div><div class="stat-l">Articles total</div></div>
+    <div class="stat-card"><div class="stat-n" id="statLow">0</div><div class="stat-l">⚠️ Stocks bas</div></div>
+    <div class="stat-card stat-val"><div class="stat-n" id="statValMP">0,00€</div><div class="stat-l">Valeur mat. prem.</div></div>
+    <div class="stat-card"><div class="stat-n" id="statValEmb">0,00€</div><div class="stat-l">Valeur emballages</div></div>
+  </div>
+
+  <div class="cat-tabs">
+    <button class="cat-tab active" onclick="setTab('matiere_premiere')">🌾 Matières premières</button>
+    <button class="cat-tab" onclick="setTab('emballage')">📦 Emballages</button>
+  </div>
+
+  <div class="wrap">
+    <div id="setupGuide" style="display:none;">
+      <div class="setup-guide">
+        <h3>⚙️ Configuration initiale requise</h3>
+        <p>Exécutez ce SQL dans votre tableau de bord Supabase (SQL Editor) pour créer les tables de gestion des stocks :</p>
+        <div class="setup-code" id="setupSQL"></div>
+        <button class="btn-copy-sql" onclick="copySQL()">📋 Copier le SQL</button>
+        <p style="margin-top:10px;font-size:.75rem;color:#856404;">Après exécution, rechargez la page.</p>
+      </div>
+    </div>
+
+    <div id="mainContent">
+      <div class="search-bar">
+        <input class="search-inp" id="searchInp" type="text" placeholder="Rechercher un article..." oninput="renderItems()"/>
+        <button class="btn-add" onclick="openAddModal()">+ Ajouter</button>
+      </div>
+      <div class="items-grid" id="itemsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+var SB_URL="https://uousxxvrgcyvyaahdtda.supabase.co";
+var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
+var sb=supabase.createClient(SB_URL,SB_KEY);
+
+var items=[];
+var activeTab="matiere_premiere";
+var setupNeeded=false;
+
+var SETUP_SQL=`-- À exécuter dans Supabase > SQL Editor
+
+-- Table des articles en stock
+create table if not exists public.stock_items (
+  id uuid default gen_random_uuid() primary key,
+  name text not null,
+  category text not null default 'matiere_premiere',
+  unit text not null default 'kg',
+  current_qty decimal(10,3) not null default 0,
+  min_qty decimal(10,3) not null default 0,
+  unit_cost decimal(10,2) default 0,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+alter table public.stock_items enable row level security;
+create policy "allow_all_stock_items" on public.stock_items
+  for all using (true) with check (true);
+
+-- Table des mouvements de stock
+create table if not exists public.stock_movements (
+  id uuid default gen_random_uuid() primary key,
+  item_id uuid references public.stock_items(id) on delete cascade,
+  movement_type text not null default 'entree',
+  qty decimal(10,3) not null,
+  note text,
+  created_at timestamptz default now()
+);
+alter table public.stock_movements enable row level security;
+create policy "allow_all_stock_movements" on public.stock_movements
+  for all using (true) with check (true);`;
+
+var DEFAULT_ITEMS_MP=[
+  {name:"Farine de blé",unit:"kg",current_qty:5,min_qty:2,unit_cost:1.20},
+  {name:"Sucre",unit:"kg",current_qty:3,min_qty:1,unit_cost:1.10},
+  {name:"Beurre",unit:"kg",current_qty:2,min_qty:0.5,unit_cost:8.50},
+  {name:"Œufs",unit:"unité",current_qty:30,min_qty:12,unit_cost:0.25},
+  {name:"Lait",unit:"L",current_qty:4,min_qty:1,unit_cost:1.30},
+  {name:"Crème fraîche",unit:"L",current_qty:1,min_qty:0.5,unit_cost:3.50},
+  {name:"Levure boulangère",unit:"g",current_qty:200,min_qty:50,unit_cost:0.02},
+  {name:"Chocolat noir",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:12.00},
+  {name:"Sel",unit:"g",current_qty:500,min_qty:100,unit_cost:0.003},
+  {name:"Vanille",unit:"g",current_qty:20,min_qty:5,unit_cost:0.50},
+  {name:"Pépites de chocolat",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:10.00},
+  {name:"Noix de coco râpée",unit:"kg",current_qty:0.2,min_qty:0.1,unit_cost:5.00},
+  {name:"Saucisses",unit:"unité",current_qty:20,min_qty:10,unit_cost:0.60},
+  {name:"Jambon",unit:"kg",current_qty:0.5,min_qty:0.2,unit_cost:9.00},
+  {name:"Fromage râpé",unit:"kg",current_qty:0.3,min_qty:0.1,unit_cost:8.00},
+];
+
+var DEFAULT_ITEMS_EMB=[
+  {name:"Boîtes à gâteaux S",unit:"unité",current_qty:50,min_qty:20,unit_cost:0.35},
+  {name:"Boîtes à gâteaux M",unit:"unité",current_qty:30,min_qty:10,unit_cost:0.55},
+  {name:"Boîtes à gâteaux L",unit:"unité",current_qty:20,min_qty:5,unit_cost:0.80},
+  {name:"Sacs kraft",unit:"unité",current_qty:100,min_qty:30,unit_cost:0.12},
+  {name:"Barquettes plastique",unit:"unité",current_qty:50,min_qty:15,unit_cost:0.20},
+  {name:"Film alimentaire",unit:"m",current_qty:30,min_qty:10,unit_cost:0.05},
+  {name:"Papier sulfurisé",unit:"m",current_qty:20,min_qty:5,unit_cost:0.08},
+  {name:"Étiquettes autocollantes",unit:"unité",current_qty:200,min_qty:50,unit_cost:0.05},
+  {name:"Piques décoratives",unit:"unité",current_qty:50,min_qty:20,unit_cost:0.10},
+  {name:"Rubans décoratifs",unit:"m",current_qty:10,min_qty:3,unit_cost:0.30},
+];
+
+function euro(v){return parseFloat(v||0).toFixed(2).replace(".",",")+"€";}
+function fmtQty(v,u){var n=parseFloat(v||0);return(n%1===0?n.toFixed(0):n.toFixed(n<10?2:1))+" "+u;}
+
+function doLogin(){
+  if(document.getElementById("pwInput").value==="Cicine2025"){
+    localStorage.setItem("admin_auth","ok");
+    document.getElementById("login-screen").style.display="none";
+    document.getElementById("app").style.display="block";
+    init();
+  } else {
+    document.getElementById("loginErr").style.display="block";
+  }
+}
+
+function logout(){
+  localStorage.removeItem("admin_auth");
+  location.reload();
+}
+
+async function init(){
+  if(localStorage.getItem("admin_auth")==="ok"){
+    document.getElementById("login-screen").style.display="none";
+    document.getElementById("app").style.display="block";
+  }
+  await loadItems();
+}
+
+async function loadItems(){
+  try{
+    var {data,error}=await sb.from("stock_items").select("*").order("name");
+    if(error){
+      if(error.code==="42P01"){showSetup();return;}
+      throw error;
+    }
+    items=data||[];
+    if(items.length===0){
+      /* Offer to seed default items */
+    }
+    updateStats();
+    renderItems();
+  }catch(e){
+    console.error(e);
+    showToast("Erreur de chargement : "+e.message);
+  }
+}
+
+function showSetup(){
+  setupNeeded=true;
+  document.getElementById("setupGuide").style.display="block";
+  document.getElementById("mainContent").style.display="none";
+  document.getElementById("setupSQL").textContent=SETUP_SQL;
+}
+
+function setTab(tab){
+  activeTab=tab;
+  document.querySelectorAll(".cat-tab").forEach((t,i)=>{
+    t.classList.toggle("active",["matiere_premiere","emballage"][i]===tab);
+  });
+  renderItems();
+}
+
+function updateStats(){
+  var mp=items.filter(i=>i.category==="matiere_premiere");
+  var emb=items.filter(i=>i.category==="emballage");
+  var lowCount=items.filter(i=>parseFloat(i.current_qty)<=parseFloat(i.min_qty)).length;
+  document.getElementById("statTotal").textContent=items.length;
+  document.getElementById("statLow").textContent=lowCount;
+  var valMP=mp.reduce((s,i)=>s+parseFloat(i.current_qty||0)*parseFloat(i.unit_cost||0),0);
+  var valEmb=emb.reduce((s,i)=>s+parseFloat(i.current_qty||0)*parseFloat(i.unit_cost||0),0);
+  document.getElementById("statValMP").textContent=euro(valMP);
+  document.getElementById("statValEmb").textContent=euro(valEmb);
+  var banner=document.getElementById("alertBanner");
+  if(lowCount>0){
+    banner.classList.add("show");
+    var names=items.filter(i=>parseFloat(i.current_qty)<=parseFloat(i.min_qty)).slice(0,3).map(i=>i.name).join(", ");
+    document.getElementById("alertText").textContent="Stock bas : "+names+(lowCount>3?" ...":"");
+    document.getElementById("alertCount").textContent=lowCount+" article"+(lowCount>1?"s":"");
+  } else {
+    banner.classList.remove("show");
+  }
+}
+
+function renderItems(){
+  var q=(document.getElementById("searchInp").value||"").toLowerCase().trim();
+  var list=items.filter(i=>i.category===activeTab&&(!q||i.name.toLowerCase().includes(q)));
+  if(list.length===0){
+    document.getElementById("itemsGrid").innerHTML=`<div class="empty-state">${q?"Aucun résultat pour « "+q+" »":"Aucun article dans cette catégorie<br><br><button onclick=\"openAddModal()\" style=\"padding:10px 20px;background:var(--brun);color:#fff;border:none;border-radius:30px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;\">+ Ajouter un article</button>"}</div>`;
+    return;
+  }
+  var html=list.map(item=>{
+    var cur=parseFloat(item.current_qty||0);
+    var mn=parseFloat(item.min_qty||0);
+    var pct=mn>0?Math.min(100,Math.round(cur/mn*100)):100;
+    var status=cur<=0?"out":cur<=mn?"low":"ok";
+    var badgeHtml=status==="ok"?`<span class="badge-ok">✅ OK</span>`:status==="low"?`<span class="badge-low">⚠️ Bas</span>`:`<span class="badge-out">🔴 Épuisé</span>`;
+    var progClass=status==="ok"?"progress-ok":status==="low"?"progress-low":"progress-out";
+    var costHtml=parseFloat(item.unit_cost||0)>0?`<div class="cost-tag">${euro(parseFloat(item.unit_cost))}/${item.unit} · Valeur : ${euro(cur*parseFloat(item.unit_cost))}</div>`:"";
+    return `<div class="item-card ${status==="low"?"low-stock":status==="out"?"out-stock":""}">
+      <div class="item-head">
+        <div>
+          <div class="item-name">${item.name}</div>
+          <div class="item-meta">Min. : ${fmtQty(item.min_qty,item.unit)}</div>
+        </div>
+        <div class="item-badges">
+          ${badgeHtml}
+          <button class="btn-icon" onclick="openEditModal('${item.id}')" title="Modifier">✏️</button>
+          <button class="btn-icon" onclick="openHistModal('${item.id}')" title="Historique">📋</button>
+        </div>
+      </div>
+      <div class="item-body">
+        <div class="qty-display">
+          <span class="qty-current">${parseFloat(item.current_qty||0)%1===0?parseInt(item.current_qty||0):parseFloat(item.current_qty||0).toFixed(2)}</span>
+          <span class="qty-unit">${item.unit}</span>
+          <div class="item-progress"><div class="item-progress-bar ${progClass}" style="width:${pct}%"></div></div>
+        </div>
+        <div class="item-actions">
+          <button class="qty-btn" onclick="openAdjModal('${item.id}','sortie')" title="Retirer du stock">−</button>
+          <button class="qty-btn plus" onclick="openAdjModal('${item.id}','entree')" title="Ajouter au stock">+</button>
+        </div>
+      </div>
+      ${costHtml}
+    </div>`;
+  }).join("");
+  document.getElementById("itemsGrid").innerHTML=html;
+}
+
+/* ---- MODALS ---- */
+function openModal(content){
+  document.getElementById("modalContent").innerHTML=content;
+  document.getElementById("modal").classList.add("open");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("open");
+}
+
+window.addEventListener("click",e=>{
+  if(e.target===document.getElementById("modal"))closeModal();
+});
+
+/* ADD ITEM */
+function openAddModal(){
+  openModal(`
+    <div class="modal-title">+ Nouvel article</div>
+    <div class="fg"><label>Nom de l'article *</label><input id="fName" type="text" placeholder="Ex: Farine de blé"/></div>
+    <div class="fg"><label>Catégorie</label>
+      <select id="fCat">
+        <option value="matiere_premiere"${activeTab==="matiere_premiere"?" selected":""}>🌾 Matière première</option>
+        <option value="emballage"${activeTab==="emballage"?" selected":""}>📦 Emballage</option>
+      </select>
+    </div>
+    <div class="fgr">
+      <div class="fg"><label>Unité *</label>
+        <select id="fUnit">
+          <option value="kg">kg</option>
+          <option value="g">g</option>
+          <option value="L">L</option>
+          <option value="cl">cl</option>
+          <option value="unité">unité</option>
+          <option value="m">m</option>
+          <option value="pièce">pièce</option>
+        </select>
+      </div>
+      <div class="fg"><label>Prix unitaire (€)</label><input id="fCost" type="number" step="0.01" min="0" placeholder="0,00"/></div>
+    </div>
+    <div class="fgr">
+      <div class="fg"><label>Quantité actuelle *</label><input id="fQty" type="number" step="0.001" min="0" placeholder="0" inputmode="decimal"/></div>
+      <div class="fg"><label>Seuil d'alerte *</label><input id="fMin" type="number" step="0.001" min="0" placeholder="0" inputmode="decimal"/></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-annuler" onclick="closeModal()">Annuler</button>
+      <button class="btn-valider" onclick="addItem()">Ajouter</button>
+    </div>
+    <div style="margin-top:16px;border-top:1px dashed var(--bordure);padding-top:14px;">
+      <div style="font-size:.75rem;font-weight:700;color:var(--texte);margin-bottom:8px;">📋 Ou importer les articles par défaut :</div>
+      <button onclick="seedDefaults()" style="width:100%;padding:10px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:10px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">🌱 Importer les articles prédéfinis</button>
+    </div>`);
+}
+
+async function addItem(){
+  var name=document.getElementById("fName").value.trim();
+  var cat=document.getElementById("fCat").value;
+  var unit=document.getElementById("fUnit").value;
+  var qty=parseFloat(document.getElementById("fQty").value)||0;
+  var min=parseFloat(document.getElementById("fMin").value)||0;
+  var cost=parseFloat(document.getElementById("fCost").value)||0;
+  if(!name){showToast("Nom obligatoire");return;}
+  try{
+    var {error}=await sb.from("stock_items").insert({name,category:cat,unit,current_qty:qty,min_qty:min,unit_cost:cost});
+    if(error)throw error;
+    showToast("Article ajouté !");
+    closeModal();
+    await loadItems();
+  }catch(e){showToast("Erreur : "+e.message);}
+}
+
+/* EDIT ITEM */
+function openEditModal(id){
+  var item=items.find(i=>i.id===id);
+  if(!item)return;
+  openModal(`
+    <div class="modal-title">✏️ Modifier l'article</div>
+    <div class="fg"><label>Nom *</label><input id="eName" type="text" value="${item.name.replace(/"/g,"&quot;")}"/></div>
+    <div class="fg"><label>Catégorie</label>
+      <select id="eCat">
+        <option value="matiere_premiere"${item.category==="matiere_premiere"?" selected":""}>🌾 Matière première</option>
+        <option value="emballage"${item.category==="emballage"?" selected":""}>📦 Emballage</option>
+      </select>
+    </div>
+    <div class="fgr">
+      <div class="fg"><label>Unité</label>
+        <select id="eUnit">
+          ${["kg","g","L","cl","unité","m","pièce"].map(u=>`<option${u===item.unit?" selected":""}>${u}</option>`).join("")}
+        </select>
+      </div>
+      <div class="fg"><label>Prix unitaire (€)</label><input id="eCost" type="number" step="0.01" min="0" value="${parseFloat(item.unit_cost||0).toFixed(2)}"/></div>
+    </div>
+    <div class="fg"><label>Seuil d'alerte</label><input id="eMin" type="number" step="0.001" min="0" value="${parseFloat(item.min_qty||0)}"/></div>
+    <div class="modal-btns">
+      <button class="btn-delete" onclick="deleteItem('${id}')">🗑️</button>
+      <button class="btn-annuler" onclick="closeModal()">Annuler</button>
+      <button class="btn-valider" onclick="saveEdit('${id}')">Enregistrer</button>
+    </div>`);
+}
+
+async function saveEdit(id){
+  var name=document.getElementById("eName").value.trim();
+  if(!name){showToast("Nom obligatoire");return;}
+  try{
+    var {error}=await sb.from("stock_items").update({
+      name,
+      category:document.getElementById("eCat").value,
+      unit:document.getElementById("eUnit").value,
+      min_qty:parseFloat(document.getElementById("eMin").value)||0,
+      unit_cost:parseFloat(document.getElementById("eCost").value)||0,
+      updated_at:new Date().toISOString()
+    }).eq("id",id);
+    if(error)throw error;
+    showToast("Article modifié !");
+    closeModal();
+    await loadItems();
+  }catch(e){showToast("Erreur : "+e.message);}
+}
+
+async function deleteItem(id){
+  if(!confirm("Supprimer cet article et tout son historique ?"))return;
+  try{
+    var {error}=await sb.from("stock_items").delete().eq("id",id);
+    if(error)throw error;
+    showToast("Article supprimé");
+    closeModal();
+    await loadItems();
+  }catch(e){showToast("Erreur : "+e.message);}
+}
+
+/* ADJUST STOCK */
+var adjType="entree";
+
+function openAdjModal(id,type){
+  var item=items.find(i=>i.id===id);
+  if(!item)return;
+  adjType=type||"entree";
+  openModal(`
+    <div class="modal-title">📊 Ajuster le stock</div>
+    <div style="font-weight:700;font-size:.9rem;color:var(--brun);margin-bottom:12px;">${item.name} — actuellement : ${fmtQty(item.current_qty,item.unit)}</div>
+    <div class="mv-type-row">
+      <button class="mv-type-btn${adjType==="entree"?" active-entree":""}" onclick="setAdjType('entree','${id}')">📥 Entrée</button>
+      <button class="mv-type-btn${adjType==="sortie"?" active-sortie":""}" onclick="setAdjType('sortie','${id}')">📤 Sortie</button>
+      <button class="mv-type-btn${adjType==="inventaire"?" active-inventaire":""}" onclick="setAdjType('inventaire','${id}')">📋 Inventaire</button>
+    </div>
+    <div class="fg">
+      <label id="adjQtyLabel">${adjType==="inventaire"?"Nouvelle quantité totale ("+item.unit+")":"Quantité ("+item.unit+")"} *</label>
+      <input id="adjQty" type="number" step="0.001" min="0" placeholder="0" inputmode="decimal"/>
+    </div>
+    <div class="fg"><label>Note (optionnel)</label><input id="adjNote" type="text" placeholder="Ex: Achat marché, Gâteau commande Dupont..."/></div>
+    <div class="modal-btns">
+      <button class="btn-annuler" onclick="closeModal()">Annuler</button>
+      <button class="btn-valider" onclick="saveAdj('${id}')">Enregistrer</button>
+    </div>`);
+}
+
+function setAdjType(t,id){
+  adjType=t;
+  openAdjModal(id,t);
+}
+
+async function saveAdj(id){
+  var item=items.find(i=>i.id===id);
+  var qty=parseFloat(document.getElementById("adjQty").value);
+  var note=document.getElementById("adjNote").value.trim()||null;
+  if(isNaN(qty)||qty<0){showToast("Quantité invalide");return;}
+  var cur=parseFloat(item.current_qty||0);
+  var newQty;
+  if(adjType==="entree") newQty=cur+qty;
+  else if(adjType==="sortie"){
+    if(qty>cur){showToast("Quantité supérieure au stock disponible");return;}
+    newQty=cur-qty;
+  } else {
+    newQty=qty;
+  }
+  newQty=Math.round(newQty*1000)/1000;
+  try{
+    var {error:e1}=await sb.from("stock_movements").insert({item_id:id,movement_type:adjType,qty,note});
+    if(e1)throw e1;
+    var {error:e2}=await sb.from("stock_items").update({current_qty:newQty,updated_at:new Date().toISOString()}).eq("id",id);
+    if(e2)throw e2;
+    showToast(adjType==="entree"?"Stock ajouté !":adjType==="sortie"?"Stock retiré !":"Inventaire enregistré !");
+    closeModal();
+    await loadItems();
+  }catch(e){showToast("Erreur : "+e.message);}
+}
+
+/* HISTORY MODAL */
+async function openHistModal(id){
+  var item=items.find(i=>i.id===id);
+  if(!item)return;
+  openModal(`<div class="modal-title">📋 Historique</div><div style="font-weight:700;color:var(--brun);margin-bottom:12px;">${item.name}</div><div style="font-size:.8rem;color:var(--doux);">Chargement...</div>`);
+  try{
+    var {data,error}=await sb.from("stock_movements").select("*").eq("item_id",id).order("created_at",{ascending:false}).limit(30);
+    if(error)throw error;
+    var typeLabel={entree:"📥 Entrée",sortie:"📤 Sortie",inventaire:"📋 Inventaire"};
+    var typeClass={entree:"mvt-type-entree",sortie:"mvt-type-sortie",inventaire:"mvt-type-inventaire"};
+    var mvtHtml=(data||[]).length===0?`<div class="mvt-empty">Aucun mouvement enregistré</div>`:
+      (data||[]).map(m=>{
+        var d=new Date(m.created_at);
+        var dd=d.toLocaleDateString("fr-FR")+" "+d.getHours().toString().padStart(2,"0")+":"+d.getMinutes().toString().padStart(2,"0");
+        var sign=m.movement_type==="entree"?"+":m.movement_type==="sortie"?"-":"=";
+        return `<div class="mvt-row">
+          <span class="${typeClass[m.movement_type]||""}">${typeLabel[m.movement_type]||m.movement_type}<br><span class="mvt-date">${dd}</span></span>
+          <span style="font-weight:700;">${sign}${fmtQty(Math.abs(m.qty),item.unit)}</span>
+          <span style="font-size:.7rem;color:var(--doux);max-width:100px;text-align:right;">${m.note||""}</span>
+        </div>`;
+      }).join("");
+    document.getElementById("modalContent").innerHTML=`
+      <div class="modal-title">📋 Historique</div>
+      <div style="font-weight:700;color:var(--brun);margin-bottom:4px;">${item.name}</div>
+      <div style="font-size:.78rem;color:var(--doux);margin-bottom:12px;">Stock actuel : ${fmtQty(item.current_qty,item.unit)}</div>
+      <div class="mvt-list"><div class="mvt-title">30 derniers mouvements</div>${mvtHtml}</div>
+      <div style="margin-top:14px;"><button class="btn-valider" onclick="openAdjModal('${id}')">+ Nouveau mouvement</button></div>`;
+  }catch(e){showToast("Erreur : "+e.message);}
+}
+
+/* SEED DEFAULTS */
+async function seedDefaults(){
+  var defaultCat=activeTab==="matiere_premiere"?DEFAULT_ITEMS_MP:DEFAULT_ITEMS_EMB;
+  var toInsert=defaultCat.map(d=>({...d,category:activeTab}));
+  try{
+    var {error}=await sb.from("stock_items").insert(toInsert);
+    if(error)throw error;
+    showToast("Articles importés avec succès !");
+    closeModal();
+    await loadItems();
+  }catch(e){showToast("Erreur : "+e.message);}
+}
+
+function copySQL(){
+  navigator.clipboard.writeText(SETUP_SQL).then(()=>showToast("SQL copié !")).catch(()=>showToast("Copiez manuellement le texte ci-dessus"));
+}
+
+function showToast(msg){
+  var el=document.createElement("div");
+  el.className="toast";
+  el.textContent=msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),3200);
+}
+
+init();
+</script>
+</body>
+</html>
