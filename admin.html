@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<title>Admin — Les Douceurs de Cicine</title>
+<style>
+:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);font-size:16px;min-height:100vh;}
+#login-screen{position:fixed;inset:0;background:var(--fond);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-card{background:#fff;border:1.5px solid var(--bordure);border-radius:20px;padding:40px 32px;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 32px rgba(92,46,14,.13);}
+.login-card h1{font-family:"Dancing Script",cursive;font-size:2.1rem;color:var(--brun);margin-bottom:6px;}
+.login-card p{font-size:.84rem;color:var(--doux);margin-bottom:24px;}
+.login-card input{width:100%;padding:12px 14px;border:1.5px solid var(--bordure);border-radius:10px;font-size:.95rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);margin-bottom:12px;}
+.login-card input:focus{border-color:var(--caramel);}
+.login-card button{width:100%;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:40px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.login-card button:hover{background:var(--c2);}
+.login-err{color:#dc2626;font-size:.8rem;margin-top:8px;display:none;}
+#dashboard{display:none;}
+.admin-nav{position:sticky;top:0;z-index:100;background:var(--brun);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.admin-nav-logo{font-family:"Dancing Script",cursive;font-size:1.35rem;color:#f0e0d6;display:flex;align-items:center;gap:10px;}
+.badge-pending{background:var(--fuchsia);color:#fff;border-radius:30px;padding:2px 10px;font-size:.72rem;font-weight:700;font-family:"Lato",sans-serif;}
+.nav-logout{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:30px;padding:7px 15px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.nav-logout:hover{background:rgba(255,255,255,.25);}
+.wrap{max-width:860px;margin:0 auto;padding:20px 14px 80px;}
+.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.stat-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:14px 10px;text-align:center;}
+.stat-n{font-size:2rem;font-weight:700;color:var(--brun);line-height:1;}
+.stat-l{font-size:.72rem;color:var(--doux);margin-top:4px;}
+.filters{margin-bottom:6px;}
+.filter-row{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;margin-bottom:6px;}
+.filter-row::-webkit-scrollbar{display:none;}
+.ftab{flex-shrink:0;padding:7px 14px;border-radius:30px;border:1.5px solid var(--bordure);background:#fff;font-size:.78rem;font-weight:700;color:var(--doux);cursor:pointer;white-space:nowrap;}
+.ftab.active{background:var(--brun);color:#fff;border-color:var(--brun);}
+.orders-list{display:flex;flex-direction:column;gap:12px;margin-bottom:32px;}
+.order-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(92,46,14,.06);}
+.oc-head{background:var(--fond2);padding:12px 14px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--bordure);}
+.oc-date{font-weight:700;font-size:.82rem;color:var(--brun);}
+.badge{display:inline-block;border-radius:20px;padding:3px 10px;font-size:.68rem;font-weight:700;}
+.badge-livraison{background:#dbeafe;color:#1e40af;}
+.badge-recup{background:#d1fae5;color:#065f46;}
+.oc-client{font-size:.85rem;font-weight:700;color:var(--texte);margin-left:auto;}
+.oc-phone{font-size:.75rem;color:var(--doux);}
+.status-label{font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:20px;}
+.sl-pending{background:#fef9c3;color:#854d0e;}
+.sl-confirmed{background:#dbeafe;color:#1e40af;}
+.sl-ready{background:#f3e8ff;color:#6b21a8;}
+.sl-done{background:#d1fae5;color:#065f46;}
+.sl-cancelled{background:#fee2e2;color:#991b1b;}
+.oc-body{padding:14px;}
+.items-list{font-size:.8rem;margin-bottom:8px;}
+.item-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed var(--bordure);}
+.item-row:last-child{border-bottom:none;}
+.oc-total{display:flex;justify-content:space-between;font-weight:700;font-size:.88rem;margin:6px 0 4px;}
+.oc-acompte{font-size:.78rem;color:var(--fuchsia);font-weight:700;margin-bottom:8px;}
+.oc-addr{font-size:.78rem;color:var(--doux);background:var(--fond);border-radius:8px;padding:6px 10px;margin-bottom:8px;}
+.oc-note{font-size:.78rem;color:var(--doux);font-style:italic;background:var(--carte);border-left:3px solid var(--caramel);padding:5px 9px;border-radius:0 7px 7px 0;margin-bottom:8px;}
+.oc-actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.act-btn{padding:7px 13px;border-radius:30px;border:none;font-size:.73rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.act-confirm{background:#dbeafe;color:#1e40af;}
+.act-ready{background:#f3e8ff;color:#6b21a8;}
+.act-done{background:#d1fae5;color:#065f46;}
+.act-cancel{background:#fee2e2;color:#991b1b;}
+.act-wa{background:#25D366;color:#fff;}
+.oc-ts{font-size:.68rem;color:#aaa;margin-top:6px;}
+.admin-note-row{display:flex;gap:6px;margin-top:8px;}
+.admin-note-row input{flex:1;padding:7px 10px;border:1.5px solid var(--bordure);border-radius:8px;font-size:.78rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);}
+.admin-note-row input:focus{border-color:var(--caramel);}
+.admin-note-row button{padding:7px 12px;background:var(--caramel);color:#fff;border:none;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;white-space:nowrap;}
+.section-title{font-family:"Dancing Script",cursive;font-size:1.5rem;color:var(--brun);margin-bottom:14px;}
+.cal-wrap{background:#fff;border:1.5px solid var(--bordure);border-radius:16px;padding:16px;margin-bottom:40px;}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cal-nav span{font-family:"Dancing Script",cursive;font-size:1.2rem;color:var(--brun);text-transform:capitalize;}
+.cal-arrow{background:var(--fond2);border:1px solid var(--bordure);border-radius:8px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;color:var(--brun);}
+.cal-arrow:hover{background:var(--fond);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-head{text-align:center;font-size:.65rem;font-weight:700;color:var(--doux);padding:4px 0;}
+.cal-day{text-align:center;padding:8px 4px;border-radius:9px;font-size:.8rem;cursor:pointer;border:1.5px solid transparent;position:relative;min-height:40px;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+.cal-day.past{color:#ccc;cursor:default;}
+.cal-day.today{border-color:var(--caramel);font-weight:700;color:var(--caramel);}
+.cal-day.blocked{background:#fee2e2;color:#dc2626;cursor:pointer;}
+.cal-day.has-orders .dot{width:6px;height:6px;background:var(--caramel);border-radius:50%;margin-top:2px;}
+.cal-day:not(.past):not(.blocked):not(.empty):hover{background:var(--fond2);}
+.cal-day.empty{cursor:default;}
+.notif-banner{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--brun);color:#fff;padding:13px 22px;border-radius:12px;font-size:.88rem;font-weight:700;z-index:9998;box-shadow:0 4px 18px rgba(0,0,0,.25);animation:slideDown .35s ease;white-space:nowrap;}
+@keyframes slideDown{from{opacity:0;top:50px;}to{opacity:1;top:70px;}}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9990;display:none;}
+.modal-backdrop.open{display:block;}
+.bottom-sheet{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 36px;z-index:9991;transform:translateY(100%);transition:transform .3s ease;max-width:600px;margin:0 auto;}
+.bottom-sheet.open{transform:translateY(0);}
+.bs-handle{width:40px;height:4px;background:var(--bordure);border-radius:4px;margin:0 auto 16px;}
+.bs-title{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--brun);margin-bottom:14px;}
+.bs-label{font-size:.78rem;font-weight:700;color:var(--texte);margin-bottom:5px;display:block;}
+.bs-select{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.84rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);margin-bottom:12px;}
+.bs-input{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.84rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);margin-bottom:16px;}
+.bs-btn-block{width:100%;padding:13px;background:#dc2626;color:#fff;border:none;border-radius:40px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.bs-btn-unblock{width:100%;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:40px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.bs-note-info{font-size:.78rem;color:var(--doux);margin-bottom:14px;background:var(--fond2);padding:8px 12px;border-radius:8px;}
+.empty-orders{text-align:center;padding:32px 16px;font-size:.88rem;color:var(--doux);font-style:italic;}
+@media(max-width:500px){.stats-bar{grid-template-columns:1fr 1fr;}.oc-actions{gap:4px;}.act-btn{font-size:.68rem;padding:6px 10px;}}
+</style>
+</head>
+<body>
+<div id="login-screen">
+  <div class="login-card">
+    <h1>Les Douceurs de Cicine</h1>
+    <p>Espace administration — accès réservé</p>
+    <input type="password" id="pwInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button onclick="doLogin()">Se connecter</button>
+    <p class="login-err" id="loginErr">Mot de passe incorrect.</p>
+  </div>
+</div>
+
+<div id="dashboard">
+  <nav class="admin-nav">
+    <div class="admin-nav-logo">
+      🧁 Les Douceurs de Cicine
+      <span class="badge-pending" id="navBadge" style="display:none"></span>
+    </div>
+    <button class="nav-logout" onclick="logout()">Déconnexion</button>
+  </nav>
+  <div class="wrap">
+    <div class="stats-bar">
+      <div class="stat-card"><div class="stat-n" id="statPending">0</div><div class="stat-l">En attente</div></div>
+      <div class="stat-card"><div class="stat-n" id="statToday">0</div><div class="stat-l">Aujourd'hui</div></div>
+      <div class="stat-card"><div class="stat-n" id="statWeek">0</div><div class="stat-l">Cette semaine</div></div>
+    </div>
+    <div class="filters">
+      <div class="filter-row" id="typeFilters">
+        <div class="ftab active" onclick="setTypeFilter(this,'')">Toutes</div>
+        <div class="ftab" onclick="setTypeFilter(this,'livraison')">🚚 Livraison</div>
+        <div class="ftab" onclick="setTypeFilter(this,'recuperation')">🏠 Récupération</div>
+      </div>
+      <div class="filter-row" id="statusFilters">
+        <div class="ftab active" onclick="setStatusFilter(this,'')">Tous statuts</div>
+        <div class="ftab" onclick="setStatusFilter(this,'pending')">⏳ En attente</div>
+        <div class="ftab" onclick="setStatusFilter(this,'confirmed')">✅ Confirmées</div>
+        <div class="ftab" onclick="setStatusFilter(this,'ready')">🎂 Prêtes</div>
+        <div class="ftab" onclick="setStatusFilter(this,'done')">✔ Terminées</div>
+        <div class="ftab" onclick="setStatusFilter(this,'cancelled')">✕ Annulées</div>
+      </div>
+    </div>
+    <div class="orders-list" id="ordersList"></div>
+    <div class="section-title">📅 Calendrier & blocages</div>
+    <div class="cal-wrap">
+      <div class="cal-nav">
+        <div class="cal-arrow" onclick="calPrev()">&#8592;</div>
+        <span id="calTitle"></span>
+        <div class="cal-arrow" onclick="calNext()">&#8594;</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()"></div>
+<div class="bottom-sheet" id="bottomSheet">
+  <div class="bs-handle"></div>
+  <div id="bsContent"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+var SB_URL="https://uousxxvrgcyvyaahdtda.supabase.co";
+var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
+var sb=supabase.createClient(SB_URL,SB_KEY);
+var allOrders=[];
+var blockedDates=[];
+var typeFilter="";
+var statusFilter="";
+var calYear,calMonth;
+var currentModalDate="";
+
+function doLogin(){
+  var pw=document.getElementById("pwInput").value;
+  if(pw==="Cicine2025"){
+    localStorage.setItem("admin_auth","ok");
+    showDashboard();
+  } else {
+    document.getElementById("loginErr").style.display="block";
+  }
+}
+
+function logout(){
+  localStorage.removeItem("admin_auth");
+  location.reload();
+}
+
+function showDashboard(){
+  document.getElementById("login-screen").style.display="none";
+  document.getElementById("dashboard").style.display="block";
+  loadOrders();
+  loadBlocked();
+  subscribeRealtime();
+  var now=new Date();
+  calYear=now.getFullYear();
+  calMonth=now.getMonth();
+  renderCal();
+}
+
+function fmtDate(d){
+  if(!d)return"";
+  var parts=d.split("-");
+  var dt=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+  var days=["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"];
+  var months=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  return days[dt.getDay()]+" "+dt.getDate()+" "+months[dt.getMonth()]+" "+dt.getFullYear();
+}
+
+function fmtTs(ts){
+  if(!ts)return"";
+  var d=new Date(ts);
+  return d.toLocaleDateString("fr-FR")+" à "+d.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+}
+
+function statusLabel(s){
+  var map={pending:["En attente","sl-pending"],confirmed:["Confirmée","sl-confirmed"],ready:["Prête","sl-ready"],done:["Terminée","sl-done"],cancelled:["Annulée","sl-cancelled"]};
+  var m=map[s]||["?","sl-pending"];
+  return'<span class="status-label '+m[1]+'">'+m[0]+'</span>';
+}
+
+async function loadOrders(){
+  var res=await sb.from("orders").select("*").order("delivery_date",{ascending:true});
+  if(res.data)allOrders=res.data;
+  renderOrders();
+  updateStats();
+}
+
+async function loadBlocked(){
+  var res=await sb.from("blocked_dates").select("*");
+  if(res.data)blockedDates=res.data;
+  renderCal();
+}
+
+function todayStr(){
+  var n=new Date();
+  var m=(n.getMonth()+1)<10?"0"+(n.getMonth()+1):""+(n.getMonth()+1);
+  var d=n.getDate()<10?"0"+n.getDate():""+n.getDate();
+  return n.getFullYear()+"-"+m+"-"+d;
+}
+
+function updateStats(){
+  var today=todayStr();
+  var nowMs=new Date().setHours(0,0,0,0);
+  var weekMs=nowMs+7*24*3600*1000;
+  var pending=0,todayC=0,weekC=0;
+  for(var i=0;i<allOrders.length;i++){
+    var o=allOrders[i];
+    if(o.status==="pending")pending++;
+    if(o.delivery_date===today&&o.status!=="cancelled")todayC++;
+    if(o.delivery_date&&o.status!=="cancelled"){
+      var parts=o.delivery_date.split("-");
+      var dm=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2])).getTime();
+      if(dm>=nowMs&&dm<=weekMs)weekC++;
+    }
+  }
+  document.getElementById("statPending").textContent=pending;
+  document.getElementById("statToday").textContent=todayC;
+  document.getElementById("statWeek").textContent=weekC;
+  var badge=document.getElementById("navBadge");
+  if(pending>0){badge.textContent=pending;badge.style.display="inline-block";}
+  else{badge.style.display="none";}
+}
+
+function renderOrders(){
+  var list=document.getElementById("ordersList");
+  var filtered=allOrders.filter(function(o){
+    if(typeFilter&&o.delivery_type!==typeFilter)return false;
+    if(statusFilter&&o.status!==statusFilter)return false;
+    return true;
+  });
+  if(filtered.length===0){list.innerHTML='<div class="empty-orders">Aucune commande à afficher.</div>';return;}
+  var html="";
+  for(var i=0;i<filtered.length;i++){
+    var o=filtered[i];
+    var items=Array.isArray(o.items)?o.items:[];
+    var itemsHtml="";
+    for(var j=0;j<items.length;j++){
+      var it=items[j];
+      var sub=(parseFloat(it.price)*parseInt(it.qty)).toFixed(2).replace(".",",");
+      itemsHtml+='<div class="item-row"><span>'+it.qty+'× '+it.name+'</span><span>'+sub+'€</span></div>';
+    }
+    var total=o.total?parseFloat(o.total).toFixed(2).replace(".",","):"0,00";
+    var acompte=o.total?(parseFloat(o.total)/2).toFixed(2).replace(".",","):"0,00";
+    var typeBadge=o.delivery_type==="livraison"?'<span class="badge badge-livraison">🚚 Livraison</span>':'<span class="badge badge-recup">🏠 Récupération</span>';
+    var addrHtml="";
+    if(o.delivery_type==="livraison"&&o.delivery_address){
+      addrHtml='<div class="oc-addr">📍 '+o.delivery_address+'</div>';
+    }
+    var noteHtml=o.note?'<div class="oc-note">💬 '+o.note+'</div>':"";
+    var adminNoteVal=(o.admin_note||"").replace(/"/g,"&quot;");
+    var waHtml="";
+    if(o.client_phone){
+      var phone=(o.client_phone+"").replace(/\s/g,"");
+      if(phone.startsWith("0"))phone="596"+phone.substring(1);
+      var waMsg=encodeURIComponent("Bonjour "+o.client_name+" ! Votre commande du "+fmtDate(o.delivery_date)+" est bien enregistrée. Merci de votre confiance — Les Douceurs de Cicine 🧁");
+      waHtml='<button class="act-btn act-wa" onclick="window.open(\'https://wa.me/'+phone+'?text='+waMsg+'\',\'_blank\')">💬 WhatsApp</button>';
+    }
+    var id=o.id;
+    var actHtml="";
+    if(o.status!=="confirmed"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-confirm" onclick="updateStatus(\''+id+'\',\'confirmed\')">Confirmer ✅</button>';
+    if(o.status!=="ready"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-ready" onclick="updateStatus(\''+id+'\',\'ready\')">Prête 🎂</button>';
+    if(o.status!=="done"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-done" onclick="updateStatus(\''+id+'\',\'done\')">Terminée ✔</button>';
+    if(o.status!=="cancelled")actHtml+='<button class="act-btn act-cancel" onclick="updateStatus(\''+id+'\',\'cancelled\')">Annuler ✕</button>';
+    actHtml+=waHtml;
+    html+='<div class="order-card" id="oc-'+id+'">';
+    html+='<div class="oc-head"><span class="oc-date">'+fmtDate(o.delivery_date)+'</span>'+typeBadge;
+    html+='<span class="oc-client">'+o.client_name+'</span>';
+    html+=statusLabel(o.status);
+    if(o.client_phone)html+='<span class="oc-phone">📱 '+o.client_phone+'</span>';
+    html+='</div>';
+    html+='<div class="oc-body">';
+    html+='<div class="items-list">'+itemsHtml+'</div>';
+    html+='<div class="oc-total"><span>Total</span><span>'+total+'€</span></div>';
+    html+='<div class="oc-acompte">Acompte 50% : '+acompte+'€</div>';
+    html+=addrHtml+noteHtml;
+    html+='<div class="oc-actions">'+actHtml+'</div>';
+    html+='<div class="admin-note-row"><input type="text" placeholder="Note admin..." id="anote-'+id+'" value="'+adminNoteVal+'"/><button onclick="saveAdminNote(\''+id+'\')">Enregistrer</button></div>';
+    html+='<div class="oc-ts">Reçue le '+fmtTs(o.created_at)+'</div>';
+    html+='</div></div>';
+  }
+  list.innerHTML=html;
+}
+
+async function updateStatus(id,status){
+  await sb.from("orders").update({status:status}).eq("id",id);
+  for(var i=0;i<allOrders.length;i++){
+    if(allOrders[i].id==id){allOrders[i].status=status;break;}
+  }
+  renderOrders();
+  updateStats();
+}
+
+async function saveAdminNote(id){
+  var el=document.getElementById("anote-"+id);
+  if(!el)return;
+  await sb.from("orders").update({admin_note:el.value}).eq("id",id);
+  for(var i=0;i<allOrders.length;i++){
+    if(allOrders[i].id==id){allOrders[i].admin_note=el.value;break;}
+  }
+}
+
+function setTypeFilter(el,val){
+  typeFilter=val;
+  document.querySelectorAll("#typeFilters .ftab").forEach(function(t){t.classList.remove("active");});
+  el.classList.add("active");
+  renderOrders();
+}
+
+function setStatusFilter(el,val){
+  statusFilter=val;
+  document.querySelectorAll("#statusFilters .ftab").forEach(function(t){t.classList.remove("active");});
+  el.classList.add("active");
+  renderOrders();
+}
+
+function subscribeRealtime(){
+  sb.channel("orders-channel").on("postgres_changes",{event:"INSERT",schema:"public",table:"orders"},function(payload){
+    var o=payload.new;
+    allOrders.push(o);
+    allOrders.sort(function(a,b){return(a.delivery_date||"")>(b.delivery_date||"")?1:-1;});
+    renderOrders();
+    updateStats();
+    showNotif("🔔 Nouvelle commande de "+(o.client_name||"?")+" !");
+  }).subscribe();
+}
+
+function showNotif(msg){
+  var el=document.createElement("div");
+  el.className="notif-banner";
+  el.textContent=msg;
+  document.body.appendChild(el);
+  setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},4000);
+}
+
+function calPrev(){
+  calMonth--;
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCal();
+}
+
+function calNext(){
+  calMonth++;
+  if(calMonth>11){calMonth=0;calYear++;}
+  renderCal();
+}
+
+function renderCal(){
+  if(calYear===undefined)return;
+  var months=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+  document.getElementById("calTitle").textContent=months[calMonth]+" "+calYear;
+  var grid=document.getElementById("calGrid");
+  var heads=["L","M","M","J","V","S","D"];
+  var html="";
+  for(var h=0;h<7;h++)html+='<div class="cal-head">'+heads[h]+'</div>';
+  var first=new Date(calYear,calMonth,1);
+  var startDow=first.getDay();
+  var offset=startDow===0?6:startDow-1;
+  var daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  var todayObj=new Date();todayObj.setHours(0,0,0,0);
+  var todayTs=todayObj.getTime();
+  var orderDateMap={};
+  for(var i=0;i<allOrders.length;i++){
+    var od=allOrders[i].delivery_date;
+    if(od){if(!orderDateMap[od])orderDateMap[od]=0;orderDateMap[od]++;}
+  }
+  var blockedMap={};
+  for(var i=0;i<blockedDates.length;i++){blockedMap[blockedDates[i].date]=blockedDates[i];}
+  for(var e=0;e<offset;e++)html+='<div class="cal-day empty"></div>';
+  for(var d=1;d<=daysInMonth;d++){
+    var m2=(calMonth+1)<10?"0"+(calMonth+1):""+(calMonth+1);
+    var d2=d<10?"0"+d:""+d;
+    var dateStr=calYear+"-"+m2+"-"+d2;
+    var dt=new Date(calYear,calMonth,d);dt.setHours(0,0,0,0);
+    var dtTs=dt.getTime();
+    var isPast=dtTs<todayTs;
+    var isToday=dtTs===todayTs;
+    var isBlocked=!!blockedMap[dateStr];
+    var cnt=orderDateMap[dateStr]||0;
+    var cls="cal-day";
+    if(isPast)cls+=" past";
+    else if(isBlocked)cls+=" blocked";
+    if(isToday)cls+=" today";
+    if(cnt>0)cls+=" has-orders";
+    var titleAttr=cnt>0?' title="'+cnt+' commande'+(cnt>1?"s":"")+ '"':"";
+    var dot=cnt>0?'<div class="dot"></div>':"";
+    var click="";
+    if(!isPast&&isBlocked)click=' onclick="openUnblock(\''+dateStr+'\')"';
+    else if(!isPast&&!isBlocked)click=' onclick="openBlock(\''+dateStr+'\')"';
+    html+='<div class="'+cls+'"'+titleAttr+click+'>'+d+dot+'</div>';
+  }
+  grid.innerHTML=html;
+}
+
+function openBlock(dateStr){
+  currentModalDate=dateStr;
+  var html='<div class="bs-title">📅 Bloquer une date</div>';
+  html+='<p style="font-size:.82rem;color:var(--doux);margin-bottom:14px;">'+fmtDate(dateStr)+'</p>';
+  html+='<label class="bs-label">Type de blocage</label>';
+  html+='<select class="bs-select" id="blockType"><option value="full">Journée entière</option><option value="partial">Disponibilité partielle</option></select>';
+  html+='<label class="bs-label">Note (optionnel)</label>';
+  html+='<input class="bs-input" type="text" id="blockNote" placeholder="Ex: Férié, Congé..."/>';
+  html+='<button class="bs-btn-block" onclick="doBlock()">Bloquer cette date</button>';
+  document.getElementById("bsContent").innerHTML=html;
+  document.getElementById("modalBackdrop").classList.add("open");
+  document.getElementById("bottomSheet").classList.add("open");
+}
+
+function openUnblock(dateStr){
+  currentModalDate=dateStr;
+  var bk=null;
+  for(var i=0;i<blockedDates.length;i++){if(blockedDates[i].date===dateStr){bk=blockedDates[i];break;}}
+  if(!bk)bk={};
+  var html='<div class="bs-title">🔓 Débloquer une date</div>';
+  html+='<p style="font-size:.82rem;color:var(--doux);margin-bottom:10px;">'+fmtDate(dateStr)+'</p>';
+  if(bk.note)html+='<div class="bs-note-info">Note : '+bk.note+'</div>';
+  html+='<button class="bs-btn-unblock" onclick="doUnblock()">Débloquer cette date</button>';
+  document.getElementById("bsContent").innerHTML=html;
+  document.getElementById("modalBackdrop").classList.add("open");
+  document.getElementById("bottomSheet").classList.add("open");
+}
+
+async function doBlock(){
+  var type=document.getElementById("blockType").value;
+  var note=document.getElementById("blockNote").value;
+  await sb.from("blocked_dates").upsert({date:currentModalDate,type:type,note:note},{onConflict:"date"});
+  await loadBlocked();
+  closeModal();
+}
+
+async function doUnblock(){
+  await sb.from("blocked_dates").delete().eq("date",currentModalDate);
+  blockedDates=blockedDates.filter(function(b){return b.date!==currentModalDate;});
+  renderCal();
+  closeModal();
+}
+
+function closeModal(){
+  document.getElementById("modalBackdrop").classList.remove("open");
+  document.getElementById("bottomSheet").classList.remove("open");
+}
+
+window.addEventListener("load",function(){
+  if(localStorage.getItem("admin_auth")==="ok")showDashboard();
+});
+</script>
+<a href="https://wa.me/596696111440" target="_blank" rel="noopener" title="Écrire sur WhatsApp" style="position:fixed;bottom:22px;right:18px;z-index:9999;background:#25D366;color:#fff;border-radius:50%;width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;box-shadow:0 4px 18px rgba(37,211,102,.55);text-decoration:none;animation:wapulse 2s ease-in-out infinite;">💬</a><style>@keyframes wapulse{0%,100%{box-shadow:0 4px 18px rgba(37,211,102,.55)}50%{box-shadow:0 4px 28px rgba(37,211,102,.85)}}</style>
+</body>
+</html>
