@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Inter",sans-serif;background:#f0f4ff;color:#1e293b;font-size:16px;min-height:100vh;}
+header{background:#2563eb;color:#fff;padding:18px 20px;text-align:center;box-shadow:0 2px 10px rgba(37,99,235,.3);}
+header h1{font-size:1.5rem;font-weight:700;letter-spacing:-.5px;}
+header p{font-size:.82rem;opacity:.85;margin-top:4px;}
+.wrap{max-width:560px;margin:28px auto;padding:0 16px 60px;}
+.card-form{background:#fff;border-radius:14px;padding:22px 20px;box-shadow:0 1px 8px rgba(0,0,0,.07);margin-bottom:20px;}
+.card-form h2{font-size:1rem;font-weight:700;color:#2563eb;margin-bottom:16px;}
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:.73rem;font-weight:600;color:#64748b;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+.fg input{width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:"Inter",sans-serif;font-size:.88rem;color:#1e293b;background:#f8fafc;outline:none;transition:border-color .15s;}
+.fg input:focus{border-color:#2563eb;background:#fff;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-add{width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-family:"Inter",sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:4px;transition:background .15s;}
+.btn-add:hover{background:#1d4ed8;}
+.card-list{background:#fff;border-radius:14px;padding:22px 20px;box-shadow:0 1px 8px rgba(0,0,0,.07);}
+.list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.list-header h2{font-size:1rem;font-weight:700;color:#1e293b;}
+.badge{background:#2563eb;color:#fff;border-radius:20px;padding:2px 10px;font-size:.72rem;font-weight:700;}
+.person-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:6px;background:#f8fafc;border:1px solid #e2e8f0;}
+.person-row:last-child{margin-bottom:0;}
+.person-info{flex:1;}
+.person-name{font-weight:700;font-size:.88rem;color:#1e293b;}
+.person-date{font-size:.75rem;color:#64748b;margin-top:2px;}
+.del-btn{background:none;border:none;cursor:pointer;color:#cbd5e1;font-size:.9rem;padding:5px;border-radius:6px;line-height:1;}
+.del-btn:hover{color:#ef4444;background:#fef2f2;}
+.empty{text-align:center;color:#94a3b8;font-size:.82rem;padding:20px 0;font-style:italic;}
+.actions{margin-top:18px;display:flex;flex-direction:column;gap:8px;}
+.btn-pdf{width:100%;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-family:"Inter",sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:background .15s;}
+.btn-pdf:hover{background:#15803d;}
+.btn-clear{width:100%;padding:11px;background:transparent;color:#ef4444;border:1.5px solid #ef4444;border-radius:8px;font-family:"Inter",sans-serif;font-size:.86rem;font-weight:600;cursor:pointer;transition:background .15s;}
+.btn-clear:hover{background:#fef2f2;}
+@media(max-width:420px){.row2{grid-template-columns:1fr;}}
+</style>
+<title>Collecte de dates de naissance</title>
+</head>
+<body>
+
+<header>
+  <h1>🎂 Dates de naissance</h1>
+  <p>Ajoutez des personnes et téléchargez la liste en PDF</p>
+</header>
+
+<div class="wrap">
+
+  <div class="card-form">
+    <h2>Ajouter une personne</h2>
+    <div class="row2">
+      <div class="fg">
+        <label>Prénom</label>
+        <input type="text" id="iPrenom" placeholder="Marie" autocomplete="off"/>
+      </div>
+      <div class="fg">
+        <label>Nom</label>
+        <input type="text" id="iNom" placeholder="Dupont" autocomplete="off"/>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Date de naissance</label>
+      <input type="date" id="iDate"/>
+    </div>
+    <button class="btn-add" onclick="ajouterPersonne()">➕ Ajouter</button>
+  </div>
+
+  <div class="card-list">
+    <div class="list-header">
+      <h2>Liste des personnes</h2>
+      <span class="badge" id="countBadge">0</span>
+    </div>
+    <div id="liste"></div>
+    <div id="zoneActions" style="display:none;" class="actions">
+      <button class="btn-pdf" onclick="genererPDF()">📄 Télécharger le PDF</button>
+      <button class="btn-clear" onclick="toutSupprimer()">🗑️ Tout effacer</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+var personnes = JSON.parse(localStorage.getItem("birthdates_list") || "[]");
+
+function sauvegarder() {
+  localStorage.setItem("birthdates_list", JSON.stringify(personnes));
+}
+
+function formaterDate(d) {
+  if (!d) return "";
+  var p = d.split("-");
+  if (p.length !== 3) return d;
+  return p[2] + "/" + p[1] + "/" + p[0];
+}
+
+function afficher() {
+  var liste = document.getElementById("liste");
+  var badge = document.getElementById("countBadge");
+  var actions = document.getElementById("zoneActions");
+  badge.textContent = personnes.length;
+  actions.style.display = personnes.length > 0 ? "flex" : "none";
+  if (personnes.length === 0) {
+    liste.innerHTML = '<p class="empty">Aucune personne ajoutée pour l\'instant.</p>';
+    return;
+  }
+  liste.innerHTML = personnes.map(function(p, i) {
+    return '<div class="person-row">' +
+      '<div class="person-info">' +
+        '<div class="person-name">' + p.prenom + ' ' + p.nom + '</div>' +
+        '<div class="person-date">📅 ' + formaterDate(p.date) + '</div>' +
+      '</div>' +
+      '<button class="del-btn" onclick="supprimer(' + i + ')" title="Supprimer">✕</button>' +
+    '</div>';
+  }).join("");
+}
+
+function ajouterPersonne() {
+  var prenom = document.getElementById("iPrenom").value.trim();
+  var nom = document.getElementById("iNom").value.trim();
+  var date = document.getElementById("iDate").value;
+  if (!prenom || !nom) { alert("Veuillez entrer un prénom et un nom."); return; }
+  if (!date) { alert("Veuillez entrer une date de naissance."); return; }
+  personnes.push({ prenom: prenom, nom: nom, date: date });
+  sauvegarder();
+  document.getElementById("iPrenom").value = "";
+  document.getElementById("iNom").value = "";
+  document.getElementById("iDate").value = "";
+  document.getElementById("iPrenom").focus();
+  afficher();
+}
+
+function supprimer(i) {
+  personnes.splice(i, 1);
+  sauvegarder();
+  afficher();
+}
+
+function toutSupprimer() {
+  if (!confirm("Effacer toutes les personnes de la liste ?")) return;
+  personnes = [];
+  sauvegarder();
+  afficher();
+}
+
+function genererPDF() {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF();
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.setTextColor(37, 99, 235);
+  doc.text("Dates de naissance", 105, 22, { align: "center" });
+
+  var dateGen = new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(100, 116, 139);
+  doc.text("Généré le " + dateGen + "  ·  " + personnes.length + " personne(s)", 105, 30, { align: "center" });
+
+  var tries = personnes.slice().sort(function(a, b) {
+    var pa = a.date.split("-"), pb = b.date.split("-");
+    var mois = parseInt(pa[1]) - parseInt(pb[1]);
+    if (mois !== 0) return mois;
+    return parseInt(pa[2]) - parseInt(pb[2]);
+  });
+
+  var rows = tries.map(function(p, i) {
+    return [i + 1, p.prenom, p.nom, formaterDate(p.date)];
+  });
+
+  doc.autoTable({
+    startY: 38,
+    head: [["N°", "Prénom", "Nom", "Date de naissance"]],
+    body: rows,
+    styles: { font: "helvetica", fontSize: 10, cellPadding: 5 },
+    headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontStyle: "bold" },
+    alternateRowStyles: { fillColor: [240, 244, 255] },
+    columnStyles: { 0: { cellWidth: 14, halign: "center" } },
+    margin: { left: 14, right: 14 }
+  });
+
+  var pageH = doc.internal.pageSize.height;
+  doc.setFontSize(8);
+  doc.setTextColor(148, 163, 184);
+  doc.text("Liste des dates de naissance", 105, pageH - 10, { align: "center" });
+
+  doc.save("dates-naissance.pdf");
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && ["iPrenom","iNom","iDate"].indexOf(document.activeElement.id) !== -1) {
+    ajouterPersonne();
+  }
+});
+
+afficher();
+</script>
+</body>
+</html>
