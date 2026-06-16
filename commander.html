@@ -96,7 +96,7 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
       <div class="fnote">💡 Vous pouvez ajouter plusieurs commandes avec des noms et dates différents — idéal pour les groupes !</div>
       <div class="fgr">
         <div class="fg"><label>Prénom &amp; Nom *</label><input type="text" id="cNom" placeholder="Votre nom"/></div>
-        <div class="fg"><label>WhatsApp (optionnel)</label><input type="tel" id="cTel" placeholder="0696 XX XX XX"/></div>
+        <div class="fg"><label>WhatsApp *</label><input type="tel" id="cTel" placeholder="0696 XX XX XX" required/></div>
       </div>
       <div class="fg"><label>Précisions (optionnel)</label><input type="text" id="cNote" placeholder="Allergies, message..."/></div>
     </div>
@@ -471,10 +471,11 @@ async function envoyerCommande(){
     if(!adresse){alert("Veuillez saisir une adresse de livraison.");document.getElementById("cAdresse").focus();return;}
   }
   var tel=(document.getElementById("cTel").value||"").trim();
+  if(!tel){alert("Veuillez saisir votre numéro WhatsApp pour recevoir la confirmation de commande.");document.getElementById("cTel").focus();return;}
   var note=(document.getElementById("cNote").value||"").trim();
   var payload={
     client_name:nom,
-    client_phone:tel||null,
+    client_phone:tel,
     delivery_date:selectedDate,
     delivery_type:deliveryType,
     delivery_address:adresse||null,

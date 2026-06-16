@@ -532,7 +532,7 @@ function renderOrders(){
     }
     var id=o.id;
     var actHtml="";
-    if(o.status!=="confirmed"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-confirm" onclick="updateStatus(\''+id+'\',\'confirmed\')">✅ Confirmer</button>';
+    if(o.status!=="confirmed"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-confirm" onclick="openConfirmModal(\''+id+'\')">✅ Confirmer</button>';
     if(o.status!=="ready"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-ready" onclick="updateStatus(\''+id+'\',\'ready\')">🎂 Prête</button>';
     if(o.status!=="done"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-done" onclick="updateStatus(\''+id+'\',\'done\')">✔ Terminée</button>';
     if(o.status!=="cancelled")actHtml+='<button class="act-btn act-cancel" onclick="updateStatus(\''+id+'\',\'cancelled\')">✕ Annuler</button>';
@@ -554,10 +554,63 @@ function renderOrders(){
   }
   list.innerHTML=html;
 }
+function toWAPhone(phone){
+  var d=(phone+"").replace(/\D/g,"");
+  if(d.startsWith("0"))d="596"+d.substring(1);
+  return d;
+}
 async function updateStatus(id,status){
   await sb.from("orders").update({status:status}).eq("id",id);
-  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].status=status;break;}}
+  var order=null;
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].status=status;order=allOrders[i];break;}}
   renderOrders();updateStats();
+  if(!order||!order.client_phone)return;
+  var phone=toWAPhone(order.client_phone);
+  var name=order.client_name||"";
+  var date=fmtDate(order.delivery_date);
+  var msg="";
+  if(status==="ready"){
+    msg="Bonjour "+name+" ! 🎂✨\n\nVotre commande du "+date+" est prête !\n\nVous pouvez venir la récupérer ou nous vous contacterons pour la livraison.\n\nMerci et à bientôt ! 💕\nLes Douceurs de Cicine";
+  } else if(status==="cancelled"){
+    msg="Bonjour "+name+",\n\nNous sommes désolées, mais nous ne pouvons malheureusement pas traiter votre commande du "+date+".\n\nN'hésitez pas à nous recontacter pour reprogrammer. 💕\nLes Douceurs de Cicine";
+  }
+  if(msg)window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
+}
+function openConfirmModal(id){
+  var order=null;
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){order=allOrders[i];break;}}
+  if(!order)return;
+  var total=order.total?parseFloat(order.total).toFixed(2).replace(".",","):"0,00";
+  var acompteNum=order.total?(parseFloat(order.total)/2).toFixed(2):"0.00";
+  var acompte=acompteNum.replace(".",",");
+  var name=order.client_name||"";
+  var date=fmtDate(order.delivery_date);
+  openModal(
+    '<div class="bs-title">✅ Confirmer la commande</div>'+
+    '<p style="font-size:.83rem;color:var(--doux);margin-bottom:14px;">'+name+' · '+date+' · Total : '+total+'€ · Acompte : <strong>'+acompte+'€</strong></p>'+
+    '<label class="bs-label">Lien SumUp pour l\'acompte de '+acompte+'€ (optionnel)</label>'+
+    '<input class="bs-input" id="sumupLink" type="url" placeholder="https://pay.sumup.com/..."/>'+
+    '<button class="bs-btn-green" onclick="doConfirm(\''+id+'\',\''+acompteNum+'\',\''+name.replace(/'/g,"\\'")  +'\',\''+date+'\',true)">✅ Confirmer &amp; envoyer WhatsApp</button>'+
+    '<button class="bs-btn-secondary" onclick="doConfirm(\''+id+'\',\''+acompteNum+'\',\''+name.replace(/'/g,"\\'")+'\',\''+date+'\',false)">Confirmer sans message</button>'+
+    '<button class="bs-btn-danger" onclick="closeModal()">Annuler</button>'
+  );
+}
+async function doConfirm(id,acompteNum,name,date,sendWA){
+  closeModal();
+  await sb.from("orders").update({status:"confirmed"}).eq("id",id);
+  var order=null;
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].status="confirmed";order=allOrders[i];break;}}
+  renderOrders();updateStats();
+  if(sendWA&&order&&order.client_phone){
+    var phone=toWAPhone(order.client_phone);
+    var link=document.getElementById("sumupLink")?document.getElementById("sumupLink").value.trim():"";
+    var total=order.total?parseFloat(order.total).toFixed(2).replace(".",","):"0,00";
+    var acompte=(parseFloat(acompteNum)).toFixed(2).replace(".",",");
+    var msg="Bonjour "+name+" ! 🎂✨\n\nVotre commande est confirmée !\n📅 Date : "+date+"\n💰 Total : "+total+"€\n💳 Acompte à régler : "+acompte+"€\n";
+    if(link)msg+="\n👉 Lien de paiement SumUp :\n"+link+"\n";
+    msg+="\nMerci pour votre confiance et à bientôt ! 💕\nLes Douceurs de Cicine";
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
+  }
 }
 async function saveAdminNote(id){
   var el=document.getElementById("anote-"+id);
