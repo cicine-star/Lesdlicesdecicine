@@ -38,7 +38,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 /* STATS */
 .stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:10px 14px 0;flex-shrink:0;}
 .stat-card{background:#fff;border:1.5px solid var(--bordure);border-radius:11px;padding:8px 6px;text-align:center;}
-.stat-n{font-size:1.3rem;font-weight:700;color:var(--brun);line-height:1;}
+.stat-n{font-size:1.2rem;font-weight:700;color:var(--brun);line-height:1;}
 .stat-l{font-size:.6rem;color:var(--doux);margin-top:2px;}
 
 /* TABS */
@@ -48,68 +48,62 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 
 /* CONTENT */
 .tab-content{flex:1;overflow:hidden;position:relative;}
-.tab-pane{position:absolute;inset:0;display:none;flex-direction:column;}
+.tab-pane{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;}
 .tab-pane.active{display:flex;}
 
-/* CATEGORY CHIPS */
-.cat-scroll{display:flex;gap:6px;overflow-x:auto;padding:10px 14px 8px;scrollbar-width:none;flex-shrink:0;}
+/* VENTE TAB */
+.vente-left{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+.cat-scroll{display:flex;gap:7px;padding:9px 10px;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
 .cat-scroll::-webkit-scrollbar{display:none;}
-.cat-chip{flex-shrink:0;padding:6px 12px;border-radius:30px;border:1.5px solid var(--bordure);background:#fff;font-size:.72rem;font-weight:700;color:var(--doux);cursor:pointer;white-space:nowrap;}
-.cat-chip.active{background:var(--brun);color:#fff;border-color:var(--brun);}
+.cat-chip{white-space:nowrap;padding:6px 13px;border-radius:20px;border:1.5px solid var(--bordure);background:#fff;font-size:.73rem;font-weight:700;color:var(--doux);cursor:pointer;flex-shrink:0;}
+.cat-chip.active{background:var(--caramel);color:#fff;border-color:var(--caramel);}
+.prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:0 10px 10px;overflow-y:auto;flex:1;}
+.prod-btn{position:relative;background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:.1s;text-align:center;}
+.prod-btn:active{background:var(--fond2);}
+.prod-badge{position:absolute;top:6px;right:8px;background:var(--caramel);color:#fff;border-radius:20px;padding:1px 7px;font-size:.65rem;font-weight:700;}
+.prod-name{font-size:.78rem;font-weight:700;color:var(--texte);line-height:1.3;}
+.prod-price{font-size:.72rem;color:var(--caramel);font-weight:700;}
 
-/* PRODUCT GRID */
-.prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;padding:0 14px 10px;overflow-y:auto;flex:1;}
-.prod-btn{background:#fff;border:1.5px solid var(--bordure);border-radius:11px;padding:11px 9px;cursor:pointer;text-align:left;-webkit-tap-highlight-color:transparent;transition:border-color .1s,background .1s;position:relative;overflow:hidden;}
-.prod-btn:active{border-color:var(--caramel);background:var(--fond2);}
-.prod-name{font-size:.78rem;font-weight:700;color:var(--texte);line-height:1.3;display:block;}
-.prod-price{font-size:.85rem;font-weight:700;color:var(--caramel);margin-top:3px;display:block;}
-.prod-badge{position:absolute;top:6px;right:6px;background:var(--fuchsia);color:#fff;border-radius:10px;font-size:.6rem;font-weight:700;padding:1px 6px;}
-
-/* CART PANEL */
-.cart-panel{background:#fff;border-top:1.5px solid var(--bordure);flex-shrink:0;display:flex;flex-direction:column;transition:max-height .25s ease;}
-.cart-panel.collapsed{max-height:68px;}
+/* CART */
+.cart-panel{background:#fff;border-top:1.5px solid var(--bordure);flex-shrink:0;display:flex;flex-direction:column;transition:max-height .3s ease;}
+.cart-panel.collapsed{max-height:52px;overflow:hidden;}
 .cart-panel.expanded{max-height:55vh;}
-.cart-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;flex-shrink:0;}
-.cart-title-row{display:flex;align-items:center;gap:7px;}
-.cart-title{font-family:"Dancing Script",cursive;font-size:1.1rem;color:var(--brun);}
-.cart-count{background:var(--fuchsia);color:#fff;border-radius:20px;font-size:.65rem;font-weight:700;padding:1px 7px;font-family:"Lato",sans-serif;}
-.cart-toggle{font-size:.8rem;color:var(--doux);}
-.cart-total-mini{font-weight:700;font-size:.95rem;color:var(--brun);}
-.cart-body{overflow-y:auto;padding:0 14px;flex:1;}
-.cart-empty{font-size:.8rem;color:var(--doux);font-style:italic;text-align:center;padding:12px 0;}
-.cart-item{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px dashed var(--bordure);}
+.cart-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;flex-shrink:0;}
+.cart-title-row{display:flex;align-items:center;gap:8px;}
+.cart-title{font-weight:700;font-size:.9rem;color:var(--brun);}
+.cart-count{background:var(--fuchsia);color:#fff;border-radius:50%;width:20px;height:20px;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.cart-total-mini{font-weight:700;color:var(--caramel);font-size:.9rem;}
+.cart-toggle{font-size:.75rem;color:var(--doux);}
+.cart-body{overflow-y:auto;flex:1;padding:0 14px;}
+.cart-empty{font-size:.8rem;color:var(--doux);font-style:italic;text-align:center;padding:14px 0;}
+.cart-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--bordure);}
 .cart-item:last-child{border-bottom:none;}
-.ci-name{flex:1;font-size:.78rem;font-weight:600;color:var(--texte);line-height:1.3;}
-.ci-ctrl{display:flex;align-items:center;gap:5px;}
-.ci-minus,.ci-plus{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--bordure);background:var(--fond);color:var(--brun);font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;}
-.ci-minus:hover,.ci-plus:hover{background:var(--fond2);}
-.ci-qty{font-size:.82rem;font-weight:700;color:var(--brun);min-width:18px;text-align:center;}
-.ci-sub{font-size:.8rem;font-weight:700;color:var(--caramel);min-width:44px;text-align:right;}
-.cart-foot{padding:10px 14px 12px;border-top:1px solid var(--bordure);flex-shrink:0;}
-.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
-.cart-total-lbl{font-size:.9rem;font-weight:700;color:var(--texte);}
-.cart-total-val{font-size:1.25rem;font-weight:700;color:var(--brun);}
-.btn-encaisser{width:100%;padding:13px;background:var(--fuchsia);color:#fff;border:none;border-radius:40px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
-.btn-encaisser:disabled{background:#ccc;cursor:default;}
-.btn-vider{background:none;border:none;color:#dc2626;font-size:.72rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;text-decoration:underline;margin-top:5px;display:block;text-align:center;}
+.ci-name{font-size:.8rem;color:var(--texte);flex:1;}
+.ci-ctrl{display:flex;align-items:center;gap:7px;}
+.ci-minus,.ci-plus{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--bordure);background:var(--fond);cursor:pointer;font-size:1rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.ci-qty{font-weight:700;font-size:.85rem;min-width:18px;text-align:center;}
+.ci-sub{font-weight:700;font-size:.82rem;color:var(--brun);min-width:48px;text-align:right;}
+.cart-foot{padding:10px 14px 14px;flex-shrink:0;}
+.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.cart-total-lbl{font-size:.85rem;font-weight:700;color:var(--doux);}
+.cart-total-val{font-size:1.1rem;font-weight:700;color:var(--brun);}
+.btn-encaisser{width:100%;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:40px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;margin-bottom:6px;}
+.btn-encaisser:hover{background:var(--c2);}
+.btn-vider{width:100%;padding:9px;background:transparent;color:var(--doux);border:none;font-size:.78rem;cursor:pointer;font-family:"Lato",sans-serif;}
 
-/* HISTORIQUE TAB */
-.hist-pane{overflow-y:auto;padding:12px 14px;}
-.hist-day-total{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:12px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
-.hdt-label{font-size:.8rem;color:var(--doux);}
-.hdt-val{font-weight:700;color:var(--brun);font-size:1rem;}
-.hist-sec-title{font-family:"Dancing Script",cursive;font-size:1.15rem;color:var(--brun);margin-bottom:10px;}
+/* HIST */
+.hist-pane{flex:1;overflow-y:auto;padding:12px 14px 40px;}
+.hist-day-total{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.hdt-label{font-size:.68rem;color:var(--doux);margin-bottom:2px;}
+.hdt-val{font-weight:700;color:var(--brun);font-size:.95rem;}
+.hist-sec-title{font-family:"Dancing Script",cursive;font-size:1.1rem;color:var(--brun);margin-bottom:8px;}
 .hist-empty{font-size:.82rem;color:var(--doux);font-style:italic;text-align:center;padding:24px 0;}
 .hist-card{background:#fff;border:1.5px solid var(--bordure);border-radius:11px;padding:11px 12px;margin-bottom:7px;}
-.hist-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.hist-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-wrap:wrap;gap:4px;}
 .hist-time{font-size:.72rem;font-weight:700;color:var(--doux);}
-.hist-pay-badge{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px;}
-.hpb-especes{background:#fef9c3;color:#854d0e;}
-.hpb-cb{background:#dbeafe;color:#1e40af;}
-.hpb-virement{background:#d1fae5;color:#065f46;}
-.hpb-sumeria{background:#f3e8ff;color:#6b21a8;}
-.hist-items-text{font-size:.75rem;color:var(--doux);margin-bottom:5px;line-height:1.5;}
+.hist-pay{font-size:.7rem;color:var(--doux);}
 .hist-total{font-weight:700;color:var(--brun);font-size:.92rem;}
+.hist-items-text{font-size:.75rem;color:var(--doux);line-height:1.5;}
 
 /* PAYMENT MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;display:none;align-items:flex-end;justify-content:center;}
@@ -117,56 +111,44 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .modal-sheet{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 36px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;}
 .modal-handle{width:38px;height:4px;background:var(--bordure);border-radius:4px;margin:0 auto 16px;}
 .modal-title{font-family:"Dancing Script",cursive;font-size:1.4rem;color:var(--brun);margin-bottom:14px;}
-.recap-box{background:var(--fond);border-radius:10px;padding:10px 12px;margin-bottom:12px;max-height:130px;overflow-y:auto;}
+.recap-box{background:var(--fond);border-radius:10px;padding:10px 12px;margin-bottom:10px;max-height:130px;overflow-y:auto;}
 .recap-row{display:flex;justify-content:space-between;font-size:.78rem;padding:3px 0;border-bottom:1px dashed var(--bordure);}
 .recap-row:last-child{border-bottom:none;}
-.recap-total-row{display:flex;justify-content:space-between;font-weight:700;font-size:1rem;color:var(--brun);padding:9px 0;border-top:2px solid var(--bordure);margin-bottom:14px;}
-.pay-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}
-.pay-card{border:2px solid var(--bordure);border-radius:12px;padding:12px 8px;cursor:pointer;text-align:center;background:#fff;transition:.15s;}
-.pay-card.active{border-color:var(--caramel);background:var(--fond2);}
-.pay-icon{font-size:1.4rem;margin-bottom:3px;}
-.pay-lbl{font-size:.72rem;font-weight:700;color:var(--texte);}
-.cash-box{background:var(--fond);border-radius:10px;padding:12px;margin-bottom:12px;display:none;}
-.cash-box.show{display:block;}
-.cash-lbl{font-size:.75rem;font-weight:700;color:var(--texte);margin-bottom:6px;display:block;}
-.cash-inp{width:100%;padding:11px 13px;border:1.5px solid var(--bordure);border-radius:9px;font-size:1.1rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:#fff;font-weight:700;}
-.cash-inp:focus{border-color:var(--caramel);}
-.monnaie{margin-top:9px;padding:9px 12px;background:#fff;border-radius:8px;border:1.5px solid var(--caramel);display:none;}
-.monnaie.show{display:block;}
-.monnaie-lbl{font-size:.72rem;color:var(--doux);}
-.monnaie-val{font-size:1.2rem;font-weight:700;color:var(--brun);}
-.modal-note{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.84rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);margin-bottom:14px;resize:none;height:60px;}
+.recap-total-row{display:flex;justify-content:space-between;font-weight:700;font-size:1rem;color:var(--brun);padding:8px 0;border-top:2px solid var(--bordure);margin-bottom:14px;}
+.pay-split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.pay-field label{display:block;font-size:.72rem;font-weight:700;color:var(--texte);margin-bottom:5px;}
+.pay-inp{width:100%;padding:12px 10px;border:1.5px solid var(--bordure);border-radius:9px;font-size:1.1rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);font-weight:700;text-align:right;}
+.pay-inp:focus{border-color:var(--caramel);}
+.monnaie-box{background:var(--fond2);border-radius:9px;padding:10px 12px;margin-bottom:10px;display:none;}
+.monnaie-box.show{display:block;}
+.monnaie-row{display:flex;justify-content:space-between;align-items:center;}
+.monnaie-lbl{font-size:.75rem;color:var(--doux);}
+.monnaie-val{font-size:1.1rem;font-weight:700;color:var(--brun);}
+.recu-row{margin-bottom:10px;display:none;}
+.recu-row.show{display:block;}
+.recu-row label{display:block;font-size:.72rem;font-weight:700;color:var(--texte);margin-bottom:5px;}
+.modal-note{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.84rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);margin-bottom:14px;resize:none;height:55px;}
 .modal-note:focus{border-color:var(--caramel);}
 .modal-btns{display:flex;gap:8px;}
 .btn-annuler{flex:1;padding:13px;background:#fff;color:var(--brun);border:2px solid var(--bordure);border-radius:40px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
 .btn-valider{flex:2;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:40px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
 .btn-valider:hover{background:var(--c2);}
-.btn-valider:disabled{background:#ccc;cursor:default;}
 
 /* SUCCESS MODAL */
 .success-content{text-align:center;padding:10px 0 16px;}
 .success-icon{font-size:3.5rem;margin-bottom:10px;}
 .success-title{font-family:"Dancing Script",cursive;font-size:1.8rem;color:var(--brun);margin-bottom:6px;}
-.success-amount{font-size:2rem;font-weight:700;color:var(--fuchsia);margin-bottom:3px;}
-.success-method{font-size:.82rem;color:var(--doux);margin-bottom:14px;}
+.success-amount{font-size:2rem;font-weight:700;color:var(--fuchsia);margin-bottom:6px;}
+.success-split{font-size:.82rem;color:var(--doux);margin-bottom:14px;line-height:1.8;}
 .change-box{background:var(--fond2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.9rem;font-weight:700;color:var(--brun);}
 .btn-nvvente{width:100%;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:40px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;margin-bottom:8px;}
 .btn-partager{width:100%;padding:12px;background:#25D366;color:#fff;border:none;border-radius:40px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
 
-/* SETUP GUIDE */
-.setup-guide{background:#fff3cd;border:1.5px solid #ffc107;border-radius:12px;padding:14px 16px;margin:14px;}
-.setup-guide h3{font-size:.88rem;font-weight:700;color:#856404;margin-bottom:6px;}
-.setup-guide p{font-size:.78rem;color:#6b5303;margin-bottom:8px;line-height:1.5;}
-.setup-code{background:#1e1e1e;color:#d4edda;border-radius:8px;padding:10px;font-size:.68rem;font-family:monospace;overflow-x:auto;white-space:pre;margin-bottom:8px;}
-.btn-copy-sql{padding:7px 14px;background:#ffc107;color:#1a1a00;border:none;border-radius:20px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
-
-/* NOTIF TOAST */
+/* TOAST */
 .toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);background:var(--brun);color:#fff;padding:10px 20px;border-radius:12px;font-size:.84rem;font-weight:700;z-index:9998;box-shadow:0 4px 18px rgba(0,0,0,.22);animation:slideDown .3s ease;white-space:nowrap;pointer-events:none;}
 @keyframes slideDown{from{opacity:0;top:50px;}to{opacity:1;top:68px;}}
 
-@media(min-width:600px){
-  .prod-grid{grid-template-columns:repeat(3,1fr);}
-}
+@media(min-width:600px){.prod-grid{grid-template-columns:repeat(3,1fr);}}
 @media(min-width:900px){
   #tab-vente{flex-direction:row !important;}
   .vente-left{flex:1.5;display:flex;flex-direction:column;overflow:hidden;}
@@ -192,16 +174,15 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   <nav class="top-nav">
     <div class="nav-logo">🧁 Caisse</div>
     <div class="nav-links">
-      <a href="stocks.html" class="nav-link">📦 Stocks</a>
       <a href="admin.html" class="nav-link">⚙️ Admin</a>
       <button class="nav-logout" onclick="logout()">Déco.</button>
     </div>
   </nav>
 
-  <div class="stats-bar" id="statsBar">
+  <div class="stats-bar">
     <div class="stat-card"><div class="stat-n" id="statCA">0,00€</div><div class="stat-l">CA du jour</div></div>
-    <div class="stat-card"><div class="stat-n" id="statNb">0</div><div class="stat-l">Ventes</div></div>
-    <div class="stat-card"><div class="stat-n" id="statMoy">0,00€</div><div class="stat-l">Panier moyen</div></div>
+    <div class="stat-card"><div class="stat-n" id="statCB">0,00€</div><div class="stat-l">💳 Carte</div></div>
+    <div class="stat-card"><div class="stat-n" id="statESP">0,00€</div><div class="stat-l">💵 Espèces</div></div>
   </div>
 
   <div class="main-tabs">
@@ -212,7 +193,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   <div class="tab-content">
     <!-- VENTE TAB -->
     <div class="tab-pane active" id="tab-vente">
-      <div class="vente-left" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+      <div class="vente-left">
         <div class="cat-scroll" id="catScroll"></div>
         <div class="prod-grid" id="prodGrid"></div>
       </div>
@@ -237,7 +218,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
             <span class="cart-total-lbl">Total</span>
             <span class="cart-total-val" id="cartTotalVal">0,00€</span>
           </div>
-          <button class="btn-encaisser" id="btnEncaisser" onclick="openPayModal()">💳 Encaisser</button>
+          <button class="btn-encaisser" onclick="openPayModal()">💳 Encaisser</button>
           <button class="btn-vider" onclick="viderPanier()">Vider le panier</button>
         </div>
       </div>
@@ -245,29 +226,23 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 
     <!-- HISTORIQUE TAB -->
     <div class="tab-pane" id="tab-historique">
-      <div class="hist-pane" id="histPane">
-        <div id="histSetup" style="display:none;">
-          <div class="setup-guide">
-            <h3>⚙️ Configuration initiale requise</h3>
-            <p>Exécutez ce SQL dans votre tableau de bord Supabase (SQL Editor) pour créer la table des ventes :</p>
-            <div class="setup-code" id="setupSQL"></div>
-            <button class="btn-copy-sql" onclick="copySQL()">📋 Copier le SQL</button>
+      <div class="hist-pane">
+        <div class="hist-day-total" id="histDayTotal" style="display:none;">
+          <div>
+            <div class="hdt-label">CA du jour</div>
+            <div class="hdt-val" id="histCA">0,00€</div>
+          </div>
+          <div>
+            <div class="hdt-label">💳 Carte</div>
+            <div class="hdt-val" id="histCB">0,00€</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="hdt-label">💵 Espèces</div>
+            <div class="hdt-val" id="histESP">0,00€</div>
           </div>
         </div>
-        <div id="histContent">
-          <div class="hist-day-total" id="histDayTotal" style="display:none;">
-            <div>
-              <div class="hdt-label">CA du jour</div>
-              <div class="hdt-val" id="histCA">0,00€</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="hdt-label">Transactions</div>
-              <div class="hdt-val" id="histNb">0</div>
-            </div>
-          </div>
-          <div class="hist-sec-title">Ventes d'aujourd'hui</div>
-          <div id="histList"><p class="hist-empty">Aucune vente pour l'instant</p></div>
-        </div>
+        <div class="hist-sec-title">Ventes d'aujourd'hui</div>
+        <div id="histList"><p class="hist-empty">Aucune vente pour l'instant</p></div>
       </div>
     </div>
   </div>
@@ -281,33 +256,9 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-var SB_URL="https://uousxxvrgcyvyaahdtda.supabase.co";
-var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
-var sb=supabase.createClient(SB_URL,SB_KEY);
-
-var cart=[];
-var activeCat="all";
-var todaySales=[];
-var cartExpanded=false;
-var setupNeeded=false;
-
-var SETUP_SQL=`-- À exécuter dans Supabase > SQL Editor
-create table if not exists public.sales (
-  id uuid default gen_random_uuid() primary key,
-  sale_date date not null default current_date,
-  items jsonb not null default '[]'::jsonb,
-  total decimal(10,2) not null default 0,
-  payment_method text not null default 'especes',
-  cash_received decimal(10,2),
-  change_given decimal(10,2),
-  note text,
-  created_at timestamptz default now()
-);
-alter table public.sales enable row level security;
-create policy "allow_all_sales" on public.sales
-  for all using (true) with check (true);`;
+var SALES_KEY="cicine_caisse_v2";
+var cart=[], activeCat="all", todaySales=[], cartExpanded=false, lastSale=null;
 
 var CATS=[
   {id:"all",label:"Tout"},
@@ -362,11 +313,11 @@ var PRODUCTS=[
   {name:"Pain beurre pépite 500g",price:8.0,cat:"choco"},
 ];
 
-function euro(v){return v.toFixed(2).replace(".",",")+"€";}
+function euro(v){return parseFloat(v||0).toFixed(2).replace(".",",")+"€";}
 
+/* ---- AUTH ---- */
 function doLogin(){
-  var pw=document.getElementById("pwInput").value;
-  if(pw==="Cicine2025"){
+  if(document.getElementById("pwInput").value==="Cicine2025"){
     localStorage.setItem("admin_auth","ok");
     document.getElementById("login-screen").style.display="none";
     document.getElementById("app").style.display="flex";
@@ -375,113 +326,76 @@ function doLogin(){
     document.getElementById("loginErr").style.display="block";
   }
 }
-
-function logout(){
-  localStorage.removeItem("admin_auth");
-  location.reload();
-}
-
+function logout(){localStorage.removeItem("admin_auth");location.reload();}
 function init(){
   if(localStorage.getItem("admin_auth")==="ok"){
     document.getElementById("login-screen").style.display="none";
     document.getElementById("app").style.display="flex";
   }
-  renderCats();
-  renderProds();
-  loadSales();
+  renderCats();renderProds();loadSales();
 }
 
+/* ---- TABS ---- */
 function setTab(tab){
-  document.querySelectorAll(".main-tab").forEach((t,i)=>{
-    t.classList.toggle("active",["vente","historique"][i]===tab);
-  });
+  document.querySelectorAll(".main-tab").forEach((t,i)=>{t.classList.toggle("active",["vente","historique"][i]===tab);});
   document.querySelectorAll(".tab-pane").forEach(p=>p.classList.remove("active"));
   document.getElementById("tab-"+tab).classList.add("active");
   document.getElementById("cartPanel").style.display=tab==="vente"?"flex":"none";
   if(tab==="historique") renderHist();
 }
 
+/* ---- CATS & PRODUCTS ---- */
 function renderCats(){
-  var html="";
-  CATS.forEach(c=>{
-    html+=`<div class="cat-chip${c.id===activeCat?" active":""}" onclick="setCat('${c.id}')">${c.label}</div>`;
-  });
-  document.getElementById("catScroll").innerHTML=html;
+  document.getElementById("catScroll").innerHTML=CATS.map(c=>`<div class="cat-chip${c.id===activeCat?" active":""}" onclick="setCat('${c.id}')">${c.label}</div>`).join("");
 }
-
-function setCat(id){
-  activeCat=id;
-  renderCats();
-  renderProds();
-}
-
+function setCat(id){activeCat=id;renderCats();renderProds();}
 function renderProds(){
   var list=activeCat==="all"?PRODUCTS:PRODUCTS.filter(p=>p.cat===activeCat);
-  var html="";
-  list.forEach(p=>{
+  document.getElementById("prodGrid").innerHTML=list.map(p=>{
     var inCart=cart.find(c=>c.name===p.name);
     var qty=inCart?inCart.qty:0;
-    html+=`<button class="prod-btn" onclick="addToCart('${p.name.replace(/'/g,"\\'")}',${p.price})">
+    return`<button class="prod-btn" onclick="addToCart('${p.name.replace(/'/g,"\\'")}',${p.price})">
       ${qty>0?`<span class="prod-badge">×${qty}</span>`:""}
       <span class="prod-name">${p.name}</span>
       <span class="prod-price">${euro(p.price)}</span>
     </button>`;
-  });
-  document.getElementById("prodGrid").innerHTML=html;
+  }).join("");
 }
 
+/* ---- CART ---- */
 function addToCart(name,price){
   var item=cart.find(c=>c.name===name);
-  if(item){item.qty++;}
-  else{cart.push({name,price,qty:1});}
-  renderCart();
-  renderProds();
-  if(!cartExpanded) expandCart();
+  if(item){item.qty++;}else{cart.push({name,price,qty:1});}
+  renderCart();renderProds();
+  if(!cartExpanded)expandCart();
 }
-
 function removeFromCart(name){
   var idx=cart.findIndex(c=>c.name===name);
   if(idx<0)return;
-  if(cart[idx].qty>1){cart[idx].qty--;}
-  else{cart.splice(idx,1);}
-  renderCart();
-  renderProds();
+  if(cart[idx].qty>1){cart[idx].qty--;}else{cart.splice(idx,1);}
+  renderCart();renderProds();
   if(cart.length===0)collapseCart();
 }
-
-function viderPanier(){
-  cart=[];
-  renderCart();
-  renderProds();
-  collapseCart();
-}
-
-function cartTotal(){
-  return cart.reduce((s,i)=>s+i.price*i.qty,0);
-}
-
+function viderPanier(){cart=[];renderCart();renderProds();collapseCart();}
+function cartTotal(){return cart.reduce((s,i)=>s+i.price*i.qty,0);}
 function renderCart(){
   var total=cartTotal();
   var count=cart.reduce((s,i)=>s+i.qty,0);
   document.getElementById("cartTotalMini").textContent=euro(total);
   var countEl=document.getElementById("cartCount");
-  if(count>0){countEl.textContent=count;countEl.style.display="";}
-  else{countEl.style.display="none";}
-  var itemsEl=document.getElementById("cartItems");
-  var emptyEl=document.getElementById("cartEmpty");
+  countEl.textContent=count;countEl.style.display=count>0?"flex":"none";
   var footEl=document.getElementById("cartFoot");
-  var btnEl=document.getElementById("btnEncaisser");
+  var emptyEl=document.getElementById("cartEmpty");
   if(cart.length===0){
     emptyEl.style.display="block";
-    itemsEl.innerHTML="";
+    document.getElementById("cartItems").innerHTML="";
     footEl.style.display="none";
   } else {
     emptyEl.style.display="none";
     footEl.style.display="block";
     document.getElementById("cartTotalVal").textContent=euro(total);
-    var html="";
-    cart.forEach(item=>{
-      html+=`<div class="cart-item">
+    document.getElementById("cartItems").innerHTML=cart.map(item=>`
+      <div class="cart-item">
         <span class="ci-name">${item.name}</span>
         <div class="ci-ctrl">
           <button class="ci-minus" onclick="removeFromCart('${item.name.replace(/'/g,"\\'")}')">−</button>
@@ -489,254 +403,210 @@ function renderCart(){
           <button class="ci-plus" onclick="addToCart('${item.name.replace(/'/g,"\\'")}',${item.price})">+</button>
         </div>
         <span class="ci-sub">${euro(item.price*item.qty)}</span>
-      </div>`;
-    });
-    itemsEl.innerHTML=html;
+      </div>`).join("");
   }
 }
-
-function toggleCart(){
-  if(cartExpanded)collapseCart();else expandCart();
-}
-
-function expandCart(){
-  cartExpanded=true;
-  document.getElementById("cartPanel").className="cart-panel expanded";
-  document.getElementById("cartToggleIcon").textContent="▼";
-}
-
-function collapseCart(){
-  cartExpanded=false;
-  document.getElementById("cartPanel").className="cart-panel collapsed";
-  document.getElementById("cartToggleIcon").textContent="▲";
-}
+function toggleCart(){if(cartExpanded)collapseCart();else expandCart();}
+function expandCart(){cartExpanded=true;document.getElementById("cartPanel").className="cart-panel expanded";document.getElementById("cartToggleIcon").textContent="▼";}
+function collapseCart(){cartExpanded=false;document.getElementById("cartPanel").className="cart-panel collapsed";document.getElementById("cartToggleIcon").textContent="▲";}
 
 /* ---- PAYMENT ---- */
-var selectedMethod="especes";
-var lastSale=null;
-
 function openPayModal(){
   if(cart.length===0)return;
-  selectedMethod="especes";
   renderPayModal();
   document.getElementById("payModal").classList.add("open");
 }
-
-function closePayModal(){
-  document.getElementById("payModal").classList.remove("open");
-}
+function closePayModal(){document.getElementById("payModal").classList.remove("open");}
 
 function renderPayModal(){
   var total=cartTotal();
   var recapRows=cart.map(i=>`<div class="recap-row"><span>${i.name} ×${i.qty}</span><span>${euro(i.price*i.qty)}</span></div>`).join("");
-  var payMethods=[
-    {id:"especes",icon:"💵",label:"Espèces"},
-    {id:"cb",icon:"💳",label:"Carte bancaire"},
-    {id:"virement",icon:"🏦",label:"Virement"},
-    {id:"sumeria",icon:"📱",label:"Sumeria"},
-  ];
-  var payCards=payMethods.map(m=>`<div class="pay-card${m.id===selectedMethod?" active":""}" onclick="selectMethod('${m.id}')"><div class="pay-icon">${m.icon}</div><div class="pay-lbl">${m.label}</div></div>`).join("");
   document.getElementById("modalContent").innerHTML=`
     <div class="modal-title">💳 Encaissement</div>
     <div class="recap-box">${recapRows}</div>
     <div class="recap-total-row"><span>Total à payer</span><span>${euro(total)}</span></div>
-    <div class="pay-grid">${payCards}</div>
-    <div class="cash-box${selectedMethod==="especes"?" show":""}" id="cashBox">
-      <label class="cash-lbl">Montant reçu (€)</label>
-      <input class="cash-inp" id="cashInput" type="number" step="0.01" min="${total}" placeholder="${euro(total)}" oninput="calcMonnaie(${total})" inputmode="decimal"/>
-      <div class="monnaie" id="monnaieBox">
-        <div class="monnaie-lbl">Monnaie à rendre</div>
-        <div class="monnaie-val" id="monnaieVal">0,00€</div>
+    <div class="pay-split">
+      <div class="pay-field">
+        <label>💳 Total par carte (€)</label>
+        <input class="pay-inp" id="inpCarte" type="number" step="0.01" min="0" max="${total.toFixed(2)}" value="0" inputmode="decimal" oninput="syncPay(${total.toFixed(4)},'carte')"/>
       </div>
+      <div class="pay-field">
+        <label>💵 Total par espèces (€)</label>
+        <input class="pay-inp" id="inpEsp" type="number" step="0.01" min="0" max="${total.toFixed(2)}" value="${total.toFixed(2)}" inputmode="decimal" oninput="syncPay(${total.toFixed(4)},'esp')"/>
+      </div>
+    </div>
+    <div class="recu-row show" id="recuRow">
+      <label>💵 Reçu en espèces (€) <span style="font-weight:400;color:var(--doux);">— pour calcul de monnaie</span></label>
+      <input class="pay-inp" id="inpRecu" type="number" step="0.01" min="0" placeholder="${total.toFixed(2)}" inputmode="decimal" oninput="calcChange()"/>
+    </div>
+    <div class="monnaie-box" id="monnaieBox">
+      <div class="monnaie-row"><span class="monnaie-lbl">Monnaie à rendre</span><span class="monnaie-val" id="monnaieVal">0,00€</span></div>
     </div>
     <textarea class="modal-note" id="modalNote" placeholder="Note (optionnel)..."></textarea>
     <div class="modal-btns">
       <button class="btn-annuler" onclick="closePayModal()">Annuler</button>
-      <button class="btn-valider" onclick="confirmerVente()">✅ Valider la vente</button>
+      <button class="btn-valider" onclick="confirmerVente(${total.toFixed(4)})">✅ Valider</button>
     </div>`;
 }
 
-function selectMethod(m){
-  selectedMethod=m;
-  renderPayModal();
+function syncPay(total, which){
+  var carteEl=document.getElementById("inpCarte");
+  var espEl=document.getElementById("inpEsp");
+  if(!carteEl||!espEl)return;
+  if(which==="carte"){
+    var c=Math.min(parseFloat(carteEl.value)||0, total);
+    carteEl.value=c.toFixed(2);
+    espEl.value=Math.max(0,total-c).toFixed(2);
+  } else {
+    var e=Math.min(parseFloat(espEl.value)||0, total);
+    espEl.value=e.toFixed(2);
+    carteEl.value=Math.max(0,total-e).toFixed(2);
+  }
+  var esp=parseFloat(espEl.value)||0;
+  var recuRow=document.getElementById("recuRow");
+  if(recuRow)recuRow.className="recu-row"+(esp>0?" show":"");
+  calcChange();
 }
 
-function calcMonnaie(total){
-  var recu=parseFloat(document.getElementById("cashInput").value)||0;
-  var monnaie=recu-total;
+function calcChange(){
+  var espEl=document.getElementById("inpEsp");
+  var recuEl=document.getElementById("inpRecu");
   var box=document.getElementById("monnaieBox");
-  if(recu>=total){
+  if(!espEl||!recuEl||!box)return;
+  var esp=parseFloat(espEl.value)||0;
+  var recu=parseFloat(recuEl.value)||0;
+  if(esp>0&&recu>=esp){
     box.classList.add("show");
-    document.getElementById("monnaieVal").textContent=euro(Math.max(0,monnaie));
+    document.getElementById("monnaieVal").textContent=euro(Math.round((recu-esp)*100)/100);
   } else {
     box.classList.remove("show");
   }
 }
 
-async function confirmerVente(){
-  var total=cartTotal();
-  var note=document.getElementById("modalNote")?document.getElementById("modalNote").value:"";
-  var cashReceived=null,changeGiven=null;
-  if(selectedMethod==="especes"){
-    var inp=document.getElementById("cashInput");
-    if(inp&&inp.value){
-      cashReceived=parseFloat(inp.value);
-      if(cashReceived<total){showToast("Montant insuffisant !");return;}
-      changeGiven=Math.round((cashReceived-total)*100)/100;
-    }
-  }
-  var btn=document.querySelector(".btn-valider");
-  if(btn){btn.disabled=true;btn.textContent="Enregistrement...";}
-  try{
-    var {error}=await sb.from("sales").insert({
-      sale_date:new Date().toISOString().slice(0,10),
-      items:cart.map(i=>({name:i.name,price:i.price,qty:i.qty})),
-      total:Math.round(total*100)/100,
-      payment_method:selectedMethod,
-      cash_received:cashReceived,
-      change_given:changeGiven,
-      note:note||null
-    });
-    if(error){
-      if(error.code==="42P01"){showSetupGuide();closePayModal();return;}
-      throw error;
-    }
-    lastSale={total,method:selectedMethod,cashReceived,changeGiven};
-    renderSuccessModal(lastSale);
-    await loadSales();
-  }catch(e){
-    showToast("Erreur : "+e.message);
-    if(btn){btn.disabled=false;btn.textContent="✅ Valider la vente";}
-  }
+function confirmerVente(total){
+  var carteEl=document.getElementById("inpCarte");
+  var espEl=document.getElementById("inpEsp");
+  var carte=Math.round((parseFloat(carteEl.value)||0)*100)/100;
+  var esp=Math.round((parseFloat(espEl.value)||0)*100)/100;
+  if(Math.abs(carte+esp-total)>0.02){showToast("Carte + Espèces doit égaler le total ("+euro(total)+")");return;}
+  var recuEl=document.getElementById("inpRecu");
+  var recu=recuEl&&recuEl.value?parseFloat(recuEl.value)||0:esp;
+  var change=esp>0?Math.max(0,Math.round((recu-esp)*100)/100):0;
+  var note=(document.getElementById("modalNote")||{}).value||"";
+  var now=new Date();
+  var sale={
+    id:Date.now(),
+    date:now.toISOString().slice(0,10),
+    time:now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0"),
+    items:cart.map(i=>({name:i.name,price:i.price,qty:i.qty})),
+    total:Math.round(total*100)/100,
+    carte:carte,
+    cash:esp,
+    recu:recu,
+    change:change,
+    note:note||null
+  };
+  saveSale(sale);
+  lastSale=sale;
+  renderSuccessModal(sale);
+  cart=[];renderCart();renderProds();collapseCart();
+  loadSales();
 }
 
 function renderSuccessModal(s){
-  var methodLabels={especes:"Espèces",cb:"Carte bancaire",virement:"Virement",sumeria:"Sumeria"};
-  var changeHtml=s.method==="especes"&&s.changeGiven!=null?`<div class="change-box">Monnaie rendue : ${euro(s.changeGiven)}</div>`:"";
-  var ticketText=buildTicket(cart,s);
+  var splitHtml="";
+  if(s.carte>0&&s.cash>0)splitHtml=`💳 Carte : ${euro(s.carte)} &nbsp;·&nbsp; 💵 Espèces : ${euro(s.cash)}`;
+  else if(s.carte>0)splitHtml=`💳 Tout par carte`;
+  else splitHtml=`💵 Tout en espèces`;
+  var changeHtml=s.cash>0&&s.change>0?`<div class="change-box">💵 Monnaie à rendre : ${euro(s.change)}</div>`:"";
+  var ticketText=buildTicket(s);
   document.getElementById("modalContent").innerHTML=`
     <div class="success-content">
       <div class="success-icon">✅</div>
       <div class="success-title">Vente enregistrée !</div>
       <div class="success-amount">${euro(s.total)}</div>
-      <div class="success-method">${methodLabels[s.method]||s.method}</div>
+      <div class="success-split">${splitHtml}</div>
       ${changeHtml}
       <button class="btn-nvvente" onclick="nouvellVente()">🛒 Nouvelle vente</button>
-      <button class="btn-partager" onclick="partagerTicket(\`${ticketText.replace(/`/g,"\\`")}\`)">📤 Partager le ticket WhatsApp</button>
+      <button class="btn-partager" onclick="partagerTicket(\`${ticketText.replace(/`/g,"\\`").replace(/\$/g,"\\$")}\`)">📤 Partager le ticket WhatsApp</button>
     </div>`;
-  cart=[];
-  renderCart();
-  renderProds();
-  collapseCart();
 }
 
-function buildTicket(items,sale){
-  var d=new Date();
-  var heure=d.getHours().toString().padStart(2,"0")+":"+d.getMinutes().toString().padStart(2,"0");
-  var date=d.toLocaleDateString("fr-FR");
-  var methodLabels={especes:"Espèces",cb:"Carte bancaire",virement:"Virement",sumeria:"Sumeria"};
-  var lignes=items.map(i=>`${i.name} ×${i.qty} = ${euro(i.price*i.qty)}`).join("\n");
-  var monnaie=sale.method==="especes"&&sale.changeGiven!=null?`\nMonnaie rendue : ${euro(sale.changeGiven)}`:"";
-  return `🧁 Les Douceurs de Cicine\n📍 Le Vauclin, Martinique\n📅 ${date} à ${heure}\n\n${lignes}\n\n💰 TOTAL : ${euro(sale.total)}\n💳 Paiement : ${methodLabels[sale.method]||sale.method}${monnaie}\n\nMerci pour votre confiance ! 💛`;
+function buildTicket(s){
+  var lignes=s.items.map(i=>`${i.name} ×${i.qty} = ${euro(i.price*i.qty)}`).join("\n");
+  var paiement="";
+  if(s.carte>0&&s.cash>0)paiement=`💳 Carte : ${euro(s.carte)}\n💵 Espèces : ${euro(s.cash)}`;
+  else if(s.carte>0)paiement=`💳 Carte bancaire`;
+  else paiement=`💵 Espèces`;
+  var monnaie=s.cash>0&&s.change>0?`\nMonnaie rendue : ${euro(s.change)}`:"";
+  return`🧁 Les Douceurs de Cicine\n📍 Le Vauclin, Martinique\n📅 ${s.date} à ${s.time}\n\n${lignes}\n\n💰 TOTAL : ${euro(s.total)}\n${paiement}${monnaie}\n\nMerci pour votre confiance ! 💛`;
 }
+function partagerTicket(text){window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");}
+function nouvellVente(){closePayModal();}
 
-function partagerTicket(text){
-  var url="https://wa.me/?text="+encodeURIComponent(text);
-  window.open(url,"_blank");
+/* ---- STORAGE (localStorage) ---- */
+function saveSale(sale){
+  var all=JSON.parse(localStorage.getItem(SALES_KEY)||"[]");
+  all.unshift(sale);
+  if(all.length>2000)all=all.slice(0,2000);
+  localStorage.setItem(SALES_KEY,JSON.stringify(all));
 }
-
-function nouvellVente(){
-  closePayModal();
+function loadSales(){
+  var d=new Date().toISOString().slice(0,10);
+  var all=JSON.parse(localStorage.getItem(SALES_KEY)||"[]");
+  todaySales=all.filter(s=>s.date===d);
+  updateStats();
 }
-
-/* ---- LOAD SALES ---- */
-async function loadSales(){
-  var today=new Date().toISOString().slice(0,10);
-  try{
-    var {data,error}=await sb.from("sales").select("*").eq("sale_date",today).order("created_at",{ascending:false});
-    if(error){
-      if(error.code==="42P01"){setupNeeded=true;updateStats([]);return;}
-      throw error;
-    }
-    todaySales=data||[];
-    updateStats(todaySales);
-  }catch(e){console.error(e);}
-}
-
-function updateStats(sales){
-  var ca=sales.reduce((s,v)=>s+parseFloat(v.total||0),0);
-  var nb=sales.length;
-  document.getElementById("statCA").textContent=euro(ca);
-  document.getElementById("statNb").textContent=nb;
-  document.getElementById("statMoy").textContent=nb>0?euro(ca/nb):"0,00€";
-}
-
-function renderHist(){
-  if(setupNeeded){
-    document.getElementById("histSetup").style.display="block";
-    document.getElementById("setupSQL").textContent=SETUP_SQL;
-    document.getElementById("histContent").style.display="none";
-    return;
-  }
-  document.getElementById("histSetup").style.display="none";
-  document.getElementById("histContent").style.display="block";
+function updateStats(){
   var ca=todaySales.reduce((s,v)=>s+parseFloat(v.total||0),0);
-  var nb=todaySales.length;
+  var cb=todaySales.reduce((s,v)=>s+parseFloat(v.carte||0),0);
+  var esp=todaySales.reduce((s,v)=>s+parseFloat(v.cash||0),0);
+  document.getElementById("statCA").textContent=euro(ca);
+  document.getElementById("statCB").textContent=euro(cb);
+  document.getElementById("statESP").textContent=euro(esp);
+}
+function renderHist(){
+  var ca=todaySales.reduce((s,v)=>s+parseFloat(v.total||0),0);
+  var cb=todaySales.reduce((s,v)=>s+parseFloat(v.carte||0),0);
+  var esp=todaySales.reduce((s,v)=>s+parseFloat(v.cash||0),0);
   var dtEl=document.getElementById("histDayTotal");
-  if(nb>0){
+  if(todaySales.length>0){
     dtEl.style.display="flex";
     document.getElementById("histCA").textContent=euro(ca);
-    document.getElementById("histNb").textContent=nb;
+    document.getElementById("histCB").textContent=euro(cb);
+    document.getElementById("histESP").textContent=euro(esp);
   } else {
     dtEl.style.display="none";
   }
-  var methodLabels={especes:"Espèces 💵",cb:"CB 💳",virement:"Virement 🏦",sumeria:"Sumeria 📱"};
-  var badgeClass={especes:"hpb-especes",cb:"hpb-cb",virement:"hpb-virement",sumeria:"hpb-sumeria"};
   if(todaySales.length===0){
     document.getElementById("histList").innerHTML='<p class="hist-empty">Aucune vente pour l\'instant</p>';
     return;
   }
-  var html=todaySales.map(s=>{
-    var d=new Date(s.created_at);
-    var heure=d.getHours().toString().padStart(2,"0")+":"+d.getMinutes().toString().padStart(2,"0");
+  document.getElementById("histList").innerHTML=todaySales.map(s=>{
     var items=(s.items||[]).map(i=>`${i.name} ×${i.qty}`).join(" · ");
-    var bc=badgeClass[s.payment_method]||"";
-    var ml=methodLabels[s.payment_method]||s.payment_method;
-    return `<div class="hist-card">
+    var payParts=[];
+    if(s.carte>0)payParts.push("💳 "+euro(s.carte));
+    if(s.cash>0)payParts.push("💵 "+euro(s.cash));
+    return`<div class="hist-card">
       <div class="hist-card-head">
-        <span class="hist-time">${heure}</span>
-        <span class="hist-pay-badge ${bc}">${ml}</span>
-        <span class="hist-total">${euro(parseFloat(s.total||0))}</span>
+        <span class="hist-time">${s.time||""}</span>
+        <span class="hist-pay">${payParts.join(" + ")}</span>
+        <span class="hist-total">${euro(s.total)}</span>
       </div>
       <div class="hist-items-text">${items||"—"}</div>
     </div>`;
   }).join("");
-  document.getElementById("histList").innerHTML=html;
 }
 
-function showSetupGuide(){
-  setupNeeded=true;
-  setTab("historique");
-  renderHist();
-  showToast("Table 'sales' introuvable — voir guide de configuration");
-}
-
-function copySQL(){
-  navigator.clipboard.writeText(SETUP_SQL).then(()=>showToast("SQL copié !")).catch(()=>showToast("Copiez manuellement le texte ci-dessus"));
-}
-
+/* ---- TOAST ---- */
 function showToast(msg){
   var el=document.createElement("div");
-  el.className="toast";
-  el.textContent=msg;
+  el.className="toast";el.textContent=msg;
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),3000);
 }
 
-window.addEventListener("click",function(e){
-  if(e.target===document.getElementById("payModal"))closePayModal();
-});
-
+window.addEventListener("click",function(e){if(e.target===document.getElementById("payModal"))closePayModal();});
 init();
 </script>
 </body>
