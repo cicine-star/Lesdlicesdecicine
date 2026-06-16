@@ -248,6 +248,27 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .mv-btn.as{border-color:var(--rouge);background:#fee2e2;color:#991b1b;}
 .mv-btn.ai{border-color:var(--caramel);background:var(--fond2);color:var(--brun);}
 .fgr{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+/* SHOPPING LIST CART */
+.nav-cart-btn{position:relative;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:30px;padding:6px 11px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;display:flex;align-items:center;gap:4px;}
+.nav-cart-btn:hover{background:rgba(255,255,255,.25);}
+.nav-cart-badge{position:absolute;top:-5px;right:-5px;background:#dc2626;color:#fff;border-radius:50%;width:17px;height:17px;font-size:.58rem;font-weight:700;display:none;align-items:center;justify-content:center;}
+/* RECIPES */
+.recipe-card{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:12px 13px;margin-bottom:8px;}
+.recipe-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.recipe-name{font-weight:700;font-size:.88rem;color:var(--texte);}
+.recipe-ing{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
+.recipe-ing-chip{background:var(--fond2);border-radius:20px;padding:3px 9px;font-size:.68rem;color:var(--brun);font-weight:700;}
+/* SHOPPING LIST ITEMS */
+.shop-item{background:#fff;border:1.5px solid #fca5a5;border-radius:11px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.shop-item-left{flex:1;}
+.shop-item-name{font-weight:700;font-size:.88rem;color:var(--texte);margin-bottom:2px;}
+.shop-item-detail{font-size:.72rem;color:var(--doux);}
+.shop-item-qty{font-size:1rem;font-weight:700;color:#dc2626;text-align:right;white-space:nowrap;}
+/* ING ROWS IN MODAL */
+.ing-row{display:grid;grid-template-columns:1fr 80px 70px 28px;gap:6px;margin-bottom:6px;align-items:center;}
+.ing-row select,.ing-row input{padding:7px 9px;border:1.5px solid var(--bordure);border-radius:8px;font-size:.78rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);}
+.ing-row select:focus,.ing-row input:focus{border-color:var(--caramel);}
+.ing-del{width:26px;height:26px;border-radius:50%;border:1.5px solid #fca5a5;background:#fee2e2;color:#991b1b;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 /* TOAST */
 .notif-banner{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--brun);color:#fff;padding:12px 22px;border-radius:12px;font-size:.85rem;font-weight:700;z-index:9998;box-shadow:0 4px 18px rgba(0,0,0,.25);animation:slideDown .35s ease;white-space:nowrap;pointer-events:none;}
 @keyframes slideDown{from{opacity:0;top:50px;}to{opacity:1;top:70px;}}
@@ -274,8 +295,11 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <span class="badge-pending" id="navBadge" style="display:none"></span>
     </div>
     <div class="nav-actions">
+      <button class="nav-cart-btn" onclick="openShoppingList()" title="Liste de courses">
+        🛒<span class="nav-cart-badge" id="shopBadge"></span>
+      </button>
       <a href="tableau-de-bord.html" class="nav-btn">📊 Mon plan</a>
-      <a href="caisse.html" class="nav-btn">🛒 Caisse</a>
+      <a href="caisse.html" class="nav-btn">💰 Caisse</a>
       <a href="index.html" class="nav-btn">🌐 Site</a>
       <button class="nav-logout" onclick="logout()">Déco.</button>
     </div>
@@ -344,15 +368,22 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <div class="s-stat"><div class="s-stat-n" id="sStatValMP">—</div><div class="s-stat-l">Valeur MP</div></div>
       <div class="s-stat"><div class="s-stat-n" id="sStatValEmb">—</div><div class="s-stat-l">Valeur emb.</div></div>
     </div>
-    <div class="s-subtabs">
-      <div class="s-subtab active" onclick="setStockTab('matiere_premiere')">🌾 Matières premières</div>
+    <div class="s-subtabs" id="stockSubtabs">
+      <div class="s-subtab active" onclick="setStockTab('matiere_premiere')">🌾 Mat. premières</div>
       <div class="s-subtab" onclick="setStockTab('emballage')">📦 Emballages</div>
+      <div class="s-subtab" onclick="setStockTab('recettes')">🍰 Recettes</div>
     </div>
-    <div class="s-search-row">
+    <div id="stockSearchRow" class="s-search-row">
       <input class="s-search" id="sSearch" type="text" placeholder="Rechercher..." oninput="renderStocks()"/>
       <button class="s-add-btn" onclick="openAddStock()">+ Ajouter</button>
     </div>
     <div class="stock-grid" id="stockGrid"></div>
+    <div id="recipesSection" style="display:none;">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+        <button class="s-add-btn" onclick="openAddRecipe()">+ Ajouter une recette</button>
+      </div>
+      <div id="recipesGrid"></div>
+    </div>
   </div>
 
   <!-- ===== TAB PLANNING ===== -->
@@ -442,6 +473,10 @@ var stockItems=[];
 var activeStockTab="matiere_premiere";
 var adjType="entree";
 
+// Recipes & shopping list
+var recipes=[];
+var RECIPES_KEY="cicine_recipes";
+
 // Planning
 var planView="hebdomadaire";
 var planWeekOffset=0;
@@ -466,6 +501,7 @@ function logout(){localStorage.removeItem("admin_auth");location.reload();}
 function showDashboard(){
   document.getElementById("login-screen").style.display="none";
   document.getElementById("dashboard").style.display="block";
+  loadRecipes();
   loadOrders();
   loadBlocked();
   subscribeRealtime();
@@ -542,7 +578,7 @@ function closeModal(){
 async function loadOrders(){
   var res=await sb.from("orders").select("*").order("delivery_date",{ascending:true});
   if(res.data)allOrders=res.data;
-  renderOrders();updateStats();renderReminders();
+  renderOrders();updateStats();renderReminders();updateShoppingBadge();
 }
 async function loadBlocked(){
   var res=await sb.from("blocked_dates").select("*");
@@ -887,14 +923,19 @@ async function loadStocks(){
     stockItems=data||[];
     updateStockStats();
     renderStocks();
+    updateShoppingBadge();
   }catch(e){showNotif("Erreur stocks : "+e.message);}
 }
 function setStockTab(tab){
   activeStockTab=tab;
   document.querySelectorAll(".s-subtab").forEach(function(el,i){
-    el.classList.toggle("active",["matiere_premiere","emballage"][i]===tab);
+    el.classList.toggle("active",["matiere_premiere","emballage","recettes"][i]===tab);
   });
-  renderStocks();
+  var isRecettes=tab==="recettes";
+  document.getElementById("stockSearchRow").style.display=isRecettes?"none":"";
+  document.getElementById("stockGrid").style.display=isRecettes?"none":"";
+  document.getElementById("recipesSection").style.display=isRecettes?"block":"none";
+  if(isRecettes)renderRecipes();else renderStocks();
 }
 function updateStockStats(){
   var mp=stockItems.filter(function(i){return i.category==="matiere_premiere";});
@@ -1247,6 +1288,220 @@ function renderPlanningQuotidien(){
 }
 function savePlanNote(dayStr,val){
   localStorage.setItem("plan_note_"+dayStr,val);
+}
+
+/* ====== RECETTES & LISTE DE COURSES ====== */
+function loadRecipes(){
+  try{recipes=JSON.parse(localStorage.getItem(RECIPES_KEY)||"[]");}catch(e){recipes=[];}
+}
+function saveRecipes(){localStorage.setItem(RECIPES_KEY,JSON.stringify(recipes));}
+
+function renderRecipes(){
+  var el=document.getElementById("recipesGrid");
+  if(!el)return;
+  if(recipes.length===0){
+    el.innerHTML='<div class="s-empty">Aucune recette.&nbsp;<button onclick="openAddRecipe()" style="color:var(--caramel);background:none;border:none;font-weight:700;cursor:pointer;font-family:\'Lato\',sans-serif;font-size:.82rem;text-decoration:underline;">Ajouter</button></div>';
+    return;
+  }
+  el.innerHTML=recipes.map(function(r){
+    var chips=r.ingredients.map(function(ing){
+      return'<span class="recipe-ing-chip">'+ing.qty+' '+ing.unit+' '+ing.name+'</span>';
+    }).join("");
+    return'<div class="recipe-card">'+
+      '<div class="recipe-head">'+
+      '<span class="recipe-name">'+r.product_name+'</span>'+
+      '<button onclick="openEditRecipe(\''+r.id+'\')" style="background:none;border:none;cursor:pointer;font-size:.82rem;color:var(--doux);">✏️</button>'+
+      '</div>'+
+      '<div class="recipe-ing">'+chips+'</div>'+
+      '</div>';
+  }).join("");
+}
+
+var recipeIngCount=0;
+function openAddRecipe(){
+  recipeIngCount=0;
+  openModal(
+    '<div class="bs-title">🍰 Nouvelle recette</div>'+
+    '<p style="font-size:.75rem;color:var(--doux);margin-bottom:11px;">Associez un produit à ses ingrédients (quantités pour 1 unité commandée)</p>'+
+    '<label class="bs-label">Nom du produit *</label>'+
+    '<input class="bs-input" id="rName" type="text" placeholder="Ex: Layer Cake Chocolat 10 parts"/>'+
+    '<div style="display:grid;grid-template-columns:1fr 80px 70px 28px;gap:6px;margin-bottom:4px;">'+
+    '<span style="font-size:.68rem;font-weight:700;color:var(--doux);">Ingrédient</span>'+
+    '<span style="font-size:.68rem;font-weight:700;color:var(--doux);">Quantité</span>'+
+    '<span style="font-size:.68rem;font-weight:700;color:var(--doux);">Unité</span>'+
+    '<span></span></div>'+
+    '<div id="rIngRows"></div>'+
+    '<button onclick="addRecipeIngRow(null)" style="background:none;border:1.5px dashed var(--bordure);border-radius:8px;width:100%;padding:7px;font-size:.78rem;color:var(--doux);cursor:pointer;margin-bottom:11px;">+ Ajouter un ingrédient</button>'+
+    '<button class="bs-btn-primary" onclick="saveNewRecipe()">Enregistrer la recette</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
+  );
+  addRecipeIngRow(null);
+}
+function addRecipeIngRow(ing){
+  recipeIngCount++;
+  var idx=recipeIngCount;
+  var nameOpts=stockItems.map(function(s){
+    return'<option value="'+s.id+'" data-name="'+s.name+'" data-unit="'+s.unit+'"'+(ing&&ing.name===s.name?" selected":"")+'>'+s.name+'</option>';
+  }).join("");
+  var nameVal=ing?ing.name.replace(/"/g,"&quot;"):"";
+  var nameInput=stockItems.length>0?
+    '<select id="rIN'+idx+'" onchange="autoFillUnit('+idx+')" style="padding:7px 9px;border:1.5px solid var(--bordure);border-radius:8px;font-size:.78rem;font-family:\'Lato\',sans-serif;outline:none;color:var(--texte);background:var(--fond);">'+
+    '<option value="">-- Choisir --</option>'+nameOpts+'</select>':
+    '<input id="rIN'+idx+'" type="text" value="'+nameVal+'" placeholder="Ingrédient" style="padding:7px 9px;border:1.5px solid var(--bordure);border-radius:8px;font-size:.78rem;font-family:\'Lato\',sans-serif;outline:none;color:var(--texte);background:var(--fond);"/>';
+  var units=["g","kg","L","cl","ml","unité"];
+  var unitOpts=units.map(function(u){return'<option'+(ing&&ing.unit===u?" selected":"")+'>'+u+'</option>';}).join("");
+  var row=document.createElement("div");
+  row.className="ing-row";row.id="ingrow"+idx;
+  row.innerHTML=nameInput+
+    '<input id="rIQ'+idx+'" type="number" step="0.001" min="0" value="'+(ing?ing.qty:"")+'" placeholder="0" style="padding:7px 9px;border:1.5px solid var(--bordure);border-radius:8px;font-size:.78rem;font-family:\'Lato\',sans-serif;outline:none;color:var(--texte);background:var(--fond);"/>'+
+    '<select id="rIU'+idx+'" style="padding:7px 9px;border:1.5px solid var(--bordure);border-radius:8px;font-size:.78rem;font-family:\'Lato\',sans-serif;outline:none;color:var(--texte);background:var(--fond);">'+unitOpts+'</select>'+
+    '<button onclick="removeIngRow('+idx+')" class="ing-del">×</button>';
+  document.getElementById("rIngRows").appendChild(row);
+}
+function autoFillUnit(idx){
+  var sel=document.getElementById("rIN"+idx);
+  if(!sel||sel.tagName!=="SELECT")return;
+  var opt=sel.options[sel.selectedIndex];
+  if(opt&&opt.dataset.unit){document.getElementById("rIU"+idx).value=opt.dataset.unit;}
+}
+function removeIngRow(idx){var el=document.getElementById("ingrow"+idx);if(el)el.remove();}
+function collectIngRows(){
+  var rows=document.querySelectorAll("#rIngRows .ing-row");
+  var ings=[];
+  rows.forEach(function(row){
+    var id=row.id.replace("ingrow","");
+    var nameEl=document.getElementById("rIN"+id);
+    var qEl=document.getElementById("rIQ"+id);
+    var uEl=document.getElementById("rIU"+id);
+    if(!nameEl||!qEl||!uEl)return;
+    var name="",stockId="";
+    if(nameEl.tagName==="SELECT"){
+      var opt=nameEl.options[nameEl.selectedIndex];
+      if(!opt||!opt.value)return;
+      name=opt.dataset.name||opt.text;
+      stockId=opt.value;
+    } else {
+      name=(nameEl.value||"").trim();
+    }
+    var qty=parseFloat(qEl.value);
+    if(!name||isNaN(qty)||qty<=0)return;
+    ings.push({name:name,stock_id:stockId,qty:qty,unit:uEl.value});
+  });
+  return ings;
+}
+function saveNewRecipe(){
+  var name=(document.getElementById("rName").value||"").trim();
+  if(!name){showNotif("Nom du produit obligatoire");return;}
+  var ings=collectIngRows();
+  if(ings.length===0){showNotif("Ajoutez au moins un ingrédient");return;}
+  recipes.push({id:"r_"+Date.now(),product_name:name,ingredients:ings});
+  saveRecipes();closeModal();renderRecipes();updateShoppingBadge();showNotif("Recette enregistrée ✅");
+}
+function openEditRecipe(id){
+  var r=recipes.find(function(x){return x.id===id;});
+  if(!r)return;
+  recipeIngCount=0;
+  openModal(
+    '<div class="bs-title">✏️ Modifier la recette</div>'+
+    '<label class="bs-label">Nom du produit *</label>'+
+    '<input class="bs-input" id="rName" type="text" value="'+r.product_name.replace(/"/g,"&quot;")+'"/>'+
+    '<div style="display:grid;grid-template-columns:1fr 80px 70px 28px;gap:6px;margin-bottom:4px;">'+
+    '<span style="font-size:.68rem;font-weight:700;color:var(--doux);">Ingrédient</span>'+
+    '<span style="font-size:.68rem;font-weight:700;color:var(--doux);">Quantité</span>'+
+    '<span style="font-size:.68rem;font-weight:700;color:var(--doux);">Unité</span>'+
+    '<span></span></div>'+
+    '<div id="rIngRows"></div>'+
+    '<button onclick="addRecipeIngRow(null)" style="background:none;border:1.5px dashed var(--bordure);border-radius:8px;width:100%;padding:7px;font-size:.78rem;color:var(--doux);cursor:pointer;margin-bottom:11px;">+ Ajouter un ingrédient</button>'+
+    '<button class="bs-btn-primary" onclick="saveEditRecipe(\''+id+'\')">Enregistrer</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'+
+    '<button class="bs-btn-danger" onclick="deleteRecipe(\''+id+'\')">🗑️ Supprimer cette recette</button>'
+  );
+  r.ingredients.forEach(function(ing){addRecipeIngRow(ing);});
+}
+function saveEditRecipe(id){
+  var name=(document.getElementById("rName").value||"").trim();
+  if(!name){showNotif("Nom obligatoire");return;}
+  var ings=collectIngRows();
+  if(ings.length===0){showNotif("Ajoutez au moins un ingrédient");return;}
+  var r=recipes.find(function(x){return x.id===id;});
+  if(!r)return;
+  r.product_name=name;r.ingredients=ings;
+  saveRecipes();closeModal();renderRecipes();updateShoppingBadge();showNotif("Recette mise à jour ✅");
+}
+function deleteRecipe(id){
+  if(!confirm("Supprimer cette recette ?"))return;
+  recipes=recipes.filter(function(r){return r.id!==id;});
+  saveRecipes();closeModal();renderRecipes();updateShoppingBadge();
+}
+
+/* ---- LISTE DE COURSES ---- */
+function computeShoppingList(){
+  var activeOrders=allOrders.filter(function(o){return o.status==="pending"||o.status==="confirmed";});
+  var itemsNeeded={};
+  activeOrders.forEach(function(order){
+    (order.items||[]).forEach(function(item){
+      var key=(item.name||"").toLowerCase().trim();
+      itemsNeeded[key]=(itemsNeeded[key]||0)+(parseInt(item.qty)||1);
+    });
+  });
+  var ingNeeded={};
+  Object.keys(itemsNeeded).forEach(function(productKey){
+    var orderedQty=itemsNeeded[productKey];
+    var recipe=recipes.find(function(r){return r.product_name.toLowerCase().trim()===productKey;});
+    if(!recipe)return;
+    recipe.ingredients.forEach(function(ing){
+      var key=ing.name.toLowerCase().trim();
+      if(!ingNeeded[key]){
+        var stockItem=stockItems.find(function(s){
+          return(ing.stock_id&&s.id===ing.stock_id)||(s.name.toLowerCase().trim()===key);
+        });
+        ingNeeded[key]={name:ing.name,unit:ing.unit,needed:0,available:stockItem?parseFloat(stockItem.current_qty||0):0};
+      }
+      ingNeeded[key].needed+=ing.qty*orderedQty;
+    });
+  });
+  return Object.values(ingNeeded).filter(function(i){return i.needed>i.available;}).map(function(i){
+    return{name:i.name,unit:i.unit,needed:Math.round(i.needed*1000)/1000,available:Math.round(i.available*1000)/1000,toBuy:Math.round((i.needed-i.available)*1000)/1000};
+  });
+}
+function updateShoppingBadge(){
+  var list=computeShoppingList();
+  var badge=document.getElementById("shopBadge");
+  if(!badge)return;
+  if(list.length>0){badge.textContent=list.length>9?"9+":list.length;badge.style.display="flex";}
+  else{badge.style.display="none";}
+}
+function openShoppingList(){
+  var list=computeShoppingList();
+  var activeOrders=allOrders.filter(function(o){return o.status==="pending"||o.status==="confirmed";});
+  var html='<div class="bs-title">🛒 Liste de courses</div>';
+  html+='<p style="font-size:.75rem;color:var(--doux);margin-bottom:13px;">Basée sur '+activeOrders.length+' commande'+(activeOrders.length!==1?"s":"")+" en attente / confirmée"+(activeOrders.length!==1?"s":"")+'</p>';
+  if(list.length===0){
+    html+='<div style="text-align:center;padding:24px 0;">'+
+      '<div style="font-size:2rem;margin-bottom:8px;">✅</div>'+
+      '<div style="font-weight:700;color:var(--vert);font-size:.95rem;">Tout est en stock !</div>'+
+      '<p style="font-size:.78rem;color:var(--doux);margin-top:5px;">Vos stocks couvrent toutes les commandes actives.</p>'+
+      '</div>';
+    if(recipes.length===0){
+      html+='<div style="background:var(--fond2);border-radius:10px;padding:11px 13px;margin-top:10px;font-size:.77rem;color:var(--doux);">'+
+        '💡 Commencez par créer des recettes dans <strong>Stocks → Recettes</strong> pour que la liste de courses fonctionne.'+
+        '</div>';
+    }
+  } else {
+    html+='<div style="background:#fee2e2;border-radius:10px;padding:9px 13px;margin-bottom:12px;font-size:.78rem;color:#991b1b;font-weight:700;">'+
+      '⚠️ '+list.length+' ingrédient'+(list.length!==1?"s":"")+" à acheter</div>";
+    list.forEach(function(item){
+      html+='<div class="shop-item">'+
+        '<div class="shop-item-left">'+
+        '<div class="shop-item-name">'+item.name+'</div>'+
+        '<div class="shop-item-detail">En stock : '+item.available+' '+item.unit+' · Nécessaire : '+item.needed+' '+item.unit+'</div>'+
+        '</div>'+
+        '<div class="shop-item-qty">+'+item.toBuy+' '+item.unit+'</div>'+
+        '</div>';
+    });
+  }
+  html+='<button class="bs-btn-secondary" onclick="closeModal()" style="margin-top:8px;">Fermer</button>';
+  openModal(html);
 }
 
 /* ====== TÂCHES ADMIN ====== */
