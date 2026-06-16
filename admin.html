@@ -263,6 +263,8 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <button class="main-tab" onclick="setMainTab('stocks')">📦 Stocks</button>
     <button class="main-tab" onclick="setMainTab('planning')">📅 Planning</button>
     <button class="main-tab" onclick="setMainTab('taches')">✅ Tâches</button>
+    <button class="main-tab" onclick="setMainTab('stats')">📊 Stats</button>
+    <button class="main-tab" onclick="setMainTab('avis')">⭐ Avis <span id="avisbadge" style="display:none;background:var(--fuchsia);color:#fff;border-radius:20px;padding:0 6px;font-size:.65rem;margin-left:3px;"></span></button>
   </div>
 
   <!-- ===== TAB COMMANDES ===== -->
@@ -287,7 +289,14 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <div class="ftab" onclick="setStatusFilter(this,'cancelled')">✕ Annulées</div>
       </div>
     </div>
-    <button class="btn-add-task" onclick="openManualOrder()" style="margin-bottom:10px;">➕ Saisir une commande manuelle</button>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button class="btn-add-task" style="flex:1;margin-bottom:0;" onclick="openManualOrder()">➕ Commande manuelle</button>
+      <button onclick="exportCSV()" style="padding:10px 14px;background:#fff;color:var(--brun);border:1.5px solid var(--bordure);border-radius:30px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;white-space:nowrap;">⬇️ CSV</button>
+    </div>
+    <div id="remindersSection" style="display:none;margin-bottom:14px;">
+      <div class="section-title" style="color:var(--orange);">⏰ Rappels de demain</div>
+      <div id="remindersList"></div>
+    </div>
     <div class="orders-list" id="ordersList"></div>
     <div class="section-title">📅 Calendrier & blocages</div>
     <div class="cal-wrap">
@@ -347,6 +356,29 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <div id="tasksList"></div>
     <button class="btn-add-task" onclick="openAddTask()">+ Ajouter une tâche personnalisée</button>
   </div>
+
+  <!-- ===== TAB STATS ===== -->
+  <div id="tab-stats" class="wrap" style="display:none;">
+    <div class="section-title">📊 Chiffre d'affaires</div>
+    <div class="stats-bar" style="margin-bottom:14px;">
+      <div class="stat-card"><div class="stat-n" id="caWeek">—</div><div class="stat-l">Cette semaine</div></div>
+      <div class="stat-card"><div class="stat-n" id="caMonth">—</div><div class="stat-l">Ce mois</div></div>
+      <div class="stat-card"><div class="stat-n" id="caYear">—</div><div class="stat-l">Cette année</div></div>
+    </div>
+    <div class="stats-bar" style="margin-bottom:14px;">
+      <div class="stat-card"><div class="stat-n" id="nbMonth">—</div><div class="stat-l">Commandes ce mois</div></div>
+      <div class="stat-card"><div class="stat-n" id="nbConfirmed">—</div><div class="stat-l">Confirmées</div></div>
+      <div class="stat-card"><div class="stat-n" id="nbDone">—</div><div class="stat-l">Terminées</div></div>
+    </div>
+    <div class="section-title">📅 Bilan mensuel (12 mois)</div>
+    <div id="monthlyTable" style="background:#fff;border:1.5px solid var(--bordure);border-radius:13px;overflow:hidden;"></div>
+  </div>
+
+  <!-- ===== TAB AVIS ===== -->
+  <div id="tab-avis" class="wrap" style="display:none;">
+    <div class="section-title">⭐ Avis clients</div>
+    <div id="adminAvisList"></div>
+  </div>
 </div>
 
 <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()"></div>
@@ -373,6 +405,7 @@ var statusFilter="";
 var calYear,calMonth;
 var currentModalDate="";
 var manualLineCount=0;
+var allReviews=[];
 var activeMainTab="commandes";
 
 // Stocks
@@ -402,6 +435,7 @@ function showDashboard(){
   loadOrders();
   loadBlocked();
   subscribeRealtime();
+  loadReviews();
   var now=new Date();
   calYear=now.getFullYear();
   calMonth=now.getMonth();
@@ -412,7 +446,7 @@ function showDashboard(){
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
-  var tabs=["commandes","stocks","planning","taches"];
+  var tabs=["commandes","stocks","planning","taches","stats","avis"];
   tabs.forEach(function(t){
     document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
   });
@@ -422,6 +456,8 @@ function setMainTab(tab){
   if(tab==="stocks")loadStocks();
   if(tab==="planning")renderPlanning();
   if(tab==="taches")renderTasks();
+  if(tab==="stats")renderStats();
+  if(tab==="avis"){loadReviews();}
 }
 
 /* ====== HELPERS ====== */
@@ -472,7 +508,7 @@ function closeModal(){
 async function loadOrders(){
   var res=await sb.from("orders").select("*").order("delivery_date",{ascending:true});
   if(res.data)allOrders=res.data;
-  renderOrders();updateStats();
+  renderOrders();updateStats();renderReminders();
 }
 async function loadBlocked(){
   var res=await sb.from("blocked_dates").select("*");
@@ -1153,6 +1189,159 @@ function addTask(){
   saveTasks();
   closeModal();
   renderTasks();
+}
+
+/* ====== STATS ====== */
+function renderStats(){
+  var now=new Date();
+  var y=now.getFullYear(),m=now.getMonth(),d=now.getDate();
+  var dow=now.getDay();var diffMon=dow===0?6:dow-1;
+  var weekStart=new Date(y,m,d-diffMon);weekStart.setHours(0,0,0,0);
+  var monthStart=new Date(y,m,1);
+  var yearStart=new Date(y,0,1);
+  var active=allOrders.filter(function(o){return o.status!=="cancelled";});
+  function sumFrom(start){
+    return active.filter(function(o){return new Date(o.delivery_date)>=start;})
+      .reduce(function(s,o){return s+parseFloat(o.total||0);},0);
+  }
+  document.getElementById("caWeek").textContent=euro(sumFrom(weekStart));
+  document.getElementById("caMonth").textContent=euro(sumFrom(monthStart));
+  document.getElementById("caYear").textContent=euro(sumFrom(yearStart));
+  var thisMonth=active.filter(function(o){return new Date(o.delivery_date)>=monthStart;});
+  document.getElementById("nbMonth").textContent=thisMonth.length;
+  document.getElementById("nbConfirmed").textContent=active.filter(function(o){return o.status==="confirmed";}).length;
+  document.getElementById("nbDone").textContent=active.filter(function(o){return o.status==="done";}).length;
+  // Monthly breakdown last 12 months
+  var rows="";
+  for(var i=11;i>=0;i--){
+    var mDate=new Date(y,m-i,1);
+    var mEnd=new Date(mDate.getFullYear(),mDate.getMonth()+1,1);
+    var mOrders=allOrders.filter(function(o){
+      var dt=new Date(o.delivery_date);
+      return dt>=mDate&&dt<mEnd&&o.status!=="cancelled";
+    });
+    var mCA=mOrders.reduce(function(s,o){return s+parseFloat(o.total||0);},0);
+    var mLabel=mDate.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
+    var pct=mCA>0?Math.min(100,Math.round(mCA/10))+"px":"2px";
+    rows+='<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--fond2);">'+
+      '<span style="font-size:.73rem;color:var(--doux);min-width:110px;">'+mLabel+'</span>'+
+      '<div style="flex:1;background:var(--fond2);border-radius:4px;height:8px;overflow:hidden;"><div style="width:'+Math.min(100,mCA>0?Math.round(mCA*100/300):0)+'%;background:var(--caramel);height:8px;border-radius:4px;min-width:'+(mCA>0?"4px":"0")+';"></div></div>'+
+      '<span style="font-size:.8rem;font-weight:700;color:var(--brun);min-width:60px;text-align:right;">'+euro(mCA)+'</span>'+
+      '<span style="font-size:.7rem;color:var(--doux);min-width:28px;text-align:right;">'+mOrders.length+'</span>'+
+      '</div>';
+  }
+  document.getElementById("monthlyTable").innerHTML=rows||'<p style="padding:16px;text-align:center;color:var(--doux);font-size:.82rem;">Aucune donnée</p>';
+}
+
+/* ====== RAPPELS DEMAIN ====== */
+function renderReminders(){
+  var tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
+  var tStr=tomorrow.toISOString().slice(0,10);
+  var orders=allOrders.filter(function(o){return o.delivery_date===tStr&&o.status!=="cancelled"&&o.status!=="done";});
+  var sec=document.getElementById("remindersSection");
+  var list=document.getElementById("remindersList");
+  if(!sec||!list)return;
+  if(orders.length===0){sec.style.display="none";return;}
+  sec.style.display="block";
+  list.innerHTML=orders.map(function(o){
+    var phone=o.client_phone?(o.client_phone+"").replace(/\D/g,""):"";
+    if(phone.startsWith("0"))phone="596"+phone.substring(1);
+    var type=o.delivery_type==="livraison"?"🚚 Livraison":"🏠 Récupération";
+    var total=euro(parseFloat(o.total||0));
+    var waHtml="";
+    if(phone){
+      var msg="Bonjour "+o.client_name+" ! 🧁\n\nPetit rappel : votre commande est prévue demain "+fmtDate(o.delivery_date)+".\n"+type+"\n\nN'hésitez pas si vous avez des questions ! 💕\nLes Douceurs de Cicine";
+      waHtml='<button class="act-btn act-wa" style="margin-left:auto;" onclick="window.open(\'https://wa.me/'+phone+'?text='+encodeURIComponent(msg)+'\',\'_blank\')">💬 Rappel WA</button>';
+    }
+    return'<div class="order-card" style="margin-bottom:8px;"><div class="oc-head"><span class="oc-client">'+o.client_name+'</span><span style="font-size:.72rem;color:var(--doux);">'+type+'</span><span style="font-size:.8rem;font-weight:700;color:var(--brun);">'+total+'</span></div>'+
+      '<div class="oc-actions">'+statusLabel(o.status)+waHtml+'</div></div>';
+  }).join("");
+}
+
+/* ====== EXPORT CSV ====== */
+function exportCSV(){
+  var orders=allOrders;
+  var header=["Date livraison","Client","Téléphone","Type","Total (€)","Statut","Articles","Note","Date commande"].join(";");
+  var rows=orders.map(function(o){
+    var items=(o.items||[]).map(function(i){return i.name+" x"+i.qty;}).join(" | ");
+    return[
+      o.delivery_date,
+      '"'+(o.client_name||"").replace(/"/g,'""')+'"',
+      o.client_phone||"",
+      o.delivery_type||"",
+      parseFloat(o.total||0).toFixed(2),
+      o.status||"",
+      '"'+items.replace(/"/g,'""')+'"',
+      '"'+(o.note||"").replace(/"/g,'""')+'"',
+      o.created_at?o.created_at.slice(0,10):""
+    ].join(";");
+  });
+  var csv="﻿"+[header].concat(rows).join("\n");
+  var blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;a.download="commandes_cicine_"+new Date().toISOString().slice(0,10)+".csv";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showNotif("Export CSV téléchargé !");
+}
+
+/* ====== AVIS (REVIEWS) ====== */
+async function loadReviews(){
+  try{
+    var res=await sb.from("reviews").select("*").order("created_at",{ascending:false});
+    if(res.error)return;
+    allReviews=res.data||[];
+    var pending=allReviews.filter(function(r){return!r.approved;}).length;
+    var badge=document.getElementById("avisbadge");
+    if(badge){badge.textContent=pending;badge.style.display=pending>0?"inline":"none";}
+    if(document.getElementById("tab-avis").style.display!=="none")renderAdminReviews();
+  }catch(e){}
+}
+function renderAdminReviews(){
+  var pending=allReviews.filter(function(r){return!r.approved;});
+  var approved=allReviews.filter(function(r){return r.approved;});
+  var html="";
+  if(pending.length>0){
+    html+='<div class="section-title" style="color:var(--orange);margin-top:0;">⏳ En attente d\'approbation ('+pending.length+')</div>';
+    pending.forEach(function(r){html+=adminReviewCard(r,true);});
+  }
+  if(approved.length>0){
+    html+='<div class="section-title">✅ Avis approuvés ('+approved.length+')</div>';
+    approved.forEach(function(r){html+=adminReviewCard(r,false);});
+  }
+  if(!pending.length&&!approved.length){
+    html='<p style="text-align:center;color:var(--doux);font-size:.85rem;padding:24px 0;">Aucun avis pour l\'instant — ils apparaîtront ici quand des clients en laisseront.</p>';
+  }
+  document.getElementById("adminAvisList").innerHTML=html;
+}
+function adminReviewCard(r,isPending){
+  var stars="★".repeat(r.rating||5)+"☆".repeat(5-(r.rating||5));
+  var date=(r.created_at||"").slice(0,10);
+  var id=r.id;
+  return'<div class="order-card" style="margin-bottom:10px;">'+
+    '<div class="oc-head"><span style="color:#f59e0b;letter-spacing:2px;">'+stars+'</span><span class="oc-client">'+r.author+'</span><span class="oc-phone">'+date+'</span></div>'+
+    '<div class="oc-body"><p style="font-size:.83rem;font-style:italic;color:var(--doux);margin-bottom:8px;">"'+r.comment+'"</p>'+
+    '<div class="oc-actions">'+
+    (isPending?'<button class="act-btn act-confirm" onclick="approveReview(\''+id+'\')">✅ Approuver</button>':'')+
+    '<button class="act-btn act-cancel" onclick="deleteReview(\''+id+'\')">🗑️ Supprimer</button>'+
+    '</div></div></div>';
+}
+async function approveReview(id){
+  await sb.from("reviews").update({approved:true}).eq("id",id);
+  for(var i=0;i<allReviews.length;i++){if(allReviews[i].id==id){allReviews[i].approved=true;break;}}
+  renderAdminReviews();
+  var pending=allReviews.filter(function(r){return!r.approved;}).length;
+  var badge=document.getElementById("avisbadge");
+  if(badge){badge.textContent=pending;badge.style.display=pending>0?"inline":"none";}
+  showNotif("Avis approuvé et publié !");
+}
+async function deleteReview(id){
+  if(!confirm("Supprimer cet avis définitivement ?"))return;
+  await sb.from("reviews").delete().eq("id",id);
+  allReviews=allReviews.filter(function(r){return r.id!==id;});
+  renderAdminReviews();
+  showNotif("Avis supprimé.");
 }
 
 /* ====== INIT ====== */

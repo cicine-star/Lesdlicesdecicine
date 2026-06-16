@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<title>Conditions Générales de Vente — Les Douceurs de Cicine</title>
+<style>
+:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);font-size:17px;}
+
+/* Nav */
+nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 8px rgba(92,46,14,.07);}
+.nav-logo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:var(--brun);text-decoration:none;}
+.nav-panier{background:var(--caramel);color:#fff;border-radius:30px;padding:8px 16px;font-weight:700;font-size:.8rem;text-decoration:none;}
+
+/* Layout */
+.wrap{max-width:620px;margin:0 auto;padding:20px 16px 60px;}
+.back{display:inline-flex;align-items:center;gap:5px;color:var(--caramel);font-weight:700;font-size:.82rem;text-decoration:none;margin-bottom:18px;}
+.back:hover{text-decoration:underline;}
+
+/* Page header */
+.page-title{font-family:"Dancing Script",cursive;font-size:2.2rem;color:var(--brun);margin-bottom:4px;}
+.page-sub{font-size:.84rem;color:var(--doux);margin-bottom:6px;}
+.page-date{font-size:.78rem;color:var(--doux);font-style:italic;margin-bottom:20px;}
+
+/* Divider */
+.hdiv{display:flex;align-items:center;gap:8px;margin:10px 0 18px;}
+.hdiv hr{flex:1;border:none;border-top:1.5px solid var(--fuchsia);opacity:.35;}
+.hdiv span{color:var(--fuchsia);}
+
+/* Section cards */
+.sec-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:18px 16px;margin-bottom:16px;}
+.sec-title{font-family:"Dancing Script",cursive;font-size:1.45rem;color:var(--brun);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.sec-card p{font-size:.84rem;color:var(--doux);line-height:1.75;margin-bottom:8px;}
+.sec-card p:last-child{margin-bottom:0;}
+.sec-card ul{padding-left:18px;margin-top:6px;}
+.sec-card li{font-size:.84rem;color:var(--doux);line-height:1.75;margin-bottom:4px;}
+.sec-card li:last-child{margin-bottom:0;}
+.sec-card strong{color:var(--brun);}
+.sec-card a{color:var(--caramel);text-decoration:none;}
+.sec-card a:hover{text-decoration:underline;}
+
+/* Highlight box */
+.highlight{background:var(--carte);border:1.5px solid var(--bordure);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:.82rem;color:var(--doux);line-height:1.7;}
+.highlight strong{color:var(--c2);}
+
+/* Warning box */
+.warn-box{background:#FFF8E1;border:1.5px solid #FFD54F;border-radius:10px;padding:12px 14px;margin-top:10px;font-size:.82rem;color:#5D4037;line-height:1.7;}
+
+/* CTA button */
+.btn{display:block;width:100%;font-weight:700;font-size:.9rem;padding:14px;border-radius:40px;cursor:pointer;border:none;text-align:center;margin-bottom:10px;text-decoration:none;transition:opacity .2s;}
+.btn:hover{opacity:.88;}
+.btn-c{background:var(--caramel);color:#fff;}
+
+/* Footer */
+footer{background:var(--brun);color:#e8d5c8;padding:28px 16px 20px;text-align:center;margin-top:20px;}
+.flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:8px;}
+footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
+.flinks{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
+.flink{color:#e8d5c8;font-size:.75rem;text-decoration:none;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;}
+.flink:hover{background:rgba(255,255,255,.2);}
+
+@media(max-width:400px){.page-title{font-size:1.75rem;}.sec-title{font-size:1.25rem;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Les Douceurs de Cicine</a>
+  <a class="nav-panier" href="panier.html">🛒 Panier</a>
+</nav>
+
+<div class="wrap">
+  <a href="index.html" class="back">← Accueil</a>
+
+  <h1 class="page-title">Conditions Générales de Vente</h1>
+  <p class="page-sub">Les règles qui encadrent nos commandes gourmandes 🧁</p>
+  <p class="page-date">Mise à jour : juin 2025</p>
+
+  <div class="hdiv"><hr/><span>♡</span><hr/></div>
+
+  <!-- 1. Identification -->
+  <div class="sec-card">
+    <h2 class="sec-title">🏠 1. Identification du vendeur</h2>
+    <p>Les présentes conditions générales de vente sont conclues entre :</p>
+    <ul>
+      <li><strong>Nom commercial :</strong> Les Douceurs de Cicine</li>
+      <li><strong>Responsable :</strong> Céline (Cicine)</li>
+      <li><strong>Adresse :</strong> Le Vauclin, Martinique (97280)</li>
+      <li><strong>Téléphone :</strong> <a href="tel:+596696111440">0696 11 14 40</a></li>
+      <li><strong>Email :</strong> <a href="mailto:pinelfereolc@gmail.com">pinelfereolc@gmail.com</a></li>
+      <li><strong>Statut :</strong> Artisan pâtissier à domicile — particulier</li>
+    </ul>
+    <p style="margin-top:10px;">Et toute personne physique souhaitant passer une commande de pâtisseries artisanales, ci-après désignée <strong>« le client »</strong>.</p>
+  </div>
+
+  <!-- 2. Objet -->
+  <div class="sec-card">
+    <h2 class="sec-title">📋 2. Objet</h2>
+    <p>Les présentes conditions générales de vente régissent exclusivement la vente de <strong>pâtisseries artisanales faites maison</strong> proposées par Les Douceurs de Cicine.</p>
+    <p>Les produits comprennent notamment : mignardises sucrées et salées, gâteaux d'anniversaire, entremets, box gourmandes, et toute autre création pâtissière réalisée sur commande.</p>
+    <p>Toute commande passée implique l'acceptation pleine et entière des présentes conditions générales de vente.</p>
+  </div>
+
+  <!-- 3. Conditions de commande -->
+  <div class="sec-card">
+    <h2 class="sec-title">📅 3. Conditions de commande</h2>
+    <p>Les commandes peuvent être passées :</p>
+    <ul>
+      <li>Via le site internet : <strong>formulaire de commande en ligne</strong></li>
+      <li>Via <strong>WhatsApp</strong> au 0696 11 14 40</li>
+    </ul>
+    <div class="highlight">
+      <strong>⏱️ Délais minimum à respecter :</strong><br/>
+      • Commandes standard (mignardises, box…) : <strong>72 heures à l'avance</strong><br/>
+      • Gâteaux personnalisés (anniversaire, thème particulier…) : <strong>1 semaine à l'avance</strong>
+    </div>
+    <p style="margin-top:10px;">Aucune commande ne sera acceptée sans validation préalable de la disponibilité et confirmation par Cicine. La commande n'est considérée comme définitivement enregistrée qu'après réception de l'acompte et confirmation écrite (WhatsApp ou email).</p>
+  </div>
+
+  <!-- 4. Prix -->
+  <div class="sec-card">
+    <h2 class="sec-title">💶 4. Prix</h2>
+    <p>Les prix affichés sur le site sont indiqués en <strong>euros (€), toutes taxes comprises (TTC)</strong>.</p>
+    <p>Les prix sont ceux en vigueur au moment de la validation de la commande. Les Douceurs de Cicine se réserve le droit de modifier ses tarifs à tout moment ; les prix communiqués lors de la commande resteront cependant applicables pour la commande concernée.</p>
+    <p>Les produits sont destinés exclusivement aux <strong>particuliers</strong>.</p>
+    <div class="highlight">
+      <strong>Remarque :</strong> Pour les créations entièrement sur mesure (thèmes spécifiques, designs complexes), un devis personnalisé peut être établi sur demande.
+    </div>
+  </div>
+
+  <!-- 5. Acompte et paiement -->
+  <div class="sec-card">
+    <h2 class="sec-title">💳 5. Acompte et paiement</h2>
+    <p>Afin de confirmer la commande et de réserver le créneau de préparation, un <strong>acompte de 50 % du montant total</strong> est requis à la validation de la commande.</p>
+    <p>Le <strong>solde restant</strong> (50 %) est réglé au moment de la livraison ou de la récupération des produits.</p>
+    <p>Les moyens de paiement acceptés sont :</p>
+    <ul>
+      <li>💸 <strong>Virement bancaire</strong></li>
+      <li>📱 <strong>Sumeria</strong> (Lydia)</li>
+      <li>💵 <strong>Espèces</strong> (à la remise des produits uniquement)</li>
+    </ul>
+    <div class="warn-box">
+      ⚠️ Aucun chèque n'est accepté. La commande ne sera mise en préparation qu'après réception effective de l'acompte.
+    </div>
+  </div>
+
+  <!-- 6. Annulation -->
+  <div class="sec-card">
+    <h2 class="sec-title">❌ 6. Annulation et rétractation</h2>
+    <p>Les pâtisseries artisanales étant des <strong>produits frais et personnalisés</strong>, préparés spécialement pour chaque commande, le droit de rétractation légal de 14 jours prévu par le Code de la consommation ne s'applique pas à ces commandes (article L.221-28 du Code de la consommation).</p>
+    <p>Toutefois, les conditions d'annulation suivantes s'appliquent :</p>
+    <ul>
+      <li><strong>Annulation plus de 72h avant la date de livraison</strong> : remboursement intégral de l'acompte versé.</li>
+      <li><strong>Annulation moins de 72h avant la date de livraison</strong> : l'acompte est conservé à titre de dédommagement pour les ingrédients et le temps de préparation engagés.</li>
+    </ul>
+    <div class="highlight">
+      <strong>Cas de force majeure :</strong> En cas d'événement imprévisible et indépendant de la volonté du client (hospitalisation, accident grave, décès familial…), une solution amiable pourra être envisagée au cas par cas. Contactez Cicine le plus tôt possible par WhatsApp ou email.
+    </div>
+    <p style="margin-top:10px;">Les Douceurs de Cicine se réservent également le droit d'annuler une commande en cas d'impossibilité de réalisation (maladie, force majeure). Dans ce cas, l'acompte est intégralement remboursé au client.</p>
+  </div>
+
+  <!-- 7. Livraison et récupération -->
+  <div class="sec-card">
+    <h2 class="sec-title">🚚 7. Livraison et récupération</h2>
+    <p>Deux modes de remise des commandes sont disponibles :</p>
+    <ul>
+      <li>📍 <strong>Récupération sur place</strong> : au domicile de Cicine, au <strong>Vauclin, Martinique</strong>, sur rendez-vous préalablement convenu.</li>
+      <li>🛵 <strong>Livraison à domicile</strong> : disponible selon les disponibilités de Cicine, entre <strong>7h30 et 19h30</strong>. Des frais de livraison peuvent s'appliquer selon la distance.</li>
+    </ul>
+    <p style="margin-top:10px;">Le créneau de remise est fixé d'un commun accord lors de la confirmation de commande. Tout retard ou absence du client au moment de la remise devra être signalé le plus tôt possible. Les Douceurs de Cicine ne pourront être tenues responsables de la détérioration des produits après leur remise au client.</p>
+    <div class="highlight">
+      <strong>Conservation :</strong> Les pâtisseries fraiches doivent être conservées au réfrigérateur et consommées dans les délais indiqués lors de la remise.
+    </div>
+  </div>
+
+  <!-- 8. Allergènes -->
+  <div class="sec-card">
+    <h2 class="sec-title">⚠️ 8. Allergènes</h2>
+    <p>Les produits des Douceurs de Cicine sont <strong>fabriqués de manière artisanale à domicile</strong>. Ils peuvent contenir ou avoir été en contact avec les allergènes suivants :</p>
+    <ul>
+      <li>🌾 Gluten (blé, farine…)</li>
+      <li>🥚 Œufs</li>
+      <li>🥛 Lait et produits laitiers (lactose)</li>
+      <li>🌰 Fruits à coque (noix, noisettes, amandes…)</li>
+      <li>🫘 Soja</li>
+    </ul>
+    <div class="warn-box">
+      ⚠️ <strong>Important :</strong> Si vous souffrez d'une allergie ou d'une intolérance alimentaire, veuillez <strong>impérativement le signaler lors de votre commande</strong>. Bien que toutes les précautions soient prises, une contamination croisée ne peut être totalement exclue dans un environnement artisanal. Les Douceurs de Cicine ne peuvent être tenues responsables des réactions allergiques survenant lorsque le client n'a pas signalé son allergie.
+    </div>
+  </div>
+
+  <!-- 9. Litiges -->
+  <div class="sec-card">
+    <h2 class="sec-title">⚖️ 9. Litiges et droit applicable</h2>
+    <p>En cas de réclamation ou de litige, le client est invité à contacter Les Douceurs de Cicine en priorité :</p>
+    <ul>
+      <li>💬 Via <strong>WhatsApp</strong> : <a href="https://wa.me/596696111440">0696 11 14 40</a></li>
+      <li>📧 Via <strong>email</strong> : <a href="mailto:pinelfereolc@gmail.com">pinelfereolc@gmail.com</a></li>
+    </ul>
+    <p style="margin-top:10px;">Une solution amiable sera toujours recherchée en priorité. Cicine s'engage à traiter toute réclamation avec bienveillance et dans les meilleurs délais.</p>
+    <p style="margin-top:8px;">À défaut de résolution amiable, les présentes conditions générales de vente sont soumises au <strong>droit français</strong>. En cas de litige persistant, le tribunal compétent sera celui de <strong>Martinique (Fort-de-France)</strong>.</p>
+    <div class="highlight">
+      Les présentes conditions générales de vente ont été rédigées en toute transparence et dans un esprit de confiance mutuelle. Merci de votre compréhension et de votre soutien à cette petite aventure gourmande ! 💕
+    </div>
+  </div>
+
+  <div class="hdiv" style="margin-top:24px;"><hr/><span>♡</span><hr/></div>
+
+  <a href="commander.html" class="btn btn-c">🧁 Commander maintenant</a>
+</div>
+
+<footer>
+  <div class="flogo">Les Douceurs de Cicine</div>
+  <div class="flinks">
+    <a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="flink" target="_blank" rel="noopener">📸 Instagram</a>
+    <a href="https://www.facebook.com/profile.php?id=61586132193455" class="flink" target="_blank" rel="noopener">👍 Facebook</a>
+    <a href="https://snapchat.com/t/KKWM8AMZ" class="flink" target="_blank" rel="noopener">👻 Snapchat</a>
+    <a href="https://wa.me/596696111440" class="flink" target="_blank">💬 WhatsApp</a>
+  </div>
+  <p>📍 Le Vauclin, Martinique · 0696 11 14 40</p>
+  <p>© 2025 Les Douceurs de Cicine — Fait avec ❤️</p>
+</footer>
+<a href="https://wa.me/596696111440" target="_blank" rel="noopener" title="Écrire sur WhatsApp" style="position:fixed;bottom:22px;right:18px;z-index:9999;background:#25D366;color:#fff;border-radius:50%;width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;box-shadow:0 4px 18px rgba(37,211,102,.55);text-decoration:none;animation:wapulse 2s ease-in-out infinite;">💬</a>
+<style>@keyframes wapulse{0%,100%{box-shadow:0 4px 18px rgba(37,211,102,.55)}50%{box-shadow:0 4px 28px rgba(37,211,102,.85)}}</style>
+</body>
+</html>

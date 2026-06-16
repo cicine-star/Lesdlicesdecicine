@@ -314,7 +314,8 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
     <div class="confirm-icon">✅</div>
     <div class="confirm-title">Commande enregistrée !</div>
     <p class="confirm-msg" id="confirmMsg"></p>
-    <button class="btn btn-wa" id="btnWaNotif" style="margin-bottom:12px;"></button>
+    <button class="btn btn-wa" id="btnWaNotif" style="margin-bottom:8px;font-size:1rem;padding:16px;"></button>
+    <p style="font-size:.72rem;color:var(--doux);text-align:center;margin-bottom:12px;">Si WhatsApp ne s'est pas ouvert automatiquement, appuyez sur le bouton ci-dessus.</p>
     <button class="btn btn-o" onclick="location.reload()">🧁 Passer une autre commande</button>
   </div>
 </div>
@@ -492,12 +493,15 @@ async function envoyerCommande(){
   document.getElementById("confirmCard").style.display="block";
   var typeLabel=deliveryType==="livraison"?"Livraison":"Récupération au Vauclin";
   document.getElementById("confirmMsg").innerHTML=
-    "Merci <strong>"+nom+"</strong>, votre commande du <strong>"+fmtDateLabel(selectedDate)+"</strong> a bien été reçue.<br><br>"+
-    "Vous serez contactée dans les 24h pour confirmation.";
-  var waText="Bonjour Cicine ! Nouvelle commande sur le site — "+nom+", "+fmtDateLabel(selectedDate)+", "+typeLabel+", Total: "+total.toFixed(2)+"€. Vérifiez votre espace admin.";
+    "Merci <strong>"+nom+"</strong> ! Votre commande du <strong>"+fmtDateLabel(selectedDate)+"</strong> a bien été enregistrée.<br><br>"+
+    "<strong style='color:var(--brun);'>⚠️ Étape importante :</strong> Appuyez sur le bouton ci-dessous pour prévenir Cicine et recevoir une confirmation.";
+  var waText="🧁 Nouvelle commande sur le site !\n\n👤 "+nom+"\n📅 "+fmtDateLabel(selectedDate)+"\n🚗 "+typeLabel+"\n💰 Total : "+total.toFixed(2)+"€\n\n➡️ Voir dans l'espace admin.";
+  var waUrl="https://wa.me/596696111440?text="+encodeURIComponent(waText);
   var btnWa=document.getElementById("btnWaNotif");
-  btnWa.textContent="📱 Notifier Cicine sur WhatsApp";
-  btnWa.onclick=function(){window.open("https://wa.me/596696111440?text="+encodeURIComponent(waText),"_blank");};
+  btnWa.textContent="📱 Prévenir Cicine sur WhatsApp";
+  btnWa.onclick=function(){window.open(waUrl,"_blank");};
+  // Try to auto-open (works if browser allows popup from user gesture chain)
+  try{window.open(waUrl,"_blank");}catch(e){}
 }
 
 loadBlockedDates();
