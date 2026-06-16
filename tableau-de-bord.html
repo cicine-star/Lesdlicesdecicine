@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<title>Tableau de bord — Les Douceurs de Cicine</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Nunito","Segoe UI",sans-serif;background:#F5E6D3;color:#3D1C02;min-height:100vh;padding-bottom:40px;}
+.header{background:linear-gradient(135deg,#3D1C02,#6B3410);padding:24px 20px 20px;border-radius:0 0 24px 24px;box-shadow:0 4px 24px rgba(61,28,2,.25);}
+.header-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.header-icon{font-size:30px;}
+.header-title{font-family:Georgia,serif;font-size:19px;font-weight:800;color:#FAF0E6;line-height:1.1;}
+.header-sub{color:#C47B2B;font-size:10px;font-weight:700;letter-spacing:1.5px;margin-top:2px;}
+.saved-badge{margin-left:auto;background:#22a06b;color:#fff;font-size:11px;font-weight:700;border-radius:99px;padding:4px 12px;display:none;}
+.saved-badge.show{display:block;}
+.header-stats{background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+.stat-global{flex:1;min-width:140px;}
+.stat-global-label{color:#FAF0E6;font-size:11px;opacity:.7;margin-bottom:4px;}
+.stat-global-row{display:flex;align-items:center;gap:10px;}
+.stat-global-pct{color:#C47B2B;font-weight:800;font-size:16px;}
+.stat-item{color:#FAF0E6;}
+.stat-item-label{font-size:11px;opacity:.7;}
+.stat-item-val{font-weight:700;font-size:14px;margin-top:3px;}
+.stat-item-val.pink{color:#E84393;}
+
+.progress-bar-bg{background:#F2DEC4;border-radius:99px;height:8px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:99px;transition:width .5s ease;}
+
+.tabs-row{display:flex;gap:8px;padding:14px 20px 0;overflow-x:auto;}
+.tabs-row::-webkit-scrollbar{display:none;}
+.tab-btn{background:#FAF0E6;color:#3D1C02;border:1.5px solid #D4B896;border-radius:99px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;}
+.tab-btn.active{background:#3D1C02;color:#FAF0E6;border-color:#3D1C02;}
+
+.content{padding:18px 20px 0;}
+.intro-text{color:#8B6A4A;font-size:12px;margin-bottom:14px;}
+
+.phase-card{background:#FAF0E6;border:2px solid;border-radius:16px;padding:18px 20px;margin-bottom:14px;}
+.phase-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.phase-info{flex:1;min-width:0;}
+.phase-badge{display:inline-block;color:#fff;font-size:10px;font-weight:700;border-radius:99px;padding:2px 9px;margin-right:7px;letter-spacing:.5px;}
+.phase-label{font-weight:700;color:#3D1C02;font-size:14px;}
+.phase-period{color:#8B6A4A;font-size:11px;margin-top:2px;}
+.phase-count{font-weight:800;font-size:14px;margin-left:8px;}
+.phase-note{margin-top:10px;border-radius:8px;padding:7px 12px;font-size:12px;color:#3D1C02;font-weight:600;}
+.phase-tasks{margin-top:12px;display:flex;flex-direction:column;gap:8px;}
+.task-label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;}
+.task-label input[type=checkbox]{width:16px;height:16px;cursor:pointer;flex-shrink:0;}
+.task-label.done{color:#A08060;text-decoration:line-through;opacity:.6;}
+
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.kpi-card{background:#FAF0E6;border:1.5px solid #F2DEC4;border-radius:14px;padding:16px 16px 12px;display:flex;flex-direction:column;gap:8px;}
+.kpi-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.kpi-icon{font-size:22px;}
+.kpi-name{font-size:11px;color:#8B6A4A;margin-top:4px;font-weight:600;}
+.kpi-right{text-align:right;}
+.kpi-val{font-size:20px;font-weight:800;color:#3D1C02;cursor:pointer;background:none;border:none;font-family:inherit;padding:0;}
+.kpi-val-input{width:70px;border:1.5px solid #C47B2B;border-radius:8px;padding:3px 7px;font-size:18px;font-weight:700;color:#3D1C02;background:#fff;text-align:right;font-family:inherit;}
+.kpi-unit{font-size:11px;color:#8B6A4A;margin-left:3px;}
+.kpi-target{font-size:10px;color:#C47B2B;margin-top:2px;}
+.kpi-pct{font-size:10px;color:#8B6A4A;text-align:right;}
+
+.launch-card{margin-top:18px;background:#FAF0E6;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(232,67,147,.67);}
+.launch-title{font-weight:800;color:#3D1C02;font-size:14px;margin-bottom:10px;}
+.launch-list{font-size:12px;color:#5C3D1A;line-height:1.9;}
+
+.admin-card{background:#FAF0E6;border-radius:16px;padding:18px 20px;border:1.5px solid #F2DEC4;}
+.admin-title{font-weight:800;color:#3D1C02;font-size:14px;margin-bottom:14px;}
+.admin-items{display:flex;flex-direction:column;gap:10px;}
+.admin-item{display:flex;align-items:center;gap:10px;font-size:13px;padding:6px 10px;border-radius:8px;cursor:pointer;}
+.admin-item.done{color:#22a06b;font-weight:600;background:rgba(34,160,107,.07);}
+.admin-item.locked{cursor:default;}
+.admin-item input[type=checkbox]{width:16px;height:16px;accent-color:#22a06b;}
+
+.inpi-card{margin-top:14px;background:#FAF0E6;border-radius:14px;padding:16px 18px;border:1.5px solid rgba(196,123,43,.27);}
+.inpi-title{font-weight:800;color:#3D1C02;font-size:13px;margin-bottom:10px;}
+.inpi-list{font-size:12px;color:#5C3D1A;line-height:1.9;}
+.inpi-tag{display:inline-block;color:#fff;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700;margin-right:6px;}
+
+.footer{text-align:center;margin-top:30px;color:#B8956A;font-size:11px;}
+.back-link{display:inline-flex;align-items:center;gap:5px;color:#C47B2B;font-weight:700;font-size:.82rem;text-decoration:none;padding:14px 20px 0;display:block;}
+</style>
+</head>
+<body>
+
+<a href="admin.html" class="back-link">← Retour à l'admin</a>
+
+<div class="header">
+  <div class="header-top">
+    <span class="header-icon">🧁</span>
+    <div>
+      <div class="header-title">Les Douceurs de Cicine</div>
+      <div class="header-sub">TABLEAU DE BORD · LE VAUCLIN, MARTINIQUE</div>
+    </div>
+    <div class="saved-badge" id="savedBadge">✓ Sauvegardé</div>
+  </div>
+  <div class="header-stats">
+    <div class="stat-global">
+      <div class="stat-global-label">Avancement global</div>
+      <div class="stat-global-row">
+        <div style="flex:1"><div class="progress-bar-bg"><div class="progress-bar-fill" id="globalBar" style="background:#C47B2B;width:0%"></div></div></div>
+        <span class="stat-global-pct" id="globalPct">0%</span>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-item-label">Tâches</div>
+      <div class="stat-item-val" id="statTaches">0 / 0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-item-label">Admin</div>
+      <div class="stat-item-val pink" id="statAdmin">0 / 0 ✓</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-item-label">Lancement</div>
+      <div class="stat-item-val">Avr 2027 🎯</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-row">
+  <button class="tab-btn active" onclick="showTab('plan',this)">📅 Plan</button>
+  <button class="tab-btn" onclick="showTab('kpis',this)">📊 KPIs</button>
+  <button class="tab-btn" onclick="showTab('admin',this)">✅ Admin</button>
+</div>
+
+<div class="content">
+
+  <!-- TAB PLAN -->
+  <div id="tab-plan">
+    <p class="intro-text">Coche les tâches au fur et à mesure ✨ — tout est sauvegardé automatiquement.</p>
+    <div id="phasesContainer"></div>
+  </div>
+
+  <!-- TAB KPIS -->
+  <div id="tab-kpis" style="display:none">
+    <p class="intro-text">Clique sur un chiffre pour le mettre à jour 📊</p>
+    <div class="kpi-grid" id="kpiGrid"></div>
+    <div class="launch-card">
+      <div class="launch-title">🎯 Lancement Avril 2027 — Créapulse + ACRE</div>
+      <div class="launch-list">
+        <div>📋 Inscription micro-entreprise via Créapulse (Jan 2027)</div>
+        <div>💼 Demande ACRE → exonération charges 1ère année</div>
+        <div>⏳ Délai traitement dossier : 2 à 3 mois (Jan → Avr)</div>
+        <div>🏪 Ouverture commandes officielles : Avril 2027</div>
+        <div>🎂 Étendre la gamme viennoiseries &amp; pièces montées</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB ADMIN -->
+  <div id="tab-admin" style="display:none">
+    <p class="intro-text">Suivi des démarches administratives et légales</p>
+    <div class="admin-card">
+      <div class="admin-title">✅ Checklist réglementaire &amp; business</div>
+      <div class="admin-items" id="adminItems"></div>
+    </div>
+    <div class="inpi-card">
+      <div class="inpi-title">🔖 Marque INPI — Stratégie de dépôt</div>
+      <div class="inpi-list">
+        <div><span class="inpi-tag" style="background:#C47B2B;">ÉTAPE 1</span>Classe 30 → Pâtisseries, viennoiseries, mignardises</div>
+        <div style="margin-top:4px"><span class="inpi-tag" style="background:#E84393;">ÉTAPE 2</span>Classe 35 → Commerce, distribution, vente en ligne</div>
+        <div style="margin-top:8px;color:#8B6A4A;font-size:11px;">Dépôt recommandé : avant ouverture officielle des commandes (Jan 2027)</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">🧁 Les Douceurs de Cicine · Le Vauclin, Martinique</div>
+
+<script>
+var PHASES=[
+  {id:1,label:"Préparation",period:"Juin – Août 2026",color:"#C47B2B",note:null,
+   tasks:["Déclaration domicile (mairie)","Attestation assurance RC Pro","Rénovation cuisine aux normes","Fiche DDPP (Cerfa 13982)","Réservation nom de domaine","Réservation réseaux sociaux (@lesdouceursdecicine)"]},
+  {id:2,label:"Visibilité & Communauté",period:"Sep – Déc 2026",color:"#E84393",note:null,
+   tasks:["Publication site web","Lancement Instagram & Facebook","1er post TikTok / Snapchat","Dépôt marque INPI – Classe 30","Mise en place planning contenu hebdo","Constituer une base de futurs clients"]},
+  {id:3,label:"Dossier & Aides",period:"Jan – Mar 2027",color:"#7B5EA7",note:"⏳ Délai incompressible : traitement dossier ACRE + Créapulse (2 à 3 mois)",
+   tasks:["Dépôt dossier micro-entreprise via Créapulse","Demande ACRE – exonération charges 1ère année","Dépôt marque INPI – Classe 35","Validation cuisine & conformité finale","Finaliser grille tarifaire & CGV","Préparer stock de lancement"]},
+  {id:4,label:"Lancement Officiel 🎉",period:"Avril 2027",color:"#22a06b",note:"🚀 Ouverture après réception des aides et immatriculation confirmée",
+   tasks:["Ouverture commandes officielles","Participation 1er marché local","Campagne lancement réseaux sociaux","Premiers retours clients & ajustements","Bilan financier mois 1"]}
+];
+
+var KPIS_DEFAULT=[
+  {label:"Abonnés Instagram",target:300,current:0,unit:"abonnés",icon:"📸"},
+  {label:"Commandes / mois",target:20,current:0,unit:"commandes",icon:"🎂"},
+  {label:"Note moyenne clients",target:4.8,current:0,unit:"/ 5",icon:"⭐"},
+  {label:"Revenus mensuels",target:1500,current:0,unit:"€",icon:"💰"}
+];
+
+var ADMIN_DEFAULT=[
+  {label:"HACCP certifié ✅",done:true,locked:true},
+  {label:"Permis d'exploitation ✅",done:true,locked:true},
+  {label:"CGV rédigées",done:true,locked:true},
+  {label:"Rebranding → Les Douceurs de Cicine",done:true,locked:true},
+  {label:"Site web HTML prêt",done:true,locked:true},
+  {label:"Stratégie éditoriale réseaux",done:true,locked:true},
+  {label:"Plan structuré avec lancement Avr 2027",done:true,locked:true},
+  {label:"Micro-entreprise Créapulse (Jan 2027)",done:false,locked:false},
+  {label:"ACRE – fenêtre d'éligibilité confirmée",done:false,locked:false}
+];
+
+var taskState=PHASES.map(function(p){return p.tasks.map(function(){return false;});});
+var kpis=JSON.parse(JSON.stringify(KPIS_DEFAULT));
+var adminList=JSON.parse(JSON.stringify(ADMIN_DEFAULT));
+var editingKpi=-1;
+
+function load(){
+  try{var t=localStorage.getItem("cicine-tasks");if(t)taskState=JSON.parse(t);}catch(e){}
+  try{var k=localStorage.getItem("cicine-kpis");if(k)kpis=JSON.parse(k);}catch(e){}
+  try{var a=localStorage.getItem("cicine-admin2");if(a)adminList=JSON.parse(a);}catch(e){}
+}
+
+function save(){
+  try{localStorage.setItem("cicine-tasks",JSON.stringify(taskState));}catch(e){}
+  try{localStorage.setItem("cicine-kpis",JSON.stringify(kpis));}catch(e){}
+  try{localStorage.setItem("cicine-admin2",JSON.stringify(adminList));}catch(e){}
+  var b=document.getElementById("savedBadge");
+  b.classList.add("show");
+  setTimeout(function(){b.classList.remove("show");},2000);
+}
+
+function updateHeader(){
+  var total=taskState.flat().length;
+  var done=taskState.flat().filter(Boolean).length;
+  var pct=total?Math.round(done/total*100):0;
+  document.getElementById("globalBar").style.width=pct+"%";
+  document.getElementById("globalPct").textContent=pct+"%";
+  document.getElementById("statTaches").textContent=done+" / "+total;
+  var aDone=adminList.filter(function(a){return a.done;}).length;
+  document.getElementById("statAdmin").textContent=aDone+" / "+adminList.length+" ✓";
+}
+
+function renderPhases(){
+  var c=document.getElementById("phasesContainer");
+  var html="";
+  PHASES.forEach(function(phase,pi){
+    var done=taskState[pi].filter(Boolean).length;
+    var total=phase.tasks.length;
+    var pct=total?Math.round(done/total*100):0;
+    html+='<div class="phase-card" style="border-color:'+phase.color+'33">';
+    html+='<div class="phase-head"><div class="phase-info">';
+    html+='<span class="phase-badge" style="background:'+phase.color+'">PHASE '+phase.id+'</span>';
+    html+='<span class="phase-label">'+phase.label+'</span>';
+    html+='<div class="phase-period">'+phase.period+'</div>';
+    html+='</div><span class="phase-count" style="color:'+phase.color+'">'+done+'/'+total+'</span></div>';
+    html+='<div class="progress-bar-bg"><div class="progress-bar-fill" style="background:'+phase.color+';width:'+pct+'%"></div></div>';
+    if(phase.note){
+      html+='<div class="phase-note" style="background:'+phase.color+'18;border:1px solid '+phase.color+'44">'+phase.note+'</div>';
+    }
+    html+='<div class="phase-tasks">';
+    phase.tasks.forEach(function(t,ti){
+      var chk=taskState[pi][ti];
+      html+='<label class="task-label'+(chk?' done':'')+'" onclick="toggleTask('+pi+','+ti+')">';
+      html+='<input type="checkbox"'+(chk?' checked':'')+'style="accent-color:'+phase.color+'" onclick="event.preventDefault()"/>';
+      html+=t+'</label>';
+    });
+    html+='</div></div>';
+  });
+  c.innerHTML=html;
+}
+
+function toggleTask(pi,ti){
+  taskState[pi][ti]=!taskState[pi][ti];
+  save();
+  renderPhases();
+  updateHeader();
+}
+
+function renderKpis(){
+  var g=document.getElementById("kpiGrid");
+  var html="";
+  kpis.forEach(function(k,i){
+    var pct=Math.min(100,Math.round(k.current/k.target*100));
+    var barColor=pct>=80?"#22a06b":"#C47B2B";
+    html+='<div class="kpi-card">';
+    html+='<div class="kpi-top"><div><div class="kpi-icon">'+k.icon+'</div><div class="kpi-name">'+k.label+'</div></div>';
+    html+='<div class="kpi-right">';
+    if(editingKpi===i){
+      html+='<input class="kpi-val-input" id="kpiInput'+i+'" type="number" value="'+k.current+'" onblur="saveKpi('+i+')" onkeydown="if(event.key===\'Enter\')saveKpi('+i+')" autofocus/>';
+    } else {
+      html+='<button class="kpi-val" onclick="startEditKpi('+i+')">'+k.current+'<span class="kpi-unit">'+k.unit+'</span></button>';
+    }
+    html+='<div class="kpi-target">objectif : '+k.target+' '+k.unit+'</div>';
+    html+='</div></div>';
+    html+='<div class="progress-bar-bg"><div class="progress-bar-fill" style="background:'+barColor+';width:'+pct+'%"></div></div>';
+    html+='<div class="kpi-pct">'+pct+'% atteint</div>';
+    html+='</div>';
+  });
+  g.innerHTML=html;
+  if(editingKpi>=0){
+    var inp=document.getElementById("kpiInput"+editingKpi);
+    if(inp)inp.focus();
+  }
+}
+
+function startEditKpi(i){
+  editingKpi=i;
+  renderKpis();
+}
+
+function saveKpi(i){
+  var inp=document.getElementById("kpiInput"+i);
+  if(inp){
+    var v=parseFloat(inp.value);
+    if(!isNaN(v))kpis[i].current=v;
+  }
+  editingKpi=-1;
+  save();
+  renderKpis();
+}
+
+function renderAdmin(){
+  var c=document.getElementById("adminItems");
+  var html="";
+  adminList.forEach(function(a,i){
+    html+='<div class="admin-item'+(a.done?' done':'')+(a.locked?' locked':'')+'" onclick="toggleAdmin('+i+')">';
+    html+='<input type="checkbox"'+(a.done?' checked':'')+' '+(a.locked?'disabled':'')+' style="accent-color:#22a06b" onclick="event.preventDefault()"/>';
+    html+=a.label+'</div>';
+  });
+  c.innerHTML=html;
+}
+
+function toggleAdmin(i){
+  if(adminList[i].locked)return;
+  adminList[i].done=!adminList[i].done;
+  save();
+  renderAdmin();
+  updateHeader();
+}
+
+function showTab(id,btn){
+  document.getElementById("tab-plan").style.display="none";
+  document.getElementById("tab-kpis").style.display="none";
+  document.getElementById("tab-admin").style.display="none";
+  document.getElementById("tab-"+id).style.display="block";
+  document.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active");});
+  btn.classList.add("active");
+  if(id==="kpis")renderKpis();
+  if(id==="admin")renderAdmin();
+}
+
+load();
+renderPhases();
+renderKpis();
+renderAdmin();
+updateHeader();
+</script>
+</body>
+</html>
