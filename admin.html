@@ -165,6 +165,29 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .plan-note{width:100%;padding:7px 9px;border:1.5px solid var(--bordure);border-radius:7px;font-size:.78rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);resize:none;height:52px;}
 .plan-note:focus{border-color:var(--caramel);}
 .plan-no-order{font-size:.76rem;color:var(--doux);font-style:italic;margin-bottom:7px;}
+/* PLANNING VIEW SELECTOR */
+.plan-view-bar{display:flex;gap:7px;margin-bottom:13px;}
+.plan-view-btn{flex:1;padding:9px 6px;border:2px solid var(--bordure);border-radius:10px;background:#fff;font-size:.74rem;font-weight:700;color:var(--doux);cursor:pointer;text-align:center;transition:.15s;}
+.plan-view-btn.active{border-color:var(--caramel);background:var(--fond2);color:var(--brun);}
+/* ANNUAL GRID */
+.plan-annual-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.plan-annual-card{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:13px 10px;text-align:center;cursor:pointer;transition:.15s;}
+.plan-annual-card:hover,.plan-annual-card.current-month{border-color:var(--caramel);background:var(--fond2);}
+.plan-annual-month{font-size:.8rem;font-weight:700;color:var(--brun);margin-bottom:5px;}
+.plan-annual-count{font-size:1.2rem;font-weight:700;color:var(--texte);line-height:1;}
+.plan-annual-count span{font-size:.62rem;color:var(--doux);font-weight:400;}
+.plan-annual-ca{font-size:.72rem;color:var(--caramel);font-weight:700;margin-top:3px;}
+/* MONTHLY CALENDAR */
+.plan-month-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px;}
+.plan-month-head{text-align:center;font-size:.64rem;font-weight:700;color:var(--doux);padding:4px 0;}
+.plan-month-cell{min-height:44px;border-radius:8px;border:1.5px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:2px;background:#fff;}
+.plan-month-cell:not(.empty):hover{background:var(--fond2);border-color:var(--bordure);}
+.plan-month-cell.empty{cursor:default;background:transparent;}
+.plan-month-cell.today{border-color:var(--caramel);background:var(--fond2);}
+.plan-month-cell.has-orders{background:var(--carte);}
+.plan-month-day-num{font-size:.78rem;color:var(--texte);}
+.plan-month-cell.today .plan-month-day-num{font-weight:700;color:var(--brun);}
+.plan-month-cnt{font-size:.58rem;font-weight:700;background:var(--caramel);color:#fff;border-radius:20px;padding:1px 5px;}
 /* TASKS TAB */
 .tasks-urgency-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
 .urg-card{border-radius:11px;padding:9px 10px;text-align:center;}
@@ -334,10 +357,16 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 
   <!-- ===== TAB PLANNING ===== -->
   <div id="tab-planning" class="wrap" style="display:none;">
+    <div class="plan-view-bar">
+      <button class="plan-view-btn" data-view="annuel" onclick="setPlanView('annuel')">📅 Annuel</button>
+      <button class="plan-view-btn" data-view="mensuel" onclick="setPlanView('mensuel')">📆 Mensuel</button>
+      <button class="plan-view-btn active" data-view="hebdomadaire" onclick="setPlanView('hebdomadaire')">🗓️ Hebdo</button>
+      <button class="plan-view-btn" data-view="quotidien" onclick="setPlanView('quotidien')">📋 Jour</button>
+    </div>
     <div class="plan-nav">
-      <div class="plan-arrow" onclick="planWeekPrev()">&#8592;</div>
+      <div class="plan-arrow" onclick="planPrev()">&#8592;</div>
       <div class="plan-week-label" id="planWeekLabel"></div>
-      <div class="plan-arrow" onclick="planWeekNext()">&#8594;</div>
+      <div class="plan-arrow" onclick="planNext()">&#8594;</div>
     </div>
     <div class="plan-summary" id="planSummary">
       <div class="plan-summary-title">🍽️ À produire cette semaine</div>
@@ -414,7 +443,12 @@ var activeStockTab="matiere_premiere";
 var adjType="entree";
 
 // Planning
+var planView="hebdomadaire";
 var planWeekOffset=0;
+var planMonthYear=new Date().getFullYear();
+var planMonthMonth=new Date().getMonth();
+var planAnneeYear=new Date().getFullYear();
+var planDayOffset=0;
 
 // Tasks (localStorage)
 var tasks=[];
@@ -1011,34 +1045,133 @@ async function saveAdjStock(id){
 
 /* ====== PLANNING ====== */
 function getWeekStart(offset){
-  var d=new Date();
-  d.setHours(0,0,0,0);
-  var dow=d.getDay();
-  var mon=dow===0?-6:1-dow;
-  d.setDate(d.getDate()+mon+(offset*7));
-  return d;
+  var d=new Date();d.setHours(0,0,0,0);
+  var dow=d.getDay();var mon=dow===0?-6:1-dow;
+  d.setDate(d.getDate()+mon+(offset*7));return d;
+}
+function setPlanView(view){
+  planView=view;
+  document.querySelectorAll(".plan-view-btn").forEach(function(btn){
+    btn.classList.toggle("active",btn.dataset.view===view);
+  });
+  document.getElementById("planSummary").style.display=(view==="hebdomadaire")?"block":"none";
+  renderPlanning();
+}
+function planPrev(){
+  if(planView==="annuel")planAnneeYear--;
+  else if(planView==="mensuel"){planMonthMonth--;if(planMonthMonth<0){planMonthMonth=11;planMonthYear--;}}
+  else if(planView==="hebdomadaire")planWeekOffset--;
+  else if(planView==="quotidien")planDayOffset--;
+  renderPlanning();
+}
+function planNext(){
+  if(planView==="annuel")planAnneeYear++;
+  else if(planView==="mensuel"){planMonthMonth++;if(planMonthMonth>11){planMonthMonth=0;planMonthYear++;}}
+  else if(planView==="hebdomadaire")planWeekOffset++;
+  else if(planView==="quotidien")planDayOffset++;
+  renderPlanning();
 }
 function planWeekPrev(){planWeekOffset--;renderPlanning();}
 function planWeekNext(){planWeekOffset++;renderPlanning();}
 function renderPlanning(){
+  if(planView==="annuel")renderPlanningAnnuel();
+  else if(planView==="mensuel")renderPlanningMensuel();
+  else if(planView==="hebdomadaire")renderPlanningHebdo();
+  else renderPlanningQuotidien();
+}
+function renderPlanningAnnuel(){
+  var MONTHS=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+  document.getElementById("planWeekLabel").textContent=planAnneeYear;
+  var nowM=new Date().getMonth(),nowY=new Date().getFullYear();
+  var html='<div class="plan-annual-grid">';
+  for(var m=0;m<12;m++){
+    var mStart=new Date(planAnneeYear,m,1);
+    var mEnd=new Date(planAnneeYear,m+1,1);
+    var mOrders=allOrders.filter(function(o){
+      if(!o.delivery_date||o.status==="cancelled")return false;
+      var dt=new Date(o.delivery_date);return dt>=mStart&&dt<mEnd;
+    });
+    var mCA=mOrders.reduce(function(s,o){return s+parseFloat(o.total||0);},0);
+    var isCur=(m===nowM&&planAnneeYear===nowY);
+    var mm=m;
+    html+='<div class="plan-annual-card'+(isCur?" current-month":"")+'" onclick="goPlanMonth('+mm+')">'+
+      '<div class="plan-annual-month">'+MONTHS[m]+'</div>'+
+      '<div class="plan-annual-count">'+mOrders.length+'<span> cmd</span></div>'+
+      '<div class="plan-annual-ca">'+(mCA>0?parseFloat(mCA).toFixed(2).replace(".",",")+"€":"—")+'</div>'+
+      '</div>';
+  }
+  html+='</div>';
+  document.getElementById("planSummary").style.display="none";
+  document.getElementById("planDays").innerHTML=html;
+}
+function goPlanMonth(month){
+  planMonthYear=planAnneeYear;planMonthMonth=month;
+  setPlanView("mensuel");
+}
+function renderPlanningMensuel(){
+  var MONTHS=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+  var DAYS=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+  document.getElementById("planWeekLabel").textContent=MONTHS[planMonthMonth]+" "+planMonthYear;
+  var todayTs=new Date().setHours(0,0,0,0);
+  var lastDay=new Date(planMonthYear,planMonthMonth+1,0).getDate();
+  var firstDow=new Date(planMonthYear,planMonthMonth,1).getDay();
+  var startOffset=firstDow===0?6:firstDow-1;
+  var orderMap={};
+  allOrders.filter(function(o){return o.status!=="cancelled"&&o.delivery_date;}).forEach(function(o){
+    var p=o.delivery_date.split("-");
+    if(parseInt(p[0])===planMonthYear&&parseInt(p[1])-1===planMonthMonth)orderMap[o.delivery_date]=(orderMap[o.delivery_date]||0)+1;
+  });
+  var html='<div class="plan-month-cal">';
+  html+=DAYS.map(function(d){return'<div class="plan-month-head">'+d+'</div>';}).join("");
+  for(var e=0;e<startOffset;e++)html+='<div class="plan-month-cell empty"></div>';
+  for(var d=1;d<=lastDay;d++){
+    var m2=String(planMonthMonth+1).padStart(2,"0");
+    var d2=String(d).padStart(2,"0");
+    var dateStr=planMonthYear+"-"+m2+"-"+d2;
+    var isToday=new Date(planMonthYear,planMonthMonth,d).setHours(0,0,0,0)===todayTs;
+    var cnt=orderMap[dateStr]||0;
+    html+='<div class="plan-month-cell'+(isToday?" today":"")+(cnt>0?" has-orders":"")+'" onclick="goPlanDay(\''+dateStr+'\')">'+
+      '<span class="plan-month-day-num">'+d+'</span>'+
+      (cnt>0?'<span class="plan-month-cnt">'+cnt+'</span>':'')+
+      '</div>';
+  }
+  html+='</div>';
+  var mOrders=allOrders.filter(function(o){
+    if(!o.delivery_date||o.status==="cancelled")return false;
+    var p=o.delivery_date.split("-");
+    return parseInt(p[0])===planMonthYear&&parseInt(p[1])-1===planMonthMonth;
+  });
+  var mCA=mOrders.reduce(function(s,o){return s+parseFloat(o.total||0);},0);
+  var prodMap={};
+  mOrders.forEach(function(o){(o.items||[]).forEach(function(it){prodMap[it.name]=(prodMap[it.name]||0)+(parseInt(it.qty)||1);});});
+  var chips=Object.keys(prodMap).map(function(n){return'<div class="plan-prod-chip">'+n+' ×'+prodMap[n]+'</div>';}).join("");
+  html+='<div class="plan-summary" style="margin-top:14px;">'+
+    '<div class="plan-summary-title">🍽️ Ce mois &nbsp;·&nbsp; <span style="color:var(--caramel);">'+mOrders.length+' commande'+(mOrders.length!==1?"s":"")+'</span>'+
+    (mCA>0?' &nbsp;·&nbsp; <span style="font-weight:700;color:var(--brun);">'+parseFloat(mCA).toFixed(2).replace(".",",")+"€</span>":"")+
+    '</div><div class="plan-prod-list">'+(chips||'<span style="font-size:.78rem;color:var(--doux);font-style:italic;">Aucune commande</span>')+'</div></div>';
+  document.getElementById("planSummary").style.display="none";
+  document.getElementById("planDays").innerHTML=html;
+}
+function goPlanDay(dateStr){
+  var today=new Date();today.setHours(0,0,0,0);
+  var target=new Date(dateStr);target.setHours(0,0,0,0);
+  planDayOffset=Math.round((target-today)/(1000*3600*24));
+  setPlanView("quotidien");
+}
+function renderPlanningHebdo(){
   var weekStart=getWeekStart(planWeekOffset);
   var weekEnd=new Date(weekStart);weekEnd.setDate(weekEnd.getDate()+6);
   var fmtShort=function(d){return d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"});};
   document.getElementById("planWeekLabel").textContent="Semaine du "+fmtShort(weekStart)+" au "+fmtShort(weekEnd);
+  document.getElementById("planSummary").style.display="block";
   var days=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
   var todayTs=new Date().setHours(0,0,0,0);
-  // Aggregate production for the week
-  var prodMap={};
-  var daysHtml="";
+  var prodMap={};var daysHtml="";
   for(var i=0;i<7;i++){
     var day=new Date(weekStart);day.setDate(day.getDate()+i);
     var dayStr=day.getFullYear()+"-"+String(day.getMonth()+1).padStart(2,"0")+"-"+String(day.getDate()).padStart(2,"0");
     var dayOrders=allOrders.filter(function(o){return o.delivery_date===dayStr&&o.status!=="cancelled";});
-    dayOrders.forEach(function(o){
-      (o.items||[]).forEach(function(it){
-        prodMap[it.name]=(prodMap[it.name]||0)+(parseInt(it.qty)||1);
-      });
-    });
+    dayOrders.forEach(function(o){(o.items||[]).forEach(function(it){prodMap[it.name]=(prodMap[it.name]||0)+(parseInt(it.qty)||1);});});
     var isToday=day.getTime()===todayTs;
     var dayLabel=days[i]+" "+String(day.getDate()).padStart(2,"0")+"/"+String(day.getMonth()+1).padStart(2,"0");
     var ordersHtml=dayOrders.length===0?'<div class="plan-no-order">Aucune commande</div>':
@@ -1046,7 +1179,7 @@ function renderPlanning(){
         var items=(o.items||[]).map(function(it){return it.qty+"× "+it.name;}).join(", ");
         var total=parseFloat(o.total||0).toFixed(2).replace(".",",")+"€";
         var sl=o.status==="pending"?"⏳":o.status==="confirmed"?"✅":o.status==="ready"?"🎂":"✔";
-        return '<div class="plan-order-chip"><div class="poc-client">'+sl+' '+o.client_name+'</div><div class="poc-items">'+items+'</div><div class="poc-total">'+total+'</div></div>';
+        return'<div class="plan-order-chip"><div class="poc-client">'+sl+' '+o.client_name+'</div><div class="poc-items">'+items+'</div><div class="poc-total">'+total+'</div></div>';
       }).join("");
     var noteKey="plan_note_"+dayStr;
     var noteVal=(localStorage.getItem(noteKey)||"").replace(/"/g,"&quot;");
@@ -1059,10 +1192,58 @@ function renderPlanning(){
       '<textarea class="plan-note" onchange="savePlanNote(\''+dayStr+'\',this.value)" placeholder="Ex: Préparer la pâte feuilletée...">'+noteVal+'</textarea>'+
       '</div></div>';
   }
-  // Production summary
-  var prodList=Object.keys(prodMap).map(function(n){return '<div class="plan-prod-chip">'+n+' ×'+prodMap[n]+'</div>';}).join("");
+  var prodList=Object.keys(prodMap).map(function(n){return'<div class="plan-prod-chip">'+n+' ×'+prodMap[n]+'</div>';}).join("");
   document.getElementById("planProdList").innerHTML=prodList||'<span style="font-size:.78rem;color:var(--doux);font-style:italic;">Aucune commande cette semaine</span>';
   document.getElementById("planDays").innerHTML=daysHtml;
+}
+function renderPlanningQuotidien(){
+  var today=new Date();today.setHours(0,0,0,0);
+  var day=new Date(today.getTime()+planDayOffset*24*3600*1000);
+  var dayStr=day.getFullYear()+"-"+String(day.getMonth()+1).padStart(2,"0")+"-"+String(day.getDate()).padStart(2,"0");
+  var DAYNAMES=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
+  var MNAMES=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  var label=DAYNAMES[day.getDay()]+" "+day.getDate()+" "+MNAMES[day.getMonth()]+" "+day.getFullYear();
+  if(planDayOffset===0)label="Aujourd'hui — "+label;
+  else if(planDayOffset===1)label="Demain — "+label;
+  else if(planDayOffset===-1)label="Hier — "+label;
+  document.getElementById("planWeekLabel").textContent=label;
+  document.getElementById("planSummary").style.display="none";
+  var dayOrders=allOrders.filter(function(o){return o.delivery_date===dayStr&&o.status!=="cancelled";});
+  var dayCA=dayOrders.reduce(function(s,o){return s+parseFloat(o.total||0);},0);
+  var html="";
+  if(dayOrders.length>0){
+    html+='<div class="plan-summary"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">'+
+      '<span style="font-weight:700;color:var(--brun);">'+dayOrders.length+' commande'+(dayOrders.length!==1?"s":"")+'</span>'+
+      '<span style="color:var(--caramel);font-weight:700;">CA : '+parseFloat(dayCA).toFixed(2).replace(".",",")+"€</span>"+
+      '</div></div>';
+    html+=dayOrders.map(function(o){
+      var items=(o.items||[]).map(function(it){
+        return'<div class="item-row"><span>'+it.name+'</span><span>'+it.qty+' × '+parseFloat(it.price||0).toFixed(2).replace(".",",")+"€</span></div>";
+      }).join("");
+      var total=parseFloat(o.total||0).toFixed(2).replace(".",",")+"€";
+      var sl=o.status==="pending"?"⏳ En attente":o.status==="confirmed"?"✅ Confirmée":o.status==="ready"?"🎂 Prête":"✔ Terminée";
+      var phone=(o.client_phone+"").replace(/\D/g,"");
+      if(phone.startsWith("0"))phone="596"+phone.substring(1);
+      var waBtn=phone?'<a href="https://wa.me/'+phone+'" target="_blank" style="display:inline-flex;align-items:center;gap:4px;padding:5px 11px;background:#25D366;color:#fff;border-radius:20px;font-size:.7rem;font-weight:700;text-decoration:none;margin-top:6px;">💬 WhatsApp</a>':"";
+      return'<div class="plan-day">'+
+        '<div class="plan-day-head"><span class="plan-day-label">'+o.client_name+'</span><span class="plan-day-count">'+sl+'</span></div>'+
+        '<div class="plan-day-body">'+
+        '<div class="items-list" style="margin-bottom:7px;">'+items+'</div>'+
+        '<div style="display:flex;justify-content:space-between;font-weight:700;font-size:.86rem;margin-bottom:6px;"><span>Total</span><span style="color:var(--brun);">'+total+'</span></div>'+
+        (o.delivery_type==="livraison"?'<div class="oc-addr">🚚 '+(o.delivery_address||"Adresse à confirmer")+'</div>':'<div class="oc-addr">🏠 Récupération sur place</div>')+
+        (o.note?'<div class="oc-note">💬 '+o.note+'</div>':'')+
+        waBtn+
+        '</div></div>';
+    }).join("");
+  } else {
+    html+='<div class="plan-day"><div class="plan-day-body" style="text-align:center;padding:24px 14px;"><div class="plan-no-order" style="font-size:.9rem;">Aucune commande ce jour</div></div></div>';
+  }
+  var noteVal=(localStorage.getItem("plan_note_"+dayStr)||"").replace(/"/g,"&quot;");
+  html+='<div class="plan-day" style="margin-top:9px;"><div class="plan-day-body">'+
+    '<div class="plan-note-label">📝 Note de production du jour</div>'+
+    '<textarea class="plan-note" style="height:80px;" onchange="savePlanNote(\''+dayStr+'\',this.value)" placeholder="Ingrédients à préparer, commandes spéciales...">'+noteVal+'</textarea>'+
+    '</div></div>';
+  document.getElementById("planDays").innerHTML=html;
 }
 function savePlanNote(dayStr,val){
   localStorage.setItem("plan_note_"+dayStr,val);
