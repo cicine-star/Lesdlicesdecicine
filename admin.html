@@ -287,6 +287,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <div class="ftab" onclick="setStatusFilter(this,'cancelled')">✕ Annulées</div>
       </div>
     </div>
+    <button class="btn-add-task" onclick="openManualOrder()" style="margin-bottom:10px;">➕ Saisir une commande manuelle</button>
     <div class="orders-list" id="ordersList"></div>
     <div class="section-title">📅 Calendrier & blocages</div>
     <div class="cal-wrap">
@@ -371,6 +372,7 @@ var typeFilter="";
 var statusFilter="";
 var calYear,calMonth;
 var currentModalDate="";
+var manualLineCount=0;
 var activeMainTab="commandes";
 
 // Stocks
@@ -535,7 +537,7 @@ function renderOrders(){
     if(o.status!=="confirmed"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-confirm" onclick="openConfirmModal(\''+id+'\')">✅ Confirmer</button>';
     if(o.status!=="ready"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-ready" onclick="updateStatus(\''+id+'\',\'ready\')">🎂 Prête</button>';
     if(o.status!=="done"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-done" onclick="updateStatus(\''+id+'\',\'done\')">✔ Terminée</button>';
-    if(o.status!=="cancelled")actHtml+='<button class="act-btn act-cancel" onclick="updateStatus(\''+id+'\',\'cancelled\')">✕ Annuler</button>';
+    if(o.status!=="cancelled")actHtml+='<button class="act-btn act-cancel" onclick="openCancelModal(\''+id+'\')">✕ Annuler</button>';
     actHtml+=waHtml;
     html+='<div class="order-card" id="oc-'+id+'">';
     html+='<div class="oc-head"><span class="oc-date">'+fmtDate(o.delivery_date)+'</span>'+typeBadge;
@@ -564,17 +566,119 @@ async function updateStatus(id,status){
   var order=null;
   for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].status=status;order=allOrders[i];break;}}
   renderOrders();updateStats();
-  if(!order||!order.client_phone)return;
-  var phone=toWAPhone(order.client_phone);
+  if(status==="ready"&&order&&order.client_phone){
+    var phone=toWAPhone(order.client_phone);
+    var msg="Bonjour "+order.client_name+" ! 🎂✨\n\nVotre commande du "+fmtDate(order.delivery_date)+" est prête !\n\nVous pouvez venir la récupérer ou nous vous contacterons pour la livraison.\n\nMerci et à bientôt ! 💕\nLes Douceurs de Cicine";
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
+  }
+}
+function openCancelModal(id){
+  var order=null;
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){order=allOrders[i];break;}}
+  if(!order)return;
   var name=order.client_name||"";
   var date=fmtDate(order.delivery_date);
-  var msg="";
-  if(status==="ready"){
-    msg="Bonjour "+name+" ! 🎂✨\n\nVotre commande du "+date+" est prête !\n\nVous pouvez venir la récupérer ou nous vous contacterons pour la livraison.\n\nMerci et à bientôt ! 💕\nLes Douceurs de Cicine";
-  } else if(status==="cancelled"){
-    msg="Bonjour "+name+",\n\nNous sommes désolées, mais nous ne pouvons malheureusement pas traiter votre commande du "+date+".\n\nN'hésitez pas à nous recontacter pour reprogrammer. 💕\nLes Douceurs de Cicine";
+  openModal(
+    '<div class="bs-title">✕ Annuler la commande</div>'+
+    '<p style="font-size:.83rem;color:var(--doux);margin-bottom:18px;">'+name+' · '+date+'</p>'+
+    '<button class="bs-btn-danger" onclick="doCancelOrder(\''+id+'\',true)">✕ Annuler & envoyer WhatsApp au client</button>'+
+    '<button class="bs-btn-secondary" onclick="doCancelOrder(\''+id+'\',false)">Annuler sans envoyer de message</button>'+
+    '<button class="bs-btn-primary" onclick="closeModal()">← Garder cette commande</button>'
+  );
+}
+async function doCancelOrder(id,sendWA){
+  closeModal();
+  var order=null;
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){order=allOrders[i];break;}}
+  await sb.from("orders").update({status:"cancelled"}).eq("id",id);
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].status="cancelled";break;}}
+  renderOrders();updateStats();
+  if(sendWA&&order&&order.client_phone){
+    var phone=toWAPhone(order.client_phone);
+    var msg="Bonjour "+order.client_name+",\n\nNous sommes désolées, mais nous ne pouvons malheureusement pas traiter votre commande du "+fmtDate(order.delivery_date)+".\n\nN'hésitez pas à nous recontacter pour reprogrammer. 💕\nLes Douceurs de Cicine";
+    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
   }
-  if(msg)window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
+}
+function openManualOrder(){
+  manualLineCount=0;
+  var tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
+  var minStr=tomorrow.toISOString().slice(0,10);
+  openModal(
+    '<div class="bs-title">➕ Commande manuelle</div>'+
+    '<div class="fgr">'+
+    '<div><label class="bs-label">Prénom & Nom *</label><input class="bs-input" id="mn_nom" placeholder="Client..."/></div>'+
+    '<div><label class="bs-label">WhatsApp</label><input class="bs-input" id="mn_tel" type="tel" placeholder="0696 XX XX XX"/></div>'+
+    '</div>'+
+    '<div class="fgr">'+
+    '<div><label class="bs-label">Date *</label><input class="bs-input" id="mn_date" type="date" min="'+minStr+'" value="'+minStr+'"/></div>'+
+    '<div><label class="bs-label">Mode</label><select class="bs-select" id="mn_type"><option value="recuperation">🏠 Récupération</option><option value="livraison">🚚 Livraison</option></select></div>'+
+    '</div>'+
+    '<label class="bs-label">Articles (nom · prix · qté)</label>'+
+    '<div id="mn_lignes" style="margin-bottom:8px;"></div>'+
+    '<button onclick="addManualLine()" style="width:100%;padding:8px;background:#fff;color:var(--brun);border:1.5px solid var(--bordure);border-radius:9px;font-size:.8rem;font-weight:700;cursor:pointer;margin-bottom:11px;">+ Ajouter un article</button>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;background:var(--fond2);border-radius:9px;padding:10px 14px;margin-bottom:12px;">'+
+    '<span style="font-size:.85rem;font-weight:700;color:var(--brun);">Total</span>'+
+    '<span id="mn_total" style="font-size:1.1rem;font-weight:700;color:var(--brun);">0,00€</span>'+
+    '</div>'+
+    '<label class="bs-label">Statut</label>'+
+    '<select class="bs-select" id="mn_status"><option value="confirmed">✅ Confirmée</option><option value="pending">⏳ En attente</option></select>'+
+    '<label class="bs-label">Note (optionnel)</label>'+
+    '<textarea class="bs-textarea" id="mn_note" placeholder="Précisions, allergies..."></textarea>'+
+    '<button class="bs-btn-green" onclick="saveManualOrder()">✅ Enregistrer la commande</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
+  );
+  addManualLine();
+}
+function addManualLine(){
+  var lid="ml_"+manualLineCount++;
+  var div=document.createElement("div");
+  div.id=lid;
+  div.style.cssText="display:grid;grid-template-columns:1fr 70px 50px 28px;gap:5px;margin-bottom:6px;align-items:center;";
+  div.innerHTML=
+    '<input class="bs-input" style="margin-bottom:0;" placeholder="Article..."/>'+
+    '<input class="bs-input" style="margin-bottom:0;" type="number" step="0.01" min="0" placeholder="Prix €" oninput="calcManualTotal()"/>'+
+    '<input class="bs-input" style="margin-bottom:0;" type="number" min="1" value="1" oninput="calcManualTotal()"/>'+
+    '<button onclick="removeMl(\''+lid+'\')" style="width:28px;height:28px;border-radius:50%;border:1.5px solid var(--bordure);background:var(--fond);cursor:pointer;font-size:.78rem;">✕</button>';
+  document.getElementById("mn_lignes").appendChild(div);
+}
+function removeMl(lid){var el=document.getElementById(lid);if(el)el.remove();calcManualTotal();}
+function calcManualTotal(){
+  var total=0;
+  var rows=document.getElementById("mn_lignes").children;
+  for(var i=0;i<rows.length;i++){
+    var ins=rows[i].querySelectorAll("input");
+    if(ins.length>=3){total+=(parseFloat(ins[1].value)||0)*(parseInt(ins[2].value)||1);}
+  }
+  var el=document.getElementById("mn_total");
+  if(el)el.textContent=total.toFixed(2).replace(".",",")+"€";
+}
+async function saveManualOrder(){
+  var nom=(document.getElementById("mn_nom").value||"").trim();
+  if(!nom){alert("Veuillez saisir le nom du client.");return;}
+  var date=document.getElementById("mn_date").value;
+  if(!date){alert("Veuillez saisir une date.");return;}
+  var tel=(document.getElementById("mn_tel").value||"").trim();
+  var type=document.getElementById("mn_type").value;
+  var status=document.getElementById("mn_status").value;
+  var note=(document.getElementById("mn_note").value||"").trim();
+  var items=[];var total=0;
+  var rows=document.getElementById("mn_lignes").children;
+  for(var i=0;i<rows.length;i++){
+    var ins=rows[i].querySelectorAll("input");
+    if(ins.length>=3){
+      var n=(ins[0].value||"").trim();
+      var p=parseFloat(ins[1].value)||0;
+      var q=parseInt(ins[2].value)||1;
+      if(n&&p>0){items.push({name:n,price:p,qty:q});total+=p*q;}
+    }
+  }
+  if(items.length===0){alert("Ajoutez au moins un article avec un prix.");return;}
+  var payload={client_name:nom,client_phone:tel||null,delivery_date:date,delivery_type:type,items:items,total:total,note:note||null,status:status};
+  var res=await sb.from("orders").insert([payload]);
+  if(res.error){alert("Erreur : "+res.error.message);return;}
+  closeModal();
+  await loadOrders();
+  showNotif("Commande enregistrée !");
 }
 function openConfirmModal(id){
   var order=null;
