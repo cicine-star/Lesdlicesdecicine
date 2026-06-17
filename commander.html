@@ -476,6 +476,8 @@ async function loadProductsFromDB(){
   try{
     var {data,error}=await sb.from("products").select("*").eq("available",true).order("sort_order").order("name");
     if(error||!data||data.length===0)return;
+    var seen={};
+    data=data.filter(function(p){if(seen[p.name])return false;seen[p.name]=true;return true;});
     var sec=document.getElementById("productSection");
     if(sec)sec.innerHTML=renderProductsHTML(data);
   }catch(e){}
@@ -507,7 +509,7 @@ function renderProductsHTML(data){
       html+='<div class="ir" data-n="'+p.name.replace(/"/g,"&quot;")+'" data-p="'+price+'">'+
         '<div class="il"><input type="checkbox" onchange="maj()"/>'+
         '<div>'+
-        '<div class="in">'+(p.emoji?p.emoji+' ':'')+p.name+'</div>'+
+        '<div class="in">'+p.name+'</div>'+
         '<div class="ip">'+priceStr+'</div>'+
         '</div></div>'+
         '<input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>'+
