@@ -49,6 +49,11 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 .cat-header.open .cat-arrow{transform:rotate(90deg);}
 .cat-body{display:none;padding-top:6px;}
 .cat-body.open{display:block;}
+.ir.has-panel{border-radius:9px 9px 0 0;margin-bottom:0;border-bottom-color:transparent;}
+.saveur-panel{background:var(--fond2);border:1px solid var(--bordure);border-top:none;border-radius:0 0 9px 9px;padding:7px 10px;margin-bottom:5px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.saveur-label{font-size:.72rem;font-weight:700;color:var(--brun);flex-shrink:0;}
+.saveur-btn{font-size:.72rem;padding:4px 11px;border:1.5px solid var(--bordure);border-radius:20px;background:#fff;cursor:pointer;color:var(--texte);transition:background .15s,color .15s,border-color .15s;font-family:"Lato",sans-serif;}
+.saveur-btn.selected{background:var(--caramel);color:#fff;border-color:var(--caramel);}
 .il{display:flex;align-items:center;gap:8px;}
 .il input[type=checkbox]{width:18px;height:18px;accent-color:var(--caramel);cursor:pointer;flex-shrink:0;}
 .in{font-size:.82rem;font-weight:600;color:var(--texte);}
@@ -400,6 +405,47 @@ function useGPS(){
   });
 }
 
+function getFlavorOptions(ir){
+  var name=ir.getAttribute("data-n")||"";
+  var match=name.match(/\(([^)]+)\)/);
+  if(!match)return[];
+  return match[1].split(/\s*[\/,]\s*/).map(function(f){return f.trim();}).filter(function(f){return f.length>1;});
+}
+
+function showFlavorPanel(cb,ir){
+  var next=ir.nextElementSibling;
+  if(next&&next.classList.contains("saveur-panel")){next.remove();ir.classList.remove("has-panel");}
+  if(cb.checked){
+    var flavors=getFlavorOptions(ir);
+    if(flavors.length>0){
+      var panel=document.createElement("div");
+      panel.className="saveur-panel";
+      var h='<span class="saveur-label">🎨 Saveur :</span>';
+      flavors.forEach(function(f){h+='<span class="saveur-btn" onclick="selectFlavor(this)">'+f+'</span>';});
+      panel.innerHTML=h;
+      ir.insertAdjacentElement("afterend",panel);
+      ir.classList.add("has-panel");
+    }
+  }
+}
+
+function selectFlavor(btn){
+  var panel=btn.closest(".saveur-panel");
+  panel.querySelectorAll(".saveur-btn").forEach(function(b){b.classList.remove("selected");});
+  btn.classList.add("selected");
+  maj();
+}
+
+function getItemName(row){
+  var name=row.getAttribute("data-n");
+  var next=row.nextElementSibling;
+  if(next&&next.classList.contains("saveur-panel")){
+    var sel=next.querySelector(".saveur-btn.selected");
+    if(sel)name=name.replace(/\s*\([^)]*\)\s*$/,"")+" ("+sel.textContent+")";
+  }
+  return name;
+}
+
 function maj(){
   var rows=document.querySelectorAll(".ir");
   var total=0;var html="";
@@ -407,7 +453,7 @@ function maj(){
     var row=rows[i];
     var cb=row.querySelector("input[type=checkbox]");
     if(cb&&cb.checked){
-      var name=row.getAttribute("data-n");
+      var name=getItemName(row);
       var price=parseFloat(row.getAttribute("data-p"));
       var qty=parseInt(row.querySelector(".qi").value)||1;
       var sub=price*qty;total+=sub;
@@ -428,7 +474,7 @@ async function envoyerCommande(){
     var row=rows[i];
     var cb=row.querySelector("input[type=checkbox]");
     if(cb&&cb.checked){
-      var name=row.getAttribute("data-n");
+      var name=getItemName(row);
       var price=parseFloat(row.getAttribute("data-p"));
       var qty=parseInt(row.querySelector(".qi").value)||1;
       items.push({name:name,price:price,qty:qty});
@@ -494,6 +540,13 @@ function toggleCat(id){
   h.classList.toggle("open",!open);
   b.classList.toggle("open",!open);
 }
+
+document.getElementById("productSection").addEventListener("change",function(e){
+  if(e.target.type==="checkbox"){
+    var ir=e.target.closest(".ir");
+    if(ir)showFlavorPanel(e.target,ir);
+  }
+});
 
 loadBlockedDates();
 renderCal();
