@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Les Douceurs de Cicine"/>
 <meta name="theme-color" content="#5C2E0E"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 :root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -150,6 +151,7 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
       </div>
     </div>
 
+    <div id="productSection">
     <div class="ct">🥐 Viennoiseries salées</div>
 <div class="ir" data-n="Petit pain" data-p="0.5">
   <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Petit pain</div><div class="ip">0,5€/pièce</div></div></div>
@@ -316,6 +318,7 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
   <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain beurre pepite 500g</div><div class="ip">8,0€/pièce</div></div></div>
   <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
 </div>
+    </div><!-- end #productSection -->
 
     <div class="total-box">
       <h3>🛒 Ma sélection</h3>
@@ -528,6 +531,7 @@ async function envoyerCommande(){
       updated_at:new Date().toISOString()
     },{onConflict:"phone"});
   }catch(e){}
+  sendOrderNotification(payload);
   document.getElementById("orderForm").style.display="none";
   document.getElementById("confirmCard").style.display="block";
   var typeLabel=deliveryType==="livraison"?"Livraison":"Récupération au Vauclin";
@@ -545,6 +549,66 @@ async function envoyerCommande(){
 
 loadBlockedDates();
 renderCal();
+loadProductsFromDB();
+
+async function loadProductsFromDB(){
+  try{
+    var {data,error}=await sb.from("products").select("*").eq("available",true).order("sort_order").order("name");
+    if(error||!data||data.length===0)return;
+    var sec=document.getElementById("productSection");
+    if(sec)sec.innerHTML=renderProductsHTML(data);
+  }catch(e){}
+}
+
+function renderProductsHTML(data){
+  // Group by category preserving order
+  var cats=[];
+  var catMap={};
+  data.forEach(function(p){
+    var c=p.category||"Autre";
+    if(!catMap[c]){catMap[c]=[];cats.push(c);}
+    catMap[c].push(p);
+  });
+  var html="";
+  cats.forEach(function(cat){
+    html+='<div class="ct">'+cat+'</div>';
+    catMap[cat].forEach(function(p){
+      var price=parseFloat(p.price||0);
+      var priceStr=price%1===0?price.toFixed(0):price.toFixed(2);
+      priceStr=priceStr.replace(".",",")+"€/pièce";
+      html+='<div class="ir" data-n="'+p.name.replace(/"/g,"&quot;")+'" data-p="'+price+'">'+
+        '<div class="il"><input type="checkbox" onchange="maj()"/>'+
+        '<div>'+
+        '<div class="in">'+(p.emoji?p.emoji+' ':'')+p.name+'</div>'+
+        '<div class="ip">'+priceStr+'</div>'+
+        '</div></div>'+
+        '<input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>'+
+        '</div>';
+    });
+  });
+  return html;
+}
+
+async function sendOrderNotification(order){
+  try{
+    var {data:settings}=await sb.from("settings").select("*");
+    if(!settings)return;
+    var cfg={};settings.forEach(function(s){cfg[s.key]=s.value;});
+    if(!cfg.emailjs_service||!cfg.emailjs_template||!cfg.emailjs_pubkey||!cfg.notif_email)return;
+    emailjs.init(cfg.emailjs_pubkey);
+    var items=(order.items||[]).map(function(i){return i.name+" x"+i.qty;}).join(", ");
+    await emailjs.send(cfg.emailjs_service,cfg.emailjs_template,{
+      to_email:cfg.notif_email,
+      client_name:order.client_name||"",
+      client_phone:order.client_phone||"",
+      delivery_date:order.delivery_date||"",
+      delivery_type:order.delivery_type||"",
+      items:items,
+      total:(order.total||0).toFixed(2)+" €",
+      note:order.note||""
+    });
+  }catch(e){}
+}
 </script>
 
 <footer><div class="flogo">Les Douceurs de Cicine</div><div class="flinks"><a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="flink" target="_blank" rel="noopener">📸 Instagram</a><a href="https://www.facebook.com/profile.php?id=61586132193455" class="flink" target="_blank" rel="noopener">👍 Facebook</a><a href="https://snapchat.com/t/KKWM8AMZ" class="flink" target="_blank" rel="noopener">👻 Snapchat</a><a href="https://wa.me/596696111440" class="flink" target="_blank">&#128172; WhatsApp</a></div><p>&#128205; Le Vauclin, Martinique &middot; 0696 11 14 40</p><p>&copy; 2025 Les Douceurs de Cicine</p></footer>

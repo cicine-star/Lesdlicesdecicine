@@ -292,6 +292,18 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .client-cmd-n{font-size:1.1rem;font-weight:700;color:var(--brun);}
 .client-cmd-l{font-size:.62rem;color:var(--doux);}
 .client-total{font-size:.75rem;font-weight:700;color:var(--caramel);margin-top:2px;}
+/* PRODUCTS TAB */
+.product-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:12px;}
+.product-card{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:11px;cursor:pointer;position:relative;}
+.product-card.unavailable{opacity:.5;}
+.product-emoji{font-size:1.5rem;margin-bottom:4px;}
+.product-name{font-weight:700;font-size:.82rem;color:var(--texte);margin-bottom:2px;}
+.product-price{font-size:.78rem;color:var(--caramel);font-weight:700;}
+.product-cat{font-size:.65rem;color:var(--doux);margin-top:3px;}
+.product-avail{font-size:.62rem;padding:2px 7px;border-radius:20px;margin-top:4px;display:inline-block;}
+.product-avail.ok{background:#d1fae5;color:#065f46;}
+.product-avail.nok{background:#fee2e2;color:#991b1b;}
+.product-actions{position:absolute;top:7px;right:7px;display:flex;gap:4px;}
 /* TOAST */
 .notif-banner{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--brun);color:#fff;padding:12px 22px;border-radius:12px;font-size:.85rem;font-weight:700;z-index:9998;box-shadow:0 4px 18px rgba(0,0,0,.25);animation:slideDown .35s ease;white-space:nowrap;pointer-events:none;}
 @keyframes slideDown{from{opacity:0;top:50px;}to{opacity:1;top:70px;}}
@@ -305,9 +317,10 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   <div class="login-card">
     <h1>🧁 Les Douceurs de Cicine</h1>
     <p>Espace administration — accès réservé</p>
+    <input type="email" id="loginEmail" placeholder="Email" autocomplete="email"/>
     <input type="password" id="pwInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()"/>
     <button onclick="doLogin()">Se connecter</button>
-    <p class="login-err" id="loginErr">Mot de passe incorrect.</p>
+    <p class="login-err" id="loginErr">Email ou mot de passe incorrect.</p>
   </div>
 </div>
 
@@ -335,7 +348,9 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <button class="main-tab" onclick="setMainTab('taches')">✅ Tâches</button>
     <button class="main-tab" onclick="setMainTab('stats')">📊 Stats</button>
     <button class="main-tab" onclick="setMainTab('clients')">👥 Clients</button>
+    <button class="main-tab" onclick="setMainTab('produits')">🛍️ Produits</button>
     <button class="main-tab" onclick="setMainTab('avis')">⭐ Avis <span id="avisbadge" style="display:none;background:var(--fuchsia);color:#fff;border-radius:20px;padding:0 6px;font-size:.65rem;margin-left:3px;"></span></button>
+    <button class="main-tab" onclick="setMainTab('parametres')">⚙️ Paramètres</button>
   </div>
 
   <!-- ===== TAB COMMANDES ===== -->
@@ -482,6 +497,64 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <div class="section-title">⭐ Avis clients</div>
     <div id="adminAvisList"></div>
   </div>
+
+  <!-- ===== TAB PRODUITS ===== -->
+  <div id="tab-produits" class="wrap" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div class="section-title" style="margin-bottom:0;">🛍️ Catalogue produits</div>
+      <button class="s-add-btn" onclick="openAddProduct()">➕ Ajouter un produit</button>
+    </div>
+    <div id="adminProductsGrid"></div>
+  </div>
+
+  <!-- ===== TAB PARAMÈTRES ===== -->
+  <div id="tab-parametres" class="wrap" style="display:none;">
+    <div class="section-title">⚙️ Paramètres</div>
+
+    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:700;font-size:.9rem;color:var(--brun);margin-bottom:12px;">🏪 Boutique</div>
+      <label class="bs-label">Nom de la boutique</label>
+      <input class="bs-input" id="set_shop_name" type="text" placeholder="Les Douceurs de Cicine"/>
+      <label class="bs-label">Slogan</label>
+      <input class="bs-input" id="set_shop_tagline" type="text" placeholder="Pâtisserie artisanale..."/>
+      <label class="bs-label">Téléphone</label>
+      <input class="bs-input" id="set_shop_phone" type="tel" placeholder="0696 XX XX XX"/>
+      <label class="bs-label">Adresse</label>
+      <input class="bs-input" id="set_shop_address" type="text" placeholder="Le Vauclin, Martinique"/>
+    </div>
+
+    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:700;font-size:.9rem;color:var(--brun);margin-bottom:12px;">🎨 Couleurs</div>
+      <div class="fgr">
+        <div>
+          <label class="bs-label">Couleur principale</label>
+          <input type="color" id="set_color_primary" value="#5C2E0E" style="width:100%;height:42px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;margin-bottom:11px;"/>
+        </div>
+        <div>
+          <label class="bs-label">Couleur secondaire</label>
+          <input type="color" id="set_color_secondary" value="#A0522D" style="width:100%;height:42px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;margin-bottom:11px;"/>
+        </div>
+      </div>
+      <button onclick="applySettingsColors()" style="padding:9px 18px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:20px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">👁️ Aperçu</button>
+    </div>
+
+    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;">
+      <div style="font-weight:700;font-size:.9rem;color:var(--brun);margin-bottom:12px;">📧 Notifications email</div>
+      <label class="bs-label">Email admin (destinataire des nouvelles commandes)</label>
+      <input class="bs-input" id="set_notif_email" type="email" placeholder="votre@email.com"/>
+      <div style="background:var(--fond2);border-radius:9px;padding:10px 13px;margin-bottom:12px;font-size:.73rem;color:var(--doux);">
+        💡 Créez un compte gratuit sur <strong>emailjs.com</strong> pour activer les notifications email
+      </div>
+      <label class="bs-label">EmailJS — Service ID</label>
+      <input class="bs-input" id="set_emailjs_service" type="text" placeholder="service_xxxxxxx"/>
+      <label class="bs-label">EmailJS — Template ID</label>
+      <input class="bs-input" id="set_emailjs_template" type="text" placeholder="template_xxxxxxx"/>
+      <label class="bs-label">EmailJS — Clé publique</label>
+      <input class="bs-input" id="set_emailjs_pubkey" type="text" placeholder="xxxxxxxxxxxxxxxxxxxx"/>
+    </div>
+
+    <button class="bs-btn-primary" onclick="saveSettings()">💾 Sauvegarder les paramètres</button>
+  </div>
 </div>
 
 <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()"></div>
@@ -510,6 +583,8 @@ var currentModalDate="";
 var manualLineCount=0;
 var allReviews=[];
 var activeMainTab="commandes";
+var allProducts=[];
+var shopSettings={};
 
 // Stocks
 var stockItems=[];
@@ -536,19 +611,26 @@ var planDayOffset=0;
 var tasks=[];
 
 /* ====== AUTH ====== */
-function doLogin(){
-  if(document.getElementById("pwInput").value==="Cicine2025"){
-    localStorage.setItem("admin_auth","ok");
-    showDashboard();
-  } else {
+async function doLogin(){
+  var email=(document.getElementById("loginEmail").value||"").trim();
+  var pw=document.getElementById("pwInput").value;
+  if(!email||!pw){document.getElementById("loginErr").style.display="block";return;}
+  var {data,error}=await sb.auth.signInWithPassword({email:email,password:pw});
+  if(error){
     document.getElementById("loginErr").style.display="block";
+  }else{
+    showDashboard();
   }
 }
-function logout(){localStorage.removeItem("admin_auth");location.reload();}
+async function logout(){
+  await sb.auth.signOut();
+  location.reload();
+}
 function showDashboard(){
   document.getElementById("login-screen").style.display="none";
   document.getElementById("dashboard").style.display="block";
   loadRecipes();
+  loadSettings();
   loadOrders();
   loadBlocked();
   subscribeRealtime();
@@ -560,7 +642,7 @@ function showDashboard(){
   loadTasks();
   // Navigation directe par hash URL (ex: admin.html#planning)
   var hash=location.hash.replace("#","");
-  if(["stocks","planning","taches","stats","avis"].indexOf(hash)>=0){
+  if(["stocks","planning","taches","stats","avis","produits","parametres"].indexOf(hash)>=0){
     setTimeout(function(){setMainTab(hash);},300);
   }
 }
@@ -568,7 +650,7 @@ function showDashboard(){
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
-  var tabs=["commandes","stocks","planning","taches","stats","clients","avis"];
+  var tabs=["commandes","stocks","planning","taches","stats","clients","produits","avis","parametres"];
   tabs.forEach(function(t){
     document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
   });
@@ -581,6 +663,8 @@ function setMainTab(tab){
   if(tab==="stats")renderStats();
   if(tab==="clients")loadClients();
   if(tab==="avis"){loadReviews();}
+  if(tab==="produits"){loadAdminProducts();}
+  if(tab==="parametres"){renderSettings();}
 }
 
 /* ====== HELPERS ====== */
@@ -2006,9 +2090,217 @@ async function deleteReview(id){
   showNotif("Avis supprimé.");
 }
 
+/* ====== PRODUITS ====== */
+async function loadAdminProducts(){
+  try{
+    var {data,error}=await sb.from("products").select("*").order("sort_order").order("name");
+    if(error)throw error;
+    allProducts=data||[];
+    renderAdminProducts();
+  }catch(e){
+    document.getElementById("adminProductsGrid").innerHTML='<div class="s-empty">Erreur chargement produits : '+e.message+'</div>';
+  }
+}
+function renderAdminProducts(){
+  var el=document.getElementById("adminProductsGrid");
+  if(!el)return;
+  if(allProducts.length===0){
+    el.innerHTML='<div class="s-empty">Aucun produit. Ajoutez votre premier produit avec le bouton ci-dessus.</div>';
+    return;
+  }
+  // Group by category
+  var cats={};
+  allProducts.forEach(function(p){
+    var c=p.category||"Autre";
+    if(!cats[c])cats[c]=[];
+    cats[c].push(p);
+  });
+  var html="";
+  Object.keys(cats).forEach(function(cat){
+    html+='<div class="ct">'+cat+'</div>';
+    html+='<div class="product-grid">';
+    cats[cat].forEach(function(p){
+      var unavailCls=p.available===false?"unavailable":"";
+      var availHtml=p.available!==false?'<span class="product-avail ok">✅ Disponible</span>':'<span class="product-avail nok">❌ Indisponible</span>';
+      var price=p.price?parseFloat(p.price).toFixed(2).replace(".",",")+"€":"—";
+      html+='<div class="product-card '+unavailCls+'" onclick="toggleProductAvail(\''+p.id+'\')" >'+
+        '<div class="product-actions">'+
+        '<button style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--bordure);background:var(--fond);cursor:pointer;font-size:.78rem;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation();openEditProduct(\''+p.id+'\')">✏️</button>'+
+        '<button style="width:26px;height:26px;border-radius:50%;border:1.5px solid #fca5a5;background:#fee2e2;color:#991b1b;cursor:pointer;font-size:.78rem;display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation();deleteProduct(\''+p.id+'\')">🗑️</button>'+
+        '</div>'+
+        '<div class="product-emoji">'+(p.emoji||"🧁")+'</div>'+
+        '<div class="product-name">'+p.name+'</div>'+
+        '<div class="product-price">'+price+'</div>'+
+        '<div class="product-cat">'+cat+'</div>'+
+        availHtml+
+        '</div>';
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+function openAddProduct(){
+  openModal(
+    '<div class="bs-title">➕ Ajouter un produit</div>'+
+    '<label class="bs-label">Nom *</label><input class="bs-input" id="pName" type="text" placeholder="Nom du produit"/>'+
+    '<div class="fgr">'+
+    '<div><label class="bs-label">Prix (€)</label><input class="bs-input" id="pPrice" type="number" step="0.1" min="0" placeholder="0.00"/></div>'+
+    '<div><label class="bs-label">Emoji</label><input class="bs-input" id="pEmoji" type="text" placeholder="🧁" maxlength="2"/></div>'+
+    '</div>'+
+    '<label class="bs-label">Catégorie</label>'+
+    '<select class="bs-select" id="pCat">'+
+    '<option>Viennoiseries salées</option><option>Viennoiseries sucrées</option>'+
+    '<option>Mignardises salées</option><option>Mignardises sucrées</option>'+
+    '<option>Délibox</option><option>Chocolat & Pain au beurre</option>'+
+    '<option>Gâteaux</option><option>Autre</option>'+
+    '</select>'+
+    '<label class="bs-label">Description (optionnel)</label>'+
+    '<textarea class="bs-textarea" id="pDesc" placeholder="Description du produit..."></textarea>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">'+
+    '<input type="checkbox" id="pAvail" checked style="width:18px;height:18px;accent-color:var(--caramel);cursor:pointer;"/>'+
+    '<label for="pAvail" style="font-size:.84rem;font-weight:700;color:var(--texte);cursor:pointer;">Disponible</label>'+
+    '</div>'+
+    '<label class="bs-label">Ordre d\'affichage</label><input class="bs-input" id="pOrder" type="number" min="0" value="0"/>'+
+    '<button class="bs-btn-primary" onclick="saveNewProduct()">Ajouter le produit</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
+  );
+}
+async function saveNewProduct(){
+  var name=(document.getElementById("pName").value||"").trim();
+  if(!name){showNotif("Nom obligatoire");return;}
+  try{
+    var {error}=await sb.from("products").insert({
+      name:name,
+      price:parseFloat(document.getElementById("pPrice").value)||0,
+      category:document.getElementById("pCat").value,
+      emoji:(document.getElementById("pEmoji").value||"🧁").trim(),
+      description:(document.getElementById("pDesc").value||"").trim()||null,
+      available:document.getElementById("pAvail").checked,
+      sort_order:parseInt(document.getElementById("pOrder").value)||0
+    });
+    if(error)throw error;
+    showNotif("Produit ajouté !");closeModal();await loadAdminProducts();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+function openEditProduct(id){
+  var p=allProducts.find(function(x){return x.id===id;});
+  if(!p)return;
+  var cats=["Viennoiseries salées","Viennoiseries sucrées","Mignardises salées","Mignardises sucrées","Délibox","Chocolat & Pain au beurre","Gâteaux","Autre"];
+  var opts=cats.map(function(c){return'<option'+(c===p.category?" selected":"")+'>'+c+'</option>';}).join("");
+  openModal(
+    '<div class="bs-title">✏️ Modifier le produit</div>'+
+    '<label class="bs-label">Nom *</label><input class="bs-input" id="epName" type="text" value="'+(p.name||"").replace(/"/g,"&quot;")+'"/>'+
+    '<div class="fgr">'+
+    '<div><label class="bs-label">Prix (€)</label><input class="bs-input" id="epPrice" type="number" step="0.1" min="0" value="'+parseFloat(p.price||0).toFixed(2)+'"/></div>'+
+    '<div><label class="bs-label">Emoji</label><input class="bs-input" id="epEmoji" type="text" value="'+(p.emoji||"🧁")+'" maxlength="2"/></div>'+
+    '</div>'+
+    '<label class="bs-label">Catégorie</label><select class="bs-select" id="epCat">'+opts+'</select>'+
+    '<label class="bs-label">Description (optionnel)</label>'+
+    '<textarea class="bs-textarea" id="epDesc">'+(p.description||"")+'</textarea>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">'+
+    '<input type="checkbox" id="epAvail"'+(p.available!==false?" checked":"")+' style="width:18px;height:18px;accent-color:var(--caramel);cursor:pointer;"/>'+
+    '<label for="epAvail" style="font-size:.84rem;font-weight:700;color:var(--texte);cursor:pointer;">Disponible</label>'+
+    '</div>'+
+    '<label class="bs-label">Ordre d\'affichage</label><input class="bs-input" id="epOrder" type="number" min="0" value="'+(p.sort_order||0)+'"/>'+
+    '<button class="bs-btn-primary" onclick="saveEditProduct(\''+id+'\')">Enregistrer</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'+
+    '<button class="bs-btn-danger" onclick="deleteProduct(\''+id+'\')">🗑️ Supprimer</button>'
+  );
+}
+async function saveEditProduct(id){
+  var name=(document.getElementById("epName").value||"").trim();
+  if(!name){showNotif("Nom obligatoire");return;}
+  try{
+    var {error}=await sb.from("products").update({
+      name:name,
+      price:parseFloat(document.getElementById("epPrice").value)||0,
+      category:document.getElementById("epCat").value,
+      emoji:(document.getElementById("epEmoji").value||"🧁").trim(),
+      description:(document.getElementById("epDesc").value||"").trim()||null,
+      available:document.getElementById("epAvail").checked,
+      sort_order:parseInt(document.getElementById("epOrder").value)||0
+    }).eq("id",id);
+    if(error)throw error;
+    showNotif("Produit modifié !");closeModal();await loadAdminProducts();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+async function deleteProduct(id){
+  if(!confirm("Supprimer ce produit ?"))return;
+  try{
+    var {error}=await sb.from("products").delete().eq("id",id);
+    if(error)throw error;
+    allProducts=allProducts.filter(function(p){return p.id!==id;});
+    closeModal();renderAdminProducts();showNotif("Produit supprimé !");
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+async function toggleProductAvail(id){
+  var p=allProducts.find(function(x){return x.id===id;});
+  if(!p)return;
+  var newVal=p.available===false?true:false;
+  try{
+    var {error}=await sb.from("products").update({available:newVal}).eq("id",id);
+    if(error)throw error;
+    p.available=newVal;
+    renderAdminProducts();
+    showNotif(newVal?"Produit disponible ✅":"Produit masqué ❌");
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+
+/* ====== PARAMÈTRES ====== */
+async function loadSettings(){
+  try{
+    var {data,error}=await sb.from("settings").select("*");
+    if(error)return;
+    shopSettings={};
+    (data||[]).forEach(function(s){shopSettings[s.key]=s.value;});
+    applySettingsColors();
+    renderSettings();
+  }catch(e){}
+}
+function renderSettings(){
+  var fields=["shop_name","shop_tagline","shop_phone","shop_address","notif_email","emailjs_service","emailjs_template","emailjs_pubkey"];
+  fields.forEach(function(key){
+    var el=document.getElementById("set_"+key);
+    if(el&&shopSettings[key]!==undefined)el.value=shopSettings[key];
+  });
+  if(shopSettings.color_primary){
+    var cp=document.getElementById("set_color_primary");
+    if(cp)cp.value=shopSettings.color_primary;
+  }
+  if(shopSettings.color_secondary){
+    var cs=document.getElementById("set_color_secondary");
+    if(cs)cs.value=shopSettings.color_secondary;
+  }
+}
+function applySettingsColors(){
+  if(shopSettings.color_primary)document.documentElement.style.setProperty("--brun",shopSettings.color_primary);
+  if(shopSettings.color_secondary)document.documentElement.style.setProperty("--caramel",shopSettings.color_secondary);
+}
+async function saveSettings(){
+  // Read current form values
+  var keys=["shop_name","shop_tagline","shop_phone","shop_address","notif_email","emailjs_service","emailjs_template","emailjs_pubkey"];
+  var pairs=[];
+  keys.forEach(function(key){
+    var el=document.getElementById("set_"+key);
+    if(el)pairs.push({key:key,value:el.value||""});
+  });
+  var cp=document.getElementById("set_color_primary");
+  var cs=document.getElementById("set_color_secondary");
+  if(cp)pairs.push({key:"color_primary",value:cp.value});
+  if(cs)pairs.push({key:"color_secondary",value:cs.value});
+  try{
+    var {error}=await sb.from("settings").upsert(pairs,{onConflict:"key"});
+    if(error)throw error;
+    pairs.forEach(function(p){shopSettings[p.key]=p.value;});
+    applySettingsColors();
+    showNotif("Paramètres sauvegardés ✅");
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+
 /* ====== INIT ====== */
-window.addEventListener("load",function(){
-  if(localStorage.getItem("admin_auth")==="ok")showDashboard();
+window.addEventListener("load",async function(){
+  var {data:{session}}=await sb.auth.getSession();
+  if(session)showDashboard();
 });
 </script>
 </body>
