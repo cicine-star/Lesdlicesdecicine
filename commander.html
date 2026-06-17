@@ -102,6 +102,21 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
     </div>
 
     <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:14px;margin-bottom:14px;">
+      <p style="font-family:'Dancing Script',cursive;font-size:1.15rem;color:var(--brun);margin-bottom:4px;">👤 Votre profil <span style="font-family:'Lato',sans-serif;font-size:.7rem;color:var(--doux);font-weight:400;">(optionnel)</span></p>
+      <p style="font-size:.75rem;color:var(--doux);margin-bottom:12px;">Ces infos nous permettent de mieux vous servir et de vous souhaiter un joyeux anniversaire 🎂</p>
+      <div class="fg"><label>Vous êtes</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div id="typeParticulier" onclick="setClientType('particulier')" style="padding:10px;border:2px solid var(--caramel);border-radius:9px;text-align:center;font-size:.82rem;font-weight:700;cursor:pointer;background:var(--fond2);color:var(--brun);">🏠 Particulier</div>
+          <div id="typeProfessionnel" onclick="setClientType('professionnel')" style="padding:10px;border:2px solid var(--bordure);border-radius:9px;text-align:center;font-size:.82rem;font-weight:700;cursor:pointer;background:#fff;color:var(--doux);">🏢 Professionnel</div>
+        </div>
+      </div>
+      <div class="fgr">
+        <div class="fg"><label>Code postal</label><input type="text" id="cPostal" placeholder="97232" maxlength="10" inputmode="numeric"/></div>
+        <div class="fg"><label>Date d'anniversaire 🎂</label><input type="date" id="cBirthday"/></div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:14px;margin-bottom:14px;">
       <p style="font-family:'Dancing Script',cursive;font-size:1.15rem;color:var(--brun);margin-bottom:10px;">📅 Date souhaitée *</p>
       <div class="cal-nav">
         <button class="cal-arrow" onclick="calPrev()">&#8592;</button>
@@ -327,6 +342,19 @@ var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
 var sb=supabase.createClient(SB_URL,SB_KEY);
 var selectedDate="";
 var deliveryType="recuperation";
+var clientType="particulier";
+function setClientType(t){
+  clientType=t;
+  var p=document.getElementById("typeParticulier");
+  var pro=document.getElementById("typeProfessionnel");
+  if(t==="particulier"){
+    p.style.cssText="padding:10px;border:2px solid var(--caramel);border-radius:9px;text-align:center;font-size:.82rem;font-weight:700;cursor:pointer;background:var(--fond2);color:var(--brun);";
+    pro.style.cssText="padding:10px;border:2px solid var(--bordure);border-radius:9px;text-align:center;font-size:.82rem;font-weight:700;cursor:pointer;background:#fff;color:var(--doux);";
+  } else {
+    pro.style.cssText="padding:10px;border:2px solid var(--caramel);border-radius:9px;text-align:center;font-size:.82rem;font-weight:700;cursor:pointer;background:var(--fond2);color:var(--brun);";
+    p.style.cssText="padding:10px;border:2px solid var(--bordure);border-radius:9px;text-align:center;font-size:.82rem;font-weight:700;cursor:pointer;background:#fff;color:var(--doux);";
+  }
+}
 var gpsLat=null;
 var gpsLng=null;
 var blockedDatesSet=[];
@@ -489,6 +517,17 @@ async function envoyerCommande(){
   };
   var res=await sb.from("orders").insert([payload]);
   if(res.error){alert("Erreur lors de l'envoi : "+res.error.message);return;}
+  // Upsert fiche client
+  try{
+    var telNorm=(tel+"").replace(/\D/g,"");
+    var postal=(document.getElementById("cPostal").value||"").trim()||null;
+    var bday=(document.getElementById("cBirthday").value||"")||null;
+    await sb.from("clients").upsert({
+      phone:telNorm,name:nom,type:clientType,
+      postal_code:postal,birthday:bday,
+      updated_at:new Date().toISOString()
+    },{onConflict:"phone"});
+  }catch(e){}
   document.getElementById("orderForm").style.display="none";
   document.getElementById("confirmCard").style.display="block";
   var typeLabel=deliveryType==="livraison"?"Livraison":"Récupération au Vauclin";

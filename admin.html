@@ -269,6 +269,28 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .ing-row select,.ing-row input{padding:7px 9px;border:1.5px solid var(--bordure);border-radius:8px;font-size:.78rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);}
 .ing-row select:focus,.ing-row input:focus{border-color:var(--caramel);}
 .ing-del{width:26px;height:26px;border-radius:50%;border:1.5px solid #fca5a5;background:#fee2e2;color:#991b1b;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+/* CLIENTS TAB */
+.clients-toolbar{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;}
+.client-search{flex:1;min-width:140px;padding:9px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.84rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:#fff;}
+.client-search:focus{border-color:var(--caramel);}
+.sort-btn{padding:7px 12px;border:1.5px solid var(--bordure);border-radius:20px;background:#fff;font-size:.72rem;font-weight:700;color:var(--doux);cursor:pointer;white-space:nowrap;}
+.sort-btn.active{background:var(--brun);color:#fff;border-color:var(--brun);}
+.client-card{background:#fff;border:1.5px solid var(--bordure);border-radius:13px;padding:13px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;}
+.client-card:active{background:var(--fond2);}
+.client-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--caramel),var(--brun));color:#fff;font-size:1.1rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.client-info{flex:1;min-width:0;}
+.client-name{font-weight:700;font-size:.9rem;color:var(--texte);}
+.client-phone{font-size:.72rem;color:var(--doux);margin-top:1px;}
+.client-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+.client-tag{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;}
+.tag-part{background:#dbeafe;color:#1e40af;}
+.tag-pro{background:#f3e8ff;color:#6b21a8;}
+.tag-postal{background:var(--fond2);color:var(--brun);}
+.tag-bday{background:#fce7f3;color:#9d174d;}
+.client-stats{text-align:right;flex-shrink:0;}
+.client-cmd-n{font-size:1.1rem;font-weight:700;color:var(--brun);}
+.client-cmd-l{font-size:.62rem;color:var(--doux);}
+.client-total{font-size:.75rem;font-weight:700;color:var(--caramel);margin-top:2px;}
 /* TOAST */
 .notif-banner{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--brun);color:#fff;padding:12px 22px;border-radius:12px;font-size:.85rem;font-weight:700;z-index:9998;box-shadow:0 4px 18px rgba(0,0,0,.25);animation:slideDown .35s ease;white-space:nowrap;pointer-events:none;}
 @keyframes slideDown{from{opacity:0;top:50px;}to{opacity:1;top:70px;}}
@@ -311,6 +333,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <button class="main-tab" onclick="setMainTab('planning')">📅 Planning</button>
     <button class="main-tab" onclick="setMainTab('taches')">✅ Tâches</button>
     <button class="main-tab" onclick="setMainTab('stats')">📊 Stats</button>
+    <button class="main-tab" onclick="setMainTab('clients')">👥 Clients</button>
     <button class="main-tab" onclick="setMainTab('avis')">⭐ Avis <span id="avisbadge" style="display:none;background:var(--fuchsia);color:#fff;border-radius:20px;padding:0 6px;font-size:.65rem;margin-left:3px;"></span></button>
   </div>
 
@@ -434,6 +457,25 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <div id="monthlyTable" style="background:#fff;border:1.5px solid var(--bordure);border-radius:13px;overflow:hidden;"></div>
   </div>
 
+  <!-- ===== TAB CLIENTS ===== -->
+  <div id="tab-clients" class="wrap" style="display:none;">
+    <div class="stats-bar" style="margin-bottom:14px;">
+      <div class="stat-card"><div class="stat-n" id="cliTotal">—</div><div class="stat-l">Clients</div></div>
+      <div class="stat-card"><div class="stat-n" id="cliPart">—</div><div class="stat-l">Particuliers</div></div>
+      <div class="stat-card"><div class="stat-n" id="cliPro">—</div><div class="stat-l">Professionnels</div></div>
+    </div>
+    <div class="clients-toolbar">
+      <input class="client-search" id="cliSearch" type="text" placeholder="🔍 Rechercher un client…" oninput="renderClients()"/>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+      <button class="sort-btn active" id="sortAlpha" onclick="setCliSort('alpha')">A-Z</button>
+      <button class="sort-btn" id="sortPostal" onclick="setCliSort('postal')">Code postal</button>
+      <button class="sort-btn" id="sortBday" onclick="setCliSort('bday')">🎂 Anniversaire</button>
+      <button class="sort-btn" id="sortCmd" onclick="setCliSort('cmd')">Nb commandes</button>
+    </div>
+    <div id="clientsList"></div>
+  </div>
+
   <!-- ===== TAB AVIS ===== -->
   <div id="tab-avis" class="wrap" style="display:none;">
     <div class="section-title">⭐ Avis clients</div>
@@ -472,6 +514,10 @@ var activeMainTab="commandes";
 var stockItems=[];
 var activeStockTab="matiere_premiere";
 var adjType="entree";
+
+// Clients
+var allClients=[];
+var clientSort="alpha";
 
 // Recipes & shopping list
 var recipes=[];
@@ -521,7 +567,7 @@ function showDashboard(){
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
-  var tabs=["commandes","stocks","planning","taches","stats","avis"];
+  var tabs=["commandes","stocks","planning","taches","stats","clients","avis"];
   tabs.forEach(function(t){
     document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
   });
@@ -532,6 +578,7 @@ function setMainTab(tab){
   if(tab==="planning")renderPlanning();
   if(tab==="taches")renderTasks();
   if(tab==="stats")renderStats();
+  if(tab==="clients")loadClients();
   if(tab==="avis"){loadReviews();}
 }
 
@@ -1293,6 +1340,127 @@ function renderPlanningQuotidien(){
 }
 function savePlanNote(dayStr,val){
   localStorage.setItem("plan_note_"+dayStr,val);
+}
+
+/* ====== CLIENTS ====== */
+async function loadClients(){
+  try{
+    var {data,error}=await sb.from("clients").select("*").order("name");
+    if(error&&error.code==="42P01"){
+      document.getElementById("clientsList").innerHTML='<div class="empty-orders">⚙️ Table Supabase non créée. Exécutez le SQL de création de la table <code>clients</code>.</div>';
+      return;
+    }
+    if(error)throw error;
+    allClients=data||[];
+    renderClients();
+    updateCliStats();
+  }catch(e){showNotif("Erreur clients : "+e.message);}
+}
+function updateCliStats(){
+  var part=allClients.filter(function(c){return c.type==="particulier"||!c.type;}).length;
+  var pro=allClients.filter(function(c){return c.type==="professionnel";}).length;
+  document.getElementById("cliTotal").textContent=allClients.length;
+  document.getElementById("cliPart").textContent=part;
+  document.getElementById("cliPro").textContent=pro;
+}
+function setCliSort(s){
+  clientSort=s;
+  document.querySelectorAll(".sort-btn").forEach(function(b){b.classList.remove("active");});
+  document.getElementById("sort"+s.charAt(0).toUpperCase()+s.slice(1)).classList.add("active");
+  renderClients();
+}
+function clientOrderStats(phone){
+  var tel=(phone+"").replace(/\D/g,"");
+  var orders=allOrders.filter(function(o){
+    var op=(o.client_phone+"").replace(/\D/g,"");
+    return op===tel&&o.status!=="cancelled";
+  });
+  var total=orders.reduce(function(s,o){return s+parseFloat(o.total||0);},0);
+  return{count:orders.length,total:total,orders:orders};
+}
+function nextBdayDays(birthday){
+  if(!birthday)return 9999;
+  var parts=birthday.split("-");
+  var now=new Date();now.setHours(0,0,0,0);
+  var next=new Date(now.getFullYear(),parseInt(parts[1])-1,parseInt(parts[2]));
+  if(next<now)next.setFullYear(now.getFullYear()+1);
+  return Math.round((next-now)/(1000*3600*24));
+}
+function renderClients(){
+  var q=(document.getElementById("cliSearch").value||"").toLowerCase();
+  var list=allClients.filter(function(c){
+    if(!q)return true;
+    return(c.name||"").toLowerCase().includes(q)||(c.phone||"").includes(q)||(c.postal_code||"").includes(q);
+  });
+  list=list.slice().sort(function(a,b){
+    if(clientSort==="alpha")return(a.name||"").localeCompare(b.name||"","fr");
+    if(clientSort==="postal")return(a.postal_code||"zzz").localeCompare(b.postal_code||"zzz");
+    if(clientSort==="bday")return nextBdayDays(a.birthday)-nextBdayDays(b.birthday);
+    if(clientSort==="cmd")return clientOrderStats(b.phone).count-clientOrderStats(a.phone).count;
+    return 0;
+  });
+  if(list.length===0){
+    document.getElementById("clientsList").innerHTML='<div class="empty-orders">Aucun client trouvé.</div>';
+    return;
+  }
+  var html=list.map(function(c){
+    var stats=clientOrderStats(c.phone);
+    var initials=(c.name||"?").split(" ").map(function(w){return w[0]||"";}).slice(0,2).join("").toUpperCase();
+    var typTag=c.type==="professionnel"?'<span class="client-tag tag-pro">🏢 Pro</span>':'<span class="client-tag tag-part">🏠 Part.</span>';
+    var postalTag=c.postal_code?'<span class="client-tag tag-postal">📍 '+c.postal_code+'</span>':"";
+    var bdayTag="";
+    if(c.birthday){
+      var days=nextBdayDays(c.birthday);
+      var label=days===0?"🎂 Aujourd'hui !":days<=7?"🎂 Dans "+days+"j":"🎂 "+c.birthday.split("-").slice(1).join("/");
+      bdayTag='<span class="client-tag tag-bday">'+label+'</span>';
+    }
+    return'<div class="client-card" onclick="openClientDetail(\''+c.id+'\')">'+
+      '<div class="client-avatar">'+initials+'</div>'+
+      '<div class="client-info">'+
+      '<div class="client-name">'+c.name+'</div>'+
+      '<div class="client-phone">📱 '+c.phone+'</div>'+
+      '<div class="client-tags">'+typTag+postalTag+bdayTag+'</div>'+
+      '</div>'+
+      '<div class="client-stats">'+
+      '<div class="client-cmd-n">'+stats.count+'</div>'+
+      '<div class="client-cmd-l">commande'+(stats.count!==1?"s":"")+'</div>'+
+      '<div class="client-total">'+(stats.total>0?parseFloat(stats.total).toFixed(2).replace(".",",")+"€":"—")+'</div>'+
+      '</div></div>';
+  }).join("");
+  document.getElementById("clientsList").innerHTML=html;
+}
+function openClientDetail(id){
+  var c=allClients.find(function(x){return x.id===id;});
+  if(!c)return;
+  var stats=clientOrderStats(c.phone);
+  var phone=(c.phone+"").replace(/\D/g,"");
+  if(phone.startsWith("0"))phone="596"+phone.substring(1);
+  var bdayHtml=c.birthday?'<div style="font-size:.78rem;color:var(--doux);margin-top:4px;">🎂 '+c.birthday.split("-").slice(1).reverse().join("/")+" (dans "+nextBdayDays(c.birthday)+"j)</div>":'';
+  var histHtml=stats.orders.length===0?'<p style="font-size:.8rem;color:var(--doux);font-style:italic;">Aucune commande</p>':
+    stats.orders.slice().sort(function(a,b){return(b.delivery_date||"").localeCompare(a.delivery_date||"");}).slice(0,10).map(function(o){
+      var items=(o.items||[]).map(function(it){return it.qty+"× "+it.name;}).join(", ");
+      return'<div style="background:var(--fond);border-radius:8px;padding:8px 10px;margin-bottom:5px;font-size:.76rem;">'+
+        '<div style="display:flex;justify-content:space-between;font-weight:700;"><span>'+fmtDate(o.delivery_date)+'</span><span style="color:var(--caramel);">'+parseFloat(o.total||0).toFixed(2).replace(".",",")+'€</span></div>'+
+        '<div style="color:var(--doux);margin-top:2px;">'+items+'</div>'+
+        '</div>';
+    }).join("");
+  openModal(
+    '<div class="bs-title">👤 '+c.name+'</div>'+
+    '<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px;">'+
+    (c.type==="professionnel"?'<span class="client-tag tag-pro">🏢 Professionnel</span>':'<span class="client-tag tag-part">🏠 Particulier</span>')+
+    (c.postal_code?'<span class="client-tag tag-postal">📍 '+c.postal_code+'</span>':'')+
+    '</div>'+
+    '<div style="font-size:.82rem;color:var(--doux);margin-bottom:4px;">📱 '+c.phone+'</div>'+
+    bdayHtml+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:13px 0 11px;">'+
+    '<div style="background:var(--fond2);border-radius:10px;padding:11px;text-align:center;"><div style="font-size:1.4rem;font-weight:700;color:var(--brun);">'+stats.count+'</div><div style="font-size:.65rem;color:var(--doux);">commande'+(stats.count!==1?"s":"")+'</div></div>'+
+    '<div style="background:var(--fond2);border-radius:10px;padding:11px;text-align:center;"><div style="font-size:1.2rem;font-weight:700;color:var(--caramel);">'+(stats.total>0?parseFloat(stats.total).toFixed(2).replace(".",",")+"€":"—")+'</div><div style="font-size:.65rem;color:var(--doux);">total dépensé</div></div>'+
+    '</div>'+
+    '<div style="font-weight:700;font-size:.8rem;color:var(--texte);margin-bottom:7px;">Historique des commandes</div>'+
+    histHtml+
+    '<a href="https://wa.me/'+phone+'" target="_blank" class="bs-btn-green" style="display:block;text-align:center;text-decoration:none;margin-top:10px;">💬 Contacter sur WhatsApp</a>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>'
+  );
 }
 
 /* ====== RECETTES & LISTE DE COURSES ====== */
