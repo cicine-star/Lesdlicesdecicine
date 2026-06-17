@@ -41,6 +41,14 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 .flink{color:#e8d5c8;font-size:.75rem;text-decoration:none;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;}
 .ct{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--doux);margin:14px 0 7px;padding-bottom:4px;border-bottom:1px dashed var(--bordure);}
 .ir{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#fff;border-radius:9px;margin-bottom:5px;border:1px solid var(--bordure);}
+.cat-section{margin-bottom:8px;}
+.cat-header{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:var(--brun);color:#fff;border-radius:10px;cursor:pointer;user-select:none;font-weight:700;font-size:.88rem;gap:8px;}
+.cat-header span:first-child{flex:1;}
+.cat-badge{background:rgba(255,255,255,.25);border-radius:20px;padding:1px 7px;font-size:.75rem;font-weight:600;flex-shrink:0;}
+.cat-arrow{transition:transform .25s;font-size:.75rem;flex-shrink:0;}
+.cat-header.open .cat-arrow{transform:rotate(90deg);}
+.cat-body{display:none;padding-top:6px;}
+.cat-body.open{display:block;}
 .il{display:flex;align-items:center;gap:8px;}
 .il input[type=checkbox]{width:18px;height:18px;accent-color:var(--caramel);cursor:pointer;flex-shrink:0;}
 .in{font-size:.82rem;font-weight:600;color:var(--texte);}
@@ -152,171 +160,75 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
     </div>
 
     <div id="productSection">
-    <div class="ct">🥐 Viennoiseries salées</div>
-<div class="ir" data-n="Petit pain" data-p="0.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Petit pain</div><div class="ip">0,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+<div class="cat-section">
+  <div class="cat-header open" id="ch-0" onclick="toggleCat(0)"><span>🥐 Viennoiseries salées</span><span class="cat-badge">7</span><span class="cat-arrow">▶</span></div>
+  <div class="cat-body open" id="cb-0">
+<div class="ir" data-n="Petit pain" data-p="0.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Petit pain</div><div class="ip">0,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pain a la saucisse" data-p="1.6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain a la saucisse</div><div class="ip">1,6€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Croissant J-F" data-p="1.6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Croissant J-F</div><div class="ip">1,6€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Quiche J/T" data-p="3.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Quiche J/T</div><div class="ip">3,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Natte J-F" data-p="3.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Natte J-F</div><div class="ip">3,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Hot-dog" data-p="3.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Hot-dog</div><div class="ip">3,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pizzas" data-p="3.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pizzas</div><div class="ip">3,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+  </div>
 </div>
-<div class="ir" data-n="Pain a la saucisse" data-p="1.6">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain a la saucisse</div><div class="ip">1,6€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+<div class="cat-section">
+  <div class="cat-header" id="ch-1" onclick="toggleCat(1)"><span>🍬 Viennoiseries sucrées</span><span class="cat-badge">8</span><span class="cat-arrow">▶</span></div>
+  <div class="cat-body" id="cb-1">
+<div class="ir" data-n="Pain au chocolat" data-p="1.2"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain au chocolat</div><div class="ip">1,2€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pain aux raisins" data-p="1.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain aux raisins</div><div class="ip">1,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pepito" data-p="1.7"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pepito</div><div class="ip">1,7€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pates goyave banane" data-p="1.6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pates goyave banane</div><div class="ip">1,6€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pomme cannelle nature" data-p="1.4"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pomme cannelle nature</div><div class="ip">1,4€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pomme cannelle pepite" data-p="1.6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pomme cannelle pepite</div><div class="ip">1,6€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Natte nature" data-p="1.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Natte nature</div><div class="ip">1,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Natte pepite" data-p="2.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Natte pepite</div><div class="ip">2,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+  </div>
 </div>
-<div class="ir" data-n="Croissant J-F" data-p="1.6">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Croissant J-F</div><div class="ip">1,6€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+<div class="cat-section">
+  <div class="cat-header" id="ch-2" onclick="toggleCat(2)"><span>🧂 Mignardises salées</span><span class="cat-badge">8</span><span class="cat-arrow">▶</span></div>
+  <div class="cat-body" id="cb-2">
+<div class="ir" data-n="Roule saucisse" data-p="0.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Roule saucisse</div><div class="ip">0,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Allumette fromage" data-p="0.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Allumette fromage</div><div class="ip">0,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pizzas mignardises" data-p="1.1"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pizzas mignardises</div><div class="ip">1,1€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Burger boeuf" data-p="1.6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Burger boeuf</div><div class="ip">1,6€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Wrap boeuf" data-p="1.6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Wrap boeuf</div><div class="ip">1,6€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Friand jambon saucisse" data-p="1.6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Friand jambon saucisse</div><div class="ip">1,6€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Hot-dog mignardise" data-p="1.6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Hot-dog mignardise</div><div class="ip">1,6€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Croque monsieur" data-p="1.3"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Croque monsieur</div><div class="ip">1,3€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+  </div>
 </div>
-<div class="ir" data-n="Quiche J/T" data-p="3.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Quiche J/T</div><div class="ip">3,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+<div class="cat-section">
+  <div class="cat-header" id="ch-3" onclick="toggleCat(3)"><span>🍬 Mignardises sucrées</span><span class="cat-badge">9</span><span class="cat-arrow">▶</span></div>
+  <div class="cat-body" id="cb-3">
+<div class="ir" data-n="Choux" data-p="1.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Choux</div><div class="ip">1,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Eclairs" data-p="1.1"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Eclairs</div><div class="ip">1,1€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Tartelettes" data-p="1.1"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Tartelettes</div><div class="ip">1,1€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Fondant" data-p="2.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Fondant</div><div class="ip">2,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Flan coco" data-p="2.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Flan coco</div><div class="ip">2,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Muffin" data-p="2.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Muffin</div><div class="ip">2,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Gaufres x2" data-p="2.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Gaufres x2</div><div class="ip">2,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Verrines mont-blanc foret-noire choco" data-p="2.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Verrines mont-blanc foret-noire choco</div><div class="ip">2,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Verrines Oreo fraise kinder" data-p="2.8"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Verrines Oreo fraise kinder</div><div class="ip">2,8€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+  </div>
 </div>
-<div class="ir" data-n="Natte J-F" data-p="3.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Natte J-F</div><div class="ip">3,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+<div class="cat-section">
+  <div class="cat-header" id="ch-4" onclick="toggleCat(4)"><span>📦 Délibox</span><span class="cat-badge">4</span><span class="cat-arrow">▶</span></div>
+  <div class="cat-body" id="cb-4">
+<div class="ir" data-n="Box Decouverte" data-p="15.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Box Decouverte</div><div class="ip">15,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Box Petit Dej" data-p="25.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Box Petit Dej</div><div class="ip">25,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Box Brunch" data-p="30.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Box Brunch</div><div class="ip">30,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Box Anniversaire" data-p="55.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Box Anniversaire</div><div class="ip">55,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+  </div>
 </div>
-<div class="ir" data-n="Hot-dog" data-p="3.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Hot-dog</div><div class="ip">3,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Pizzas" data-p="3.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pizzas</div><div class="ip">3,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ct">🍬 Viennoiseries sucrées</div>
-<div class="ir" data-n="Pain au chocolat" data-p="1.2">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain au chocolat</div><div class="ip">1,2€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Pain aux raisins" data-p="1.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain aux raisins</div><div class="ip">1,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Pepito" data-p="1.7">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pepito</div><div class="ip">1,7€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Pates goyave banane" data-p="1.6">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pates goyave banane</div><div class="ip">1,6€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Pomme cannelle nature" data-p="1.4">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pomme cannelle nature</div><div class="ip">1,4€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Pomme cannelle pepite" data-p="1.6">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pomme cannelle pepite</div><div class="ip">1,6€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Natte nature" data-p="1.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Natte nature</div><div class="ip">1,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Natte pepite" data-p="2.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Natte pepite</div><div class="ip">2,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ct">🧂 Mignardises salées</div>
-<div class="ir" data-n="Roule saucisse" data-p="0.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Roule saucisse</div><div class="ip">0,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Allumette fromage" data-p="0.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Allumette fromage</div><div class="ip">0,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Pizzas mignardises" data-p="1.1">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pizzas mignardises</div><div class="ip">1,1€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Burger boeuf" data-p="1.6">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Burger boeuf</div><div class="ip">1,6€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Wrap boeuf" data-p="1.6">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Wrap boeuf</div><div class="ip">1,6€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Friand jambon saucisse" data-p="1.6">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Friand jambon saucisse</div><div class="ip">1,6€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Hot-dog mignardise" data-p="1.6">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Hot-dog mignardise</div><div class="ip">1,6€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Croque monsieur" data-p="1.3">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Croque monsieur</div><div class="ip">1,3€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ct">🍬 Mignardises sucrées</div>
-<div class="ir" data-n="Choux" data-p="1.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Choux</div><div class="ip">1,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Eclairs" data-p="1.1">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Eclairs</div><div class="ip">1,1€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Tartelettes" data-p="1.1">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Tartelettes</div><div class="ip">1,1€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Fondant" data-p="2.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Fondant</div><div class="ip">2,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Flan coco" data-p="2.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Flan coco</div><div class="ip">2,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Muffin" data-p="2.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Muffin</div><div class="ip">2,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Gaufres x2" data-p="2.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Gaufres x2</div><div class="ip">2,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Verrines mont-blanc foret-noire choco" data-p="2.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Verrines mont-blanc foret-noire choco</div><div class="ip">2,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Verrines Oreo fraise kinder" data-p="2.8">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Verrines Oreo fraise kinder</div><div class="ip">2,8€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ct">📦 Délibox</div>
-<div class="ir" data-n="Box Decouverte" data-p="15.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Box Decouverte</div><div class="ip">15,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Box Petit Dej" data-p="25.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Box Petit Dej</div><div class="ip">25,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Box Brunch" data-p="30.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Box Brunch</div><div class="ip">30,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Box Anniversaire" data-p="55.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Box Anniversaire</div><div class="ip">55,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ct">🍫 Chocolat & Pain au beurre</div>
-<div class="ir" data-n="Chocolat maison 50cl" data-p="5.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Chocolat maison 50cl</div><div class="ip">5,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Chocolat maison 1L" data-p="13.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Chocolat maison 1L</div><div class="ip">13,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Pain beurre nature 500g" data-p="7.5">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain beurre nature 500g</div><div class="ip">7,5€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
-</div>
-<div class="ir" data-n="Pain beurre pepite 500g" data-p="8.0">
-  <div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain beurre pepite 500g</div><div class="ip">8,0€/pièce</div></div></div>
-  <input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>
+<div class="cat-section">
+  <div class="cat-header" id="ch-5" onclick="toggleCat(5)"><span>🍫 Chocolat &amp; Pain au beurre</span><span class="cat-badge">4</span><span class="cat-arrow">▶</span></div>
+  <div class="cat-body" id="cb-5">
+<div class="ir" data-n="Chocolat maison 50cl" data-p="5.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Chocolat maison 50cl</div><div class="ip">5,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Chocolat maison 1L" data-p="13.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Chocolat maison 1L</div><div class="ip">13,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pain beurre nature 500g" data-p="7.5"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain beurre nature 500g</div><div class="ip">7,5€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Pain beurre pepite 500g" data-p="8.0"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Pain beurre pepite 500g</div><div class="ip">8,0€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+  </div>
 </div>
     </div><!-- end #productSection -->
 
@@ -547,6 +459,15 @@ async function envoyerCommande(){
   try{window.open(waUrl,"_blank");}catch(e){}
 }
 
+function toggleCat(id){
+  var h=document.getElementById("ch-"+id);
+  var b=document.getElementById("cb-"+id);
+  if(!h||!b)return;
+  var open=b.classList.contains("open");
+  h.classList.toggle("open",!open);
+  b.classList.toggle("open",!open);
+}
+
 loadBlockedDates();
 renderCal();
 loadProductsFromDB();
@@ -561,7 +482,6 @@ async function loadProductsFromDB(){
 }
 
 function renderProductsHTML(data){
-  // Group by category preserving order
   var cats=[];
   var catMap={};
   data.forEach(function(p){
@@ -570,8 +490,16 @@ function renderProductsHTML(data){
     catMap[c].push(p);
   });
   var html="";
-  cats.forEach(function(cat){
-    html+='<div class="ct">'+cat+'</div>';
+  cats.forEach(function(cat,idx){
+    var isOpen=idx===0;
+    var id="dyn-"+idx;
+    html+='<div class="cat-section">'+
+      '<div class="cat-header'+(isOpen?" open":"")+'" id="ch-'+id+'" onclick="toggleCat(\''+id+'\')">'+
+      '<span>'+cat+'</span>'+
+      '<span class="cat-badge">'+catMap[cat].length+'</span>'+
+      '<span class="cat-arrow">&#9658;</span>'+
+      '</div>'+
+      '<div class="cat-body'+(isOpen?" open":"")+'" id="cb-'+id+'">';
     catMap[cat].forEach(function(p){
       var price=parseFloat(p.price||0);
       var priceStr=price%1===0?price.toFixed(0):price.toFixed(2);
@@ -585,6 +513,7 @@ function renderProductsHTML(data){
         '<input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>'+
         '</div>';
     });
+    html+='</div></div>';
   });
   return html;
 }
