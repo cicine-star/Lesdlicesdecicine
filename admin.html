@@ -511,6 +511,11 @@ function showDashboard(){
   calMonth=now.getMonth();
   renderCal();
   loadTasks();
+  // Navigation directe par hash URL (ex: admin.html#planning)
+  var hash=location.hash.replace("#","");
+  if(["stocks","planning","taches","stats","avis"].indexOf(hash)>=0){
+    setTimeout(function(){setMainTab(hash);},300);
+  }
 }
 
 /* ====== TAB SWITCHING ====== */

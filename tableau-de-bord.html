@@ -3,191 +3,218 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Cicine Admin"/>
+<meta name="theme-color" content="#5C2E0E"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧁</text></svg>"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
-<title>Mon tableau de bord — Les Douceurs de Cicine</title>
+<title>Mon espace — Les Douceurs de Cicine</title>
 <style>
-:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;--vert:#16a34a;--rouge:#dc2626;--orange:#ea580c;}
+:root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;--vert:#16a34a;--rouge:#dc2626;--orange:#ea580c;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);min-height:100vh;padding-bottom:96px;}
+body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);min-height:100vh;padding-bottom:20px;}
 
 /* HEADER */
-.header{background:linear-gradient(145deg,var(--brun) 0%,var(--c2) 100%);padding:28px 18px 22px;color:#fff;}
-.header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;}
-.header-greeting{font-family:"Dancing Script",cursive;font-size:2rem;color:#f0e0d6;line-height:1.1;}
-.header-date{font-size:.75rem;color:rgba(255,255,255,.6);margin-top:3px;}
-.header-refresh{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;}
-.header-kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.hkpi{background:rgba(255,255,255,.12);border-radius:14px;padding:13px 14px;cursor:pointer;}
-.hkpi:active{background:rgba(255,255,255,.2);}
-.hkpi-n{font-size:1.65rem;font-weight:700;color:#fff;line-height:1;}
-.hkpi-l{font-size:.7rem;color:rgba(255,255,255,.7);margin-top:3px;}
-.hkpi-sub{font-size:.62rem;color:rgba(255,255,255,.5);margin-top:1px;}
+.header{background:linear-gradient(145deg,var(--brun),var(--c2));padding:26px 18px 20px;color:#fff;}
+.header-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+.header-greeting{font-family:"Dancing Script",cursive;font-size:1.9rem;color:#f0e0d6;line-height:1.1;}
+.header-date{font-size:.72rem;color:rgba(255,255,255,.6);margin-top:3px;}
+.header-refresh{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.kpi{background:rgba(255,255,255,.11);border-radius:12px;padding:10px 8px;text-align:center;}
+.kpi-n{font-size:1.3rem;font-weight:700;color:#fff;line-height:1;}
+.kpi-l{font-size:.6rem;color:rgba(255,255,255,.65);margin-top:3px;line-height:1.2;}
 
-/* CONTENT */
-.content{padding:14px 14px 0;}
+/* ALERT STRIP */
+.alerts{padding:10px 14px;display:flex;flex-direction:column;gap:6px;}
+.alert{display:flex;align-items:center;gap:9px;background:#fff;border-radius:11px;padding:10px 12px;border-left:4px solid var(--caramel);text-decoration:none;color:var(--texte);}
+.alert.red{border-color:var(--rouge);}
+.alert.orange{border-color:var(--orange);}
+.alert.purple{border-color:#7c3aed;}
+.alert-ico{font-size:1.1rem;flex-shrink:0;}
+.alert-body{flex:1;min-width:0;}
+.alert-msg{font-size:.8rem;font-weight:700;color:var(--texte);}
+.alert-sub{font-size:.68rem;color:var(--doux);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.alert-arr{font-size:.85rem;color:var(--doux);}
 
 /* SECTION */
-.section-title{font-weight:700;font-size:.72rem;color:var(--doux);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 9px;}
+.section{padding:4px 14px 0;}
+.section-title{font-size:.7rem;font-weight:700;color:var(--doux);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 9px;}
 
-/* ALERTS */
-.alert-card{border-radius:13px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:11px;cursor:pointer;text-decoration:none;}
-.alert-red{background:#fee2e2;border:1.5px solid #fca5a5;}
-.alert-orange{background:#fff7ed;border:1.5px solid #fed7aa;}
-.alert-green{background:#d1fae5;border:1.5px solid #a7f3d0;}
-.alert-blue{background:#dbeafe;border:1.5px solid #93c5fd;}
-.alert-icon{font-size:1.25rem;flex-shrink:0;}
-.alert-body{flex:1;min-width:0;}
-.alert-title{font-weight:700;font-size:.85rem;}
-.alert-red .alert-title{color:#991b1b;}
-.alert-orange .alert-title{color:#9a3412;}
-.alert-green .alert-title{color:#065f46;}
-.alert-blue .alert-title{color:#1e40af;}
-.alert-desc{font-size:.71rem;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.alert-red .alert-desc{color:#b91c1c;}
-.alert-orange .alert-desc{color:#c2410c;}
-.alert-green .alert-desc{color:#047857;}
-.alert-blue .alert-desc{color:#1d4ed8;}
-.alert-arrow{font-size:.9rem;color:rgba(0,0,0,.25);flex-shrink:0;}
+/* APP GRID */
+.app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.app-btn{position:relative;background:#fff;border:1.5px solid var(--bordure);border-radius:18px;padding:16px 10px 13px;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--texte);cursor:pointer;transition:transform .1s,box-shadow .1s;-webkit-tap-highlight-color:transparent;}
+.app-btn:active{transform:scale(.95);box-shadow:0 2px 8px rgba(92,46,14,.12);}
+.app-btn.primary{background:var(--brun);border-color:var(--brun);}
+.app-btn.secondary{background:var(--caramel);border-color:var(--caramel);}
+.app-ico{font-size:1.8rem;}
+.app-label{font-size:.72rem;font-weight:700;color:var(--texte);text-align:center;line-height:1.2;}
+.app-btn.primary .app-label{color:#fff;}
+.app-btn.secondary .app-label{color:#fff;}
+.app-sub{font-size:.6rem;color:var(--doux);text-align:center;line-height:1.2;}
+.app-btn.primary .app-sub{color:rgba(255,255,255,.7);}
+.app-btn.secondary .app-sub{color:rgba(255,255,255,.7);}
+/* BADGE */
+.app-badge{position:absolute;top:-5px;right:-5px;background:var(--rouge);color:#fff;border-radius:50%;min-width:20px;height:20px;font-size:.6rem;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--fond);}
 
-/* ORDER CARDS */
-.order-card{background:#fff;border:1.5px solid var(--bordure);border-radius:13px;padding:13px;margin-bottom:8px;display:flex;align-items:center;gap:11px;cursor:pointer;text-decoration:none;}
-.order-card:active{background:var(--fond2);}
-.oc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:2px;}
-.dot-p{background:#eab308;}
-.dot-c{background:#3b82f6;}
-.dot-r{background:#a855f7;}
-.dot-d{background:var(--vert);}
-.oc-body{flex:1;min-width:0;}
-.oc-name{font-weight:700;font-size:.88rem;color:var(--texte);}
-.oc-items{font-size:.72rem;color:var(--doux);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
-.oc-tags{display:flex;align-items:center;gap:5px;margin-top:5px;flex-wrap:wrap;}
-.tag{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:20px;}
-.tag-liv{background:#dbeafe;color:#1e40af;}
-.tag-rec{background:#d1fae5;color:#065f46;}
-.tag-pending{background:#fef9c3;color:#854d0e;}
-.tag-confirmed{background:#dbeafe;color:#1e40af;}
-.tag-ready{background:#f3e8ff;color:#6b21a8;}
-.tag-done{background:#d1fae5;color:#065f46;}
-.oc-total{font-size:.9rem;font-weight:700;color:var(--caramel);white-space:nowrap;flex-shrink:0;}
+/* FULL WIDTH BTN */
+.app-btn-wide{background:#fff;border:1.5px solid var(--bordure);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--texte);-webkit-tap-highlight-color:transparent;}
+.app-btn-wide:active{background:var(--fond2);}
+.app-btn-wide .app-ico{font-size:1.5rem;}
+.app-btn-wide-body{flex:1;}
+.app-btn-wide-title{font-weight:700;font-size:.88rem;color:var(--texte);}
+.app-btn-wide-sub{font-size:.7rem;color:var(--doux);margin-top:2px;}
 
-/* WEEK STATS */
-.stats-2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px;}
-.stat-card{background:#fff;border:1.5px solid var(--bordure);border-radius:13px;padding:14px 12px;text-align:center;}
-.stat-n{font-size:1.55rem;font-weight:700;color:var(--brun);}
-.stat-l{font-size:.66rem;color:var(--doux);margin-top:4px;}
+/* NO ALERTS */
+.no-alert{background:#d1fae5;border:1.5px solid #a7f3d0;border-radius:11px;padding:10px 13px;display:flex;align-items:center;gap:9px;font-size:.8rem;font-weight:700;color:#065f46;}
 
-/* CA BAR */
-.ca-bar-card{background:#fff;border:1.5px solid var(--bordure);border-radius:13px;padding:14px 15px;margin-bottom:9px;}
-.ca-bar-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.ca-bar-label{font-size:.78rem;color:var(--doux);}
-.ca-bar-val{font-size:.9rem;font-weight:700;color:var(--brun);}
-.ca-bar-bg{height:7px;background:var(--fond2);border-radius:4px;overflow:hidden;}
-.ca-bar-fill{height:100%;background:linear-gradient(90deg,var(--caramel),var(--fuchsia));border-radius:4px;transition:width .6s ease;}
-
-/* PLAN LINK */
-.plan-link{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--bordure);border-radius:13px;padding:14px 15px;text-decoration:none;color:var(--texte);}
-.plan-link:active{background:var(--fond2);}
-.pl-icon{font-size:1.5rem;flex-shrink:0;}
-.pl-body{flex:1;}
-.pl-title{font-weight:700;font-size:.88rem;}
-.pl-sub{font-size:.72rem;color:var(--doux);margin-top:2px;}
-
-/* EMPTY */
-.empty{text-align:center;padding:18px 14px;background:#fff;border-radius:13px;border:1.5px solid var(--bordure);font-size:.82rem;color:var(--doux);font-style:italic;}
-
-/* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid var(--bordure);padding:8px 8px 28px;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;z-index:100;box-shadow:0 -2px 16px rgba(92,46,14,.08);}
-.bn-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px;border-radius:10px;border:none;background:none;cursor:pointer;font-family:"Lato",sans-serif;text-decoration:none;}
-.bn-btn:active,.bn-btn.active-nav{background:var(--fond2);}
-.bn-icon{font-size:1.3rem;}
-.bn-label{font-size:.58rem;font-weight:700;color:var(--doux);}
-
-/* LOADING */
-.loading{text-align:center;padding:28px;color:var(--doux);font-size:.85rem;font-style:italic;}
-
-/* REFRESH SPINNER */
 @keyframes spin{to{transform:rotate(360deg);}}
-.spinning{animation:spin .8s linear infinite;}
+.spinning{animation:spin .7s linear infinite;}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-top">
+  <div class="header-row">
     <div>
       <div class="header-greeting" id="greeting">Bonjour Cicine ! 🧁</div>
       <div class="header-date" id="headerDate"></div>
     </div>
-    <button class="header-refresh" id="refreshBtn" onclick="refreshData()" title="Actualiser">🔄</button>
+    <button class="header-refresh" id="refreshBtn" onclick="refreshData()">🔄</button>
   </div>
-  <div class="header-kpis">
-    <div class="hkpi" onclick="location.href='admin.html'">
-      <div class="hkpi-n" id="hkpiToday">—</div>
-      <div class="hkpi-l">Aujourd'hui</div>
-      <div class="hkpi-sub" id="hkpiTodaySub">commandes</div>
-    </div>
-    <div class="hkpi" onclick="location.href='admin.html'">
-      <div class="hkpi-n" id="hkpiWeekCA">—</div>
-      <div class="hkpi-l">Cette semaine</div>
-      <div class="hkpi-sub" id="hkpiWeekSub">CA</div>
-    </div>
-    <div class="hkpi" onclick="location.href='admin.html'">
-      <div class="hkpi-n" id="hkpiPending">—</div>
-      <div class="hkpi-l">En attente</div>
-      <div class="hkpi-sub">à confirmer</div>
-    </div>
-    <div class="hkpi" onclick="location.href='admin.html'">
-      <div class="hkpi-n" id="hkpiMonth">—</div>
-      <div class="hkpi-l">Ce mois</div>
-      <div class="hkpi-sub">CA total</div>
-    </div>
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-n" id="kAuj">—</div><div class="kpi-l">Aujourd'hui</div></div>
+    <div class="kpi"><div class="kpi-n" id="kAtt">—</div><div class="kpi-l">En attente</div></div>
+    <div class="kpi"><div class="kpi-n" id="kSem">—</div><div class="kpi-l">CA semaine</div></div>
+    <div class="kpi"><div class="kpi-n" id="kMois">—</div><div class="kpi-l">CA mois</div></div>
   </div>
 </div>
 
-<!-- CONTENT -->
-<div class="content">
+<!-- ALERTES -->
+<div class="alerts" id="alertsZone"></div>
 
-  <div class="section-title">⚡ Alertes</div>
-  <div id="alertsSection"><div class="loading">Chargement…</div></div>
+<!-- GESTION -->
+<div class="section">
+  <div class="section-title">Gestion</div>
+  <div class="app-grid">
 
-  <div class="section-title">📦 Commandes du jour</div>
-  <div id="todaySection"><div class="loading">Chargement…</div></div>
+    <a href="admin.html" class="app-btn primary">
+      <span class="app-badge" id="badgeCommandes"></span>
+      <span class="app-ico">📋</span>
+      <span class="app-label">Commandes</span>
+      <span class="app-sub" id="subCommandes">Voir toutes</span>
+    </a>
 
-  <div class="section-title">🌅 Demain</div>
-  <div id="tomorrowSection"><div class="loading">Chargement…</div></div>
+    <a href="admin.html#planning" class="app-btn primary">
+      <span class="app-ico">📅</span>
+      <span class="app-label">Planning</span>
+      <span class="app-sub" id="subPlanning">Hebdo · mensuel</span>
+    </a>
 
-  <div class="section-title">📊 Bilan de la semaine</div>
-  <div id="weekSection"><div class="loading">Chargement…</div></div>
+    <a href="admin.html#stocks" class="app-btn primary">
+      <span class="app-badge" id="badgeStocks"></span>
+      <span class="app-ico">📦</span>
+      <span class="app-label">Stocks</span>
+      <span class="app-sub" id="subStocks">Mat. premières</span>
+    </a>
 
-  <div class="section-title">🗂️ Accès rapides</div>
-  <a href="tableau-de-bord-plan.html" class="plan-link" style="margin-bottom:9px;">
-    <span class="pl-icon">📅</span>
-    <div class="pl-body">
-      <div class="pl-title">Plan de lancement</div>
-      <div class="pl-sub">Phases, KPIs & checklist administrative</div>
-    </div>
-    <span style="color:var(--doux);">›</span>
-  </a>
-  <a href="caisse.html" class="plan-link" style="margin-bottom:9px;">
-    <span class="pl-icon">💰</span>
-    <div class="pl-body">
-      <div class="pl-title">Caisse du jour</div>
-      <div class="pl-sub">Ventes, carte & espèces</div>
-    </div>
-    <span style="color:var(--doux);">›</span>
-  </a>
+    <a href="admin.html#stocks" class="app-btn" id="btnCourses">
+      <span class="app-badge" id="badgeCourses"></span>
+      <span class="app-ico">🛒</span>
+      <span class="app-label">Liste de courses</span>
+      <span class="app-sub" id="subCourses">Achats à faire</span>
+    </a>
 
+    <a href="caisse.html" class="app-btn">
+      <span class="app-ico">💰</span>
+      <span class="app-label">Caisse</span>
+      <span class="app-sub" id="subCaisse">Ventes du jour</span>
+    </a>
+
+    <a href="admin.html#stats" class="app-btn">
+      <span class="app-ico">📊</span>
+      <span class="app-label">Statistiques</span>
+      <span class="app-sub" id="subStats">CA & bilan</span>
+    </a>
+
+  </div>
 </div>
 
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <a href="tableau-de-bord.html" class="bn-btn active-nav"><span class="bn-icon">🏠</span><span class="bn-label" style="color:var(--brun);">Accueil</span></a>
-  <a href="admin.html" class="bn-btn" id="bnCommandes"><span class="bn-icon">📋</span><span class="bn-label">Commandes</span></a>
-  <a href="admin.html" class="bn-btn"><span class="bn-icon">📅</span><span class="bn-label">Planning</span></a>
-  <a href="admin.html" class="bn-btn"><span class="bn-icon">📦</span><span class="bn-label">Stocks</span></a>
-  <a href="caisse.html" class="bn-btn"><span class="bn-icon">💰</span><span class="bn-label">Caisse</span></a>
+<!-- CLIENTS & SITE -->
+<div class="section">
+  <div class="section-title">Côté client</div>
+  <div class="app-grid">
+
+    <a href="commander.html" class="app-btn secondary">
+      <span class="app-ico">🧁</span>
+      <span class="app-label">Commander</span>
+      <span class="app-sub">Passer commande</span>
+    </a>
+
+    <a href="devis.html" class="app-btn secondary">
+      <span class="app-ico">✨</span>
+      <span class="app-label">Devis</span>
+      <span class="app-sub">Événements</span>
+    </a>
+
+    <a href="produits.html" class="app-btn secondary">
+      <span class="app-ico">🍽️</span>
+      <span class="app-label">Produits</span>
+      <span class="app-sub">La carte</span>
+    </a>
+
+    <a href="avis.html" class="app-btn">
+      <span class="app-badge" id="badgeAvis"></span>
+      <span class="app-ico">⭐</span>
+      <span class="app-label">Avis clients</span>
+      <span class="app-sub" id="subAvis">Voir les avis</span>
+    </a>
+
+    <a href="realisations.html" class="app-btn">
+      <span class="app-ico">📸</span>
+      <span class="app-label">Réalisations</span>
+      <span class="app-sub">Galerie photos</span>
+    </a>
+
+    <a href="index.html" class="app-btn">
+      <span class="app-ico">🌐</span>
+      <span class="app-label">Site public</span>
+      <span class="app-sub">Vue client</span>
+    </a>
+
+  </div>
+</div>
+
+<!-- OUTILS -->
+<div class="section" style="margin-bottom:20px;">
+  <div class="section-title">Outils</div>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <a href="admin.html#taches" class="app-btn-wide">
+      <span class="app-ico">✅</span>
+      <div class="app-btn-wide-body">
+        <div class="app-btn-wide-title">Tâches administratives</div>
+        <div class="app-btn-wide-sub">URSSAF, HACCP, comptabilité…</div>
+      </div>
+      <span style="color:var(--doux);">›</span>
+    </a>
+    <a href="tableau-de-bord-plan.html" class="app-btn-wide">
+      <span class="app-ico">🗺️</span>
+      <div class="app-btn-wide-body">
+        <div class="app-btn-wide-title">Plan de lancement</div>
+        <div class="app-btn-wide-sub">Phases, KPIs & objectifs Avr 2027</div>
+      </div>
+      <span style="color:var(--doux);">›</span>
+    </a>
+    <a href="cgv.html" class="app-btn-wide">
+      <span class="app-ico">📄</span>
+      <div class="app-btn-wide-body">
+        <div class="app-btn-wide-title">Conditions Générales de Vente</div>
+        <div class="app-btn-wide-sub">Règles de commande & annulation</div>
+      </div>
+      <span style="color:var(--doux);">›</span>
+    </a>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -199,10 +226,10 @@ var sb=supabase.createClient(SB_URL,SB_KEY);
 var allOrders=[];
 var stockItems=[];
 var recipes=[];
+var allReviews=[];
 
 function euro(v){return parseFloat(v||0).toFixed(2).replace(".",",")+"€";}
 function todayStr(){var n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");}
-function tomorrowStr(){var n=new Date();n.setDate(n.getDate()+1);return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");}
 
 function setGreeting(){
   var h=new Date().getHours();
@@ -211,104 +238,21 @@ function setGreeting(){
   var DAYS=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
   var MONTHS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
   var d=new Date();
-  document.getElementById("headerDate").textContent=DAYS[d.getDay()]+" "+d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear()+" · "+String(d.getHours()).padStart(2,"0")+"h"+String(d.getMinutes()).padStart(2,"0");
+  document.getElementById("headerDate").textContent=DAYS[d.getDay()]+" "+d.getDate()+" "+MONTHS[d.getMonth()]+" · "+String(d.getHours()).padStart(2,"0")+"h"+String(d.getMinutes()).padStart(2,"0");
 }
 
 async function loadData(){
   var btn=document.getElementById("refreshBtn");
   btn.classList.add("spinning");
-  try{
-    var r1=await sb.from("orders").select("*").order("delivery_date",{ascending:true});
-    if(r1.data)allOrders=r1.data;
-  }catch(e){}
-  try{
-    var r2=await sb.from("stock_items").select("*");
-    if(r2.data)stockItems=r2.data;
-  }catch(e){}
+  try{var r=await sb.from("orders").select("*").order("delivery_date",{ascending:true});if(r.data)allOrders=r.data;}catch(e){}
+  try{var r2=await sb.from("stock_items").select("*");if(r2.data)stockItems=r2.data;}catch(e){}
+  try{var r3=await sb.from("reviews").select("*");if(r3.data)allReviews=r3.data;}catch(e){}
   try{recipes=JSON.parse(localStorage.getItem("cicine_recipes")||"[]");}catch(e){recipes=[];}
   btn.classList.remove("spinning");
   renderAll();
 }
 
 function refreshData(){setGreeting();loadData();}
-
-function renderAll(){
-  updateHeader();
-  renderAlerts();
-  renderTodayOrders();
-  renderTomorrowOrders();
-  renderWeekStats();
-}
-
-function updateHeader(){
-  var today=todayStr();
-  var now=new Date();now.setHours(0,0,0,0);
-  var weekEnd=new Date(now.getTime()+7*24*3600*1000);
-  var monthStart=new Date(now.getFullYear(),now.getMonth(),1);
-  var active=allOrders.filter(function(o){return o.status!=="cancelled";});
-  var todayO=active.filter(function(o){return o.delivery_date===today;});
-  var todayCA=todayO.reduce(function(s,o){return s+parseFloat(o.total||0);},0);
-  document.getElementById("hkpiToday").textContent=todayO.length;
-  document.getElementById("hkpiTodaySub").textContent=todayCA>0?euro(todayCA):"commandes";
-  var weekO=active.filter(function(o){
-    if(!o.delivery_date)return false;
-    var d=new Date(o.delivery_date);d.setHours(0,0,0,0);
-    return d>=now&&d<=weekEnd;
-  });
-  var weekCA=weekO.reduce(function(s,o){return s+parseFloat(o.total||0);},0);
-  document.getElementById("hkpiWeekCA").textContent=euro(weekCA);
-  document.getElementById("hkpiWeekSub").textContent=weekO.length+" commande"+(weekO.length!==1?"s":"");
-  var pending=allOrders.filter(function(o){return o.status==="pending";}).length;
-  document.getElementById("hkpiPending").textContent=pending;
-  var monthCA=active.filter(function(o){
-    if(!o.delivery_date)return false;
-    return new Date(o.delivery_date)>=monthStart;
-  }).reduce(function(s,o){return s+parseFloat(o.total||0);},0);
-  document.getElementById("hkpiMonth").textContent=euro(monthCA);
-}
-
-function renderAlerts(){
-  var html="";
-  var pending=allOrders.filter(function(o){return o.status==="pending";});
-  if(pending.length>0){
-    html+='<a href="admin.html" class="alert-card alert-orange">'+
-      '<span class="alert-icon">⏳</span>'+
-      '<div class="alert-body"><div class="alert-title">'+pending.length+' commande'+(pending.length!==1?"s":"")+" en attente</div>"+
-      '<div class="alert-desc">À confirmer dans l\'espace commandes</div></div>'+
-      '<span class="alert-arrow">›</span></a>';
-  }
-  var ready=allOrders.filter(function(o){return o.status==="ready";});
-  if(ready.length>0){
-    html+='<a href="admin.html" class="alert-card alert-blue">'+
-      '<span class="alert-icon">🎂</span>'+
-      '<div class="alert-body"><div class="alert-title">'+ready.length+' commande'+(ready.length!==1?"s":"")+" prête"+(ready.length!==1?"s":"")+" à livrer</div>"+
-      '<div class="alert-desc">'+ready.map(function(o){return o.client_name;}).join(", ")+'</div></div>'+
-      '<span class="alert-arrow">›</span></a>';
-  }
-  var lowStock=stockItems.filter(function(s){return parseFloat(s.current_qty||0)<=parseFloat(s.min_qty||0);});
-  if(lowStock.length>0){
-    html+='<a href="admin.html" class="alert-card alert-red">'+
-      '<span class="alert-icon">📦</span>'+
-      '<div class="alert-body"><div class="alert-title">'+lowStock.length+' stock'+(lowStock.length!==1?"s":"")+" bas</div>"+
-      '<div class="alert-desc">'+lowStock.slice(0,3).map(function(s){return s.name;}).join(", ")+(lowStock.length>3?" +"+( lowStock.length-3)+" autres":"")+'</div></div>'+
-      '<span class="alert-arrow">›</span></a>';
-  }
-  var shop=computeShoppingList();
-  if(shop.length>0){
-    html+='<a href="admin.html" class="alert-card alert-red">'+
-      '<span class="alert-icon">🛒</span>'+
-      '<div class="alert-body"><div class="alert-title">'+shop.length+' achat'+(shop.length!==1?"s":"")+" à faire</div>"+
-      '<div class="alert-desc">'+shop.slice(0,3).map(function(s){return s.name;}).join(", ")+(shop.length>3?" +"+( shop.length-3)+" autres":"")+'</div></div>'+
-      '<span class="alert-arrow">›</span></a>';
-  }
-  if(!html){
-    html='<div class="alert-card alert-green" style="cursor:default;">'+
-      '<span class="alert-icon">✅</span>'+
-      '<div class="alert-body"><div class="alert-title">Tout est en ordre !</div>'+
-      '<div class="alert-desc">Aucune alerte pour le moment</div></div></div>';
-  }
-  document.getElementById("alertsSection").innerHTML=html;
-}
 
 function computeShoppingList(){
   var activeO=allOrders.filter(function(o){return o.status==="pending"||o.status==="confirmed";});
@@ -317,9 +261,9 @@ function computeShoppingList(){
   var ing={};
   Object.keys(needed).forEach(function(pk){
     var qty=needed[pk];
-    var r=recipes.find(function(r){return r.product_name.toLowerCase().trim()===pk;});
-    if(!r)return;
-    r.ingredients.forEach(function(i){
+    var recipe=recipes.find(function(r){return r.product_name.toLowerCase().trim()===pk;});
+    if(!recipe)return;
+    recipe.ingredients.forEach(function(i){
       var k=i.name.toLowerCase().trim();
       if(!ing[k]){var si=stockItems.find(function(s){return(i.stock_id&&s.id===i.stock_id)||(s.name.toLowerCase().trim()===k);});ing[k]={name:i.name,unit:i.unit,needed:0,available:si?parseFloat(si.current_qty||0):0};}
       ing[k].needed+=i.qty*qty;
@@ -328,78 +272,98 @@ function computeShoppingList(){
   return Object.values(ing).filter(function(i){return i.needed>i.available;});
 }
 
-function orderCard(o){
-  var dotCls=o.status==="pending"?"dot-p":o.status==="confirmed"?"dot-c":o.status==="ready"?"dot-r":"dot-d";
-  var statusLabel=o.status==="pending"?"⏳ En attente":o.status==="confirmed"?"✅ Confirmée":o.status==="ready"?"🎂 Prête":"✔ Terminée";
-  var tagSt=o.status==="pending"?"tag-pending":o.status==="confirmed"?"tag-confirmed":o.status==="ready"?"tag-ready":"tag-done";
-  var items=(o.items||[]).map(function(it){return it.qty+"× "+it.name;}).join(", ");
-  var typeTag=o.delivery_type==="livraison"?'<span class="tag tag-liv">🚚 Livraison</span>':'<span class="tag tag-rec">🏠 Récupération</span>';
-  return'<a href="admin.html" class="order-card">'+
-    '<div class="oc-dot '+dotCls+'"></div>'+
-    '<div class="oc-body">'+
-    '<div class="oc-name">'+o.client_name+'</div>'+
-    '<div class="oc-items">'+items+'</div>'+
-    '<div class="oc-tags">'+typeTag+'<span class="tag '+tagSt+'">'+statusLabel+'</span></div>'+
-    '</div>'+
-    '<div class="oc-total">'+parseFloat(o.total||0).toFixed(2).replace(".",",")+'€</div>'+
-    '</a>';
+function setBadge(id,count){
+  var el=document.getElementById(id);
+  if(!el)return;
+  if(count>0){el.textContent=count>9?"9+":count;el.style.display="flex";}
+  else{el.style.display="none";}
 }
 
-function renderTodayOrders(){
-  var orders=allOrders.filter(function(o){return o.delivery_date===todayStr()&&o.status!=="cancelled";});
-  document.getElementById("todaySection").innerHTML=orders.length===0?
-    '<div class="empty">Aucune commande aujourd\'hui 🎉</div>':
-    orders.map(orderCard).join("");
-}
-
-function renderTomorrowOrders(){
-  var orders=allOrders.filter(function(o){return o.delivery_date===tomorrowStr()&&o.status!=="cancelled";});
-  document.getElementById("tomorrowSection").innerHTML=orders.length===0?
-    '<div class="empty">Aucune commande demain</div>':
-    orders.map(orderCard).join("");
-}
-
-function renderWeekStats(){
+function renderAll(){
+  var today=todayStr();
   var now=new Date();now.setHours(0,0,0,0);
   var weekEnd=new Date(now.getTime()+7*24*3600*1000);
   var monthStart=new Date(now.getFullYear(),now.getMonth(),1);
   var active=allOrders.filter(function(o){return o.status!=="cancelled";});
-  var weekO=active.filter(function(o){
+
+  // KPIs
+  var todayO=active.filter(function(o){return o.delivery_date===today;});
+  document.getElementById("kAuj").textContent=todayO.length;
+  var pending=allOrders.filter(function(o){return o.status==="pending";});
+  document.getElementById("kAtt").textContent=pending.length;
+  var weekCA=active.filter(function(o){
     if(!o.delivery_date)return false;
-    var d=new Date(o.delivery_date);d.setHours(0,0,0,0);
-    return d>=now&&d<=weekEnd;
-  });
-  var weekCA=weekO.reduce(function(s,o){return s+parseFloat(o.total||0);},0);
-  var monthCA=active.filter(function(o){
-    if(!o.delivery_date)return false;
-    return new Date(o.delivery_date)>=monthStart;
+    var d=new Date(o.delivery_date);d.setHours(0,0,0,0);return d>=now&&d<=weekEnd;
   }).reduce(function(s,o){return s+parseFloat(o.total||0);},0);
-  var done=weekO.filter(function(o){return o.status==="done";}).length;
-  var confirmed=weekO.filter(function(o){return o.status==="confirmed";}).length;
-  var ready=weekO.filter(function(o){return o.status==="ready";}).length;
-  var pending=weekO.filter(function(o){return o.status==="pending";}).length;
-  var pct=monthCA>0?Math.min(100,Math.round(monthCA/800*100)):0;
-  var html='<div class="ca-bar-card">'+
-    '<div class="ca-bar-row"><span class="ca-bar-label">CA cette semaine</span><span class="ca-bar-val">'+euro(weekCA)+'</span></div>'+
-    '<div class="ca-bar-row" style="margin-bottom:6px;"><span class="ca-bar-label">CA ce mois</span><span class="ca-bar-val">'+euro(monthCA)+'</span></div>'+
-    '<div class="ca-bar-bg"><div class="ca-bar-fill" id="caFill" style="width:0%"></div></div>'+
-    '<div style="font-size:.62rem;color:var(--doux);margin-top:4px;text-align:right;">'+pct+'% de l\'objectif mensuel</div>'+
-    '</div>'+
-    '<div class="stats-2">'+
-    '<div class="stat-card"><div class="stat-n">'+weekO.length+'</div><div class="stat-l">Commandes semaine</div></div>'+
-    '<div class="stat-card"><div class="stat-n">'+done+'</div><div class="stat-l">Terminées ✔</div></div>'+
-    '<div class="stat-card"><div class="stat-n">'+confirmed+'</div><div class="stat-l">Confirmées</div></div>'+
-    '<div class="stat-card"><div class="stat-n">'+ready+'</div><div class="stat-l">Prêtes 🎂</div></div>'+
-    '</div>';
-  document.getElementById("weekSection").innerHTML=html;
-  setTimeout(function(){var f=document.getElementById("caFill");if(f)f.style.width=pct+"%";},100);
+  document.getElementById("kSem").textContent=euro(weekCA);
+  var monthCA=active.filter(function(o){
+    if(!o.delivery_date)return false;return new Date(o.delivery_date)>=monthStart;
+  }).reduce(function(s,o){return s+parseFloat(o.total||0);},0);
+  document.getElementById("kMois").textContent=euro(monthCA);
+
+  // Badges & subtitles
+  setBadge("badgeCommandes",pending.length);
+  document.getElementById("subCommandes").textContent=pending.length>0?pending.length+" en attente":active.length+" commande"+(active.length!==1?"s":"");
+  var todayPlan=active.filter(function(o){return o.delivery_date===today;}).length;
+  document.getElementById("subPlanning").textContent=todayPlan>0?todayPlan+" aujourd'hui":"Hebdo · mensuel";
+  var lowStock=stockItems.filter(function(s){return parseFloat(s.current_qty||0)<=parseFloat(s.min_qty||0);});
+  setBadge("badgeStocks",lowStock.length);
+  document.getElementById("subStocks").textContent=lowStock.length>0?lowStock.length+" bas":stockItems.length+" articles";
+  var shop=computeShoppingList();
+  setBadge("badgeCourses",shop.length);
+  document.getElementById("subCourses").textContent=shop.length>0?shop.length+" achat"+(shop.length!==1?"s":"")+" à faire":"Tout est OK ✅";
+  // Caisse
+  try{
+    var sales=JSON.parse(localStorage.getItem("cicine_caisse_v2")||"[]");
+    var todaySales=sales.filter(function(s){return s.date===today;});
+    var todayCA=todaySales.reduce(function(s,v){return s+parseFloat(v.total||0);},0);
+    document.getElementById("subCaisse").textContent=todaySales.length>0?euro(todayCA)+" aujourd'hui":"Aucune vente";
+  }catch(e){}
+  document.getElementById("subStats").textContent=euro(monthCA)+" ce mois";
+  var pendingAvis=allReviews.filter(function(r){return!r.approved;});
+  setBadge("badgeAvis",pendingAvis.length);
+  document.getElementById("subAvis").textContent=pendingAvis.length>0?pendingAvis.length+" à modérer":allReviews.filter(function(r){return r.approved;}).length+" avis";
+
+  // Alertes
+  var alerts="";
+  if(pending.length>0){
+    alerts+='<a href="admin.html" class="alert orange">'+
+      '<span class="alert-ico">⏳</span>'+
+      '<div class="alert-body"><div class="alert-msg">'+pending.length+' commande'+(pending.length!==1?"s":"")+" en attente de confirmation</div>"+
+      '<div class="alert-sub">'+pending.map(function(o){return o.client_name;}).slice(0,3).join(", ")+'</div></div>'+
+      '<span class="alert-arr">›</span></a>';
+  }
+  var ready=allOrders.filter(function(o){return o.status==="ready";});
+  if(ready.length>0){
+    alerts+='<a href="admin.html" class="alert purple">'+
+      '<span class="alert-ico">🎂</span>'+
+      '<div class="alert-body"><div class="alert-msg">'+ready.length+' commande'+(ready.length!==1?"s":"")+" prête"+(ready.length!==1?"s":"")+" à livrer !</div>"+
+      '<div class="alert-sub">'+ready.map(function(o){return o.client_name;}).join(", ")+'</div></div>'+
+      '<span class="alert-arr">›</span></a>';
+  }
+  if(lowStock.length>0){
+    alerts+='<a href="admin.html#stocks" class="alert red">'+
+      '<span class="alert-ico">📦</span>'+
+      '<div class="alert-body"><div class="alert-msg">'+lowStock.length+' stock'+(lowStock.length!==1?"s":"")+" en dessous du seuil</div>"+
+      '<div class="alert-sub">'+lowStock.slice(0,3).map(function(s){return s.name;}).join(", ")+(lowStock.length>3?" +"+(lowStock.length-3)+" autres":"")+'</div></div>'+
+      '<span class="alert-arr">›</span></a>';
+  }
+  if(shop.length>0){
+    alerts+='<a href="admin.html#stocks" class="alert red">'+
+      '<span class="alert-ico">🛒</span>'+
+      '<div class="alert-body"><div class="alert-msg">'+shop.length+' ingrédient'+(shop.length!==1?"s":"")+" à acheter</div>"+
+      '<div class="alert-sub">'+shop.slice(0,3).map(function(s){return s.name;}).join(", ")+(shop.length>3?" +"+(shop.length-3)+" autres":"")+'</div></div>'+
+      '<span class="alert-arr">›</span></a>';
+  }
+  if(!alerts){
+    alerts='<div class="no-alert">✅ Tout est en ordre — aucune alerte</div>';
+  }
+  document.getElementById("alertsZone").innerHTML=alerts;
 }
 
-// Init
 setGreeting();
-loadData();
-// Refresh time display every minute
 setInterval(setGreeting,60000);
+loadData();
 </script>
 </body>
 </html>
