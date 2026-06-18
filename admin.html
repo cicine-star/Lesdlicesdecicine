@@ -633,10 +633,12 @@ async function doLogin(){
   }
 }
 async function logout(){
+  localStorage.removeItem("cicine_admin");
   await sb.auth.signOut();
   location.reload();
 }
 function showDashboard(){
+  localStorage.setItem("cicine_admin","1");
   document.getElementById("login-screen").style.display="none";
   document.getElementById("dashboard").style.display="block";
   loadRecipes();
