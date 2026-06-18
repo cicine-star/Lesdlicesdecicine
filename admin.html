@@ -350,6 +350,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <button class="main-tab" onclick="setMainTab('clients')">👥 Clients</button>
     <button class="main-tab" onclick="setMainTab('produits')">🛍️ Produits</button>
     <button class="main-tab" onclick="setMainTab('avis')">⭐ Avis <span id="avisbadge" style="display:none;background:var(--fuchsia);color:#fff;border-radius:20px;padding:0 6px;font-size:.65rem;margin-left:3px;"></span></button>
+    <button class="main-tab" onclick="setMainTab('blog')">📝 Blog</button>
     <button class="main-tab" onclick="setMainTab('parametres')">⚙️ Paramètres</button>
   </div>
 
@@ -507,6 +508,15 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <div id="adminProductsGrid"></div>
   </div>
 
+  <!-- ===== TAB BLOG ===== -->
+  <div id="tab-blog" class="wrap" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div class="section-title" style="margin-bottom:0;">📝 Blog</div>
+      <button class="s-add-btn" onclick="openAddPost()">✏️ Nouvel article</button>
+    </div>
+    <div id="adminBlogList"></div>
+  </div>
+
   <!-- ===== TAB PARAMÈTRES ===== -->
   <div id="tab-parametres" class="wrap" style="display:none;">
     <div class="section-title">⚙️ Paramètres</div>
@@ -650,7 +660,7 @@ function showDashboard(){
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
-  var tabs=["commandes","stocks","planning","taches","stats","clients","produits","avis","parametres"];
+  var tabs=["commandes","stocks","planning","taches","stats","clients","produits","avis","blog","parametres"];
   tabs.forEach(function(t){
     document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
   });
@@ -664,6 +674,7 @@ function setMainTab(tab){
   if(tab==="clients")loadClients();
   if(tab==="avis"){loadReviews();}
   if(tab==="produits"){loadAdminProducts();}
+  if(tab==="blog"){loadBlog();}
   if(tab==="parametres"){renderSettings();}
 }
 
@@ -2294,6 +2305,134 @@ async function saveSettings(){
     pairs.forEach(function(p){shopSettings[p.key]=p.value;});
     applySettingsColors();
     showNotif("Paramètres sauvegardés ✅");
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+
+/* ====== BLOG ====== */
+var allPosts=[];
+async function loadBlog(){
+  try{
+    var {data,error}=await sb.from("blog_posts").select("*").order("created_at",{ascending:false});
+    if(error)throw error;
+    allPosts=data||[];
+    renderAdminBlog();
+  }catch(e){
+    var el=document.getElementById("adminBlogList");
+    if(el)el.innerHTML='<div class="s-empty">⚠️ Table introuvable. Créez-la dans Supabase :<br><code style="font-size:.7rem;background:var(--fond2);padding:4px 8px;border-radius:6px;display:block;margin-top:8px;word-break:break-all;">CREATE TABLE blog_posts (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, title text NOT NULL, content text NOT NULL, emoji text DEFAULT \'🧁\', published boolean DEFAULT false, created_at timestamptz DEFAULT now()); ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY; CREATE POLICY "Public read" ON blog_posts FOR SELECT USING (published=true); CREATE POLICY "Auth write" ON blog_posts FOR ALL USING (auth.role()=\'authenticated\');</code></div>';
+  }
+}
+function renderAdminBlog(){
+  var el=document.getElementById("adminBlogList");
+  if(!el)return;
+  if(allPosts.length===0){el.innerHTML='<div class="s-empty">Aucun article. Créez votre premier article !</div>';return;}
+  var html="";
+  allPosts.forEach(function(p){
+    var date=(p.created_at||"").slice(0,10);
+    var pubBadge=p.published?'<span class="badge" style="background:#d1fae5;color:#065f46;">✅ Publié</span>':'<span class="badge" style="background:#fff3cd;color:#854d0e;">⏳ Brouillon</span>';
+    var preview=(p.content||"").substring(0,140)+((p.content||"").length>140?"…":"");
+    html+='<div class="order-card" style="margin-bottom:10px;">'+
+      '<div class="oc-head">'+
+      '<span style="font-size:1.2rem;">'+(p.emoji||"🧁")+'</span>'+
+      '<span class="oc-client">'+p.title+'</span>'+
+      pubBadge+
+      '<span class="oc-phone">'+date+'</span>'+
+      '</div>'+
+      '<div class="oc-body">'+
+      '<p style="font-size:.82rem;color:var(--doux);line-height:1.6;margin-bottom:10px;">'+preview+'</p>'+
+      '<div class="oc-actions">'+
+      '<button class="act-btn act-confirm" onclick="openEditPost(\''+p.id+'\')">✏️ Modifier</button>'+
+      (p.published
+        ?'<button class="act-btn act-cancel" onclick="togglePostPublished(\''+p.id+'\',false)">⏳ Dépublier</button>'
+        :'<button class="act-btn act-done" onclick="togglePostPublished(\''+p.id+'\',true)">✅ Publier</button>')+
+      '<button class="act-btn act-delete" onclick="deletePost(\''+p.id+'\')">🗑️ Supprimer</button>'+
+      '</div></div></div>';
+  });
+  el.innerHTML=html;
+}
+function openAddPost(){
+  openModal(
+    '<div class="bs-title">✏️ Nouvel article</div>'+
+    '<div class="fgr">'+
+    '<div><label class="bs-label">Titre *</label><input class="bs-input" id="bpTitle" placeholder="Titre de l\'article..."/></div>'+
+    '<div><label class="bs-label">Emoji</label><input class="bs-input" id="bpEmoji" placeholder="🧁" maxlength="2"/></div>'+
+    '</div>'+
+    '<label class="bs-label">Contenu *</label>'+
+    '<textarea class="bs-textarea" id="bpContent" style="height:140px;" placeholder="Rédigez votre article..."></textarea>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">'+
+    '<input type="checkbox" id="bpPublished" style="width:18px;height:18px;accent-color:var(--caramel);cursor:pointer;"/>'+
+    '<label for="bpPublished" style="font-size:.84rem;font-weight:700;color:var(--texte);cursor:pointer;">Publier immédiatement</label>'+
+    '</div>'+
+    '<button class="bs-btn-primary" onclick="saveNewPost()">Enregistrer l\'article</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
+  );
+}
+async function saveNewPost(){
+  var title=(document.getElementById("bpTitle").value||"").trim();
+  var content=(document.getElementById("bpContent").value||"").trim();
+  if(!title){showNotif("Titre obligatoire");return;}
+  if(!content){showNotif("Contenu obligatoire");return;}
+  try{
+    var {error}=await sb.from("blog_posts").insert({
+      title:title,content:content,
+      emoji:(document.getElementById("bpEmoji").value||"🧁").trim(),
+      published:document.getElementById("bpPublished").checked
+    });
+    if(error)throw error;
+    showNotif("Article enregistré !");closeModal();await loadBlog();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+function openEditPost(id){
+  var p=allPosts.find(function(x){return x.id===id;});
+  if(!p)return;
+  openModal(
+    '<div class="bs-title">✏️ Modifier l\'article</div>'+
+    '<div class="fgr">'+
+    '<div><label class="bs-label">Titre *</label><input class="bs-input" id="epbTitle" value="'+(p.title||"").replace(/"/g,"&quot;")+'"/></div>'+
+    '<div><label class="bs-label">Emoji</label><input class="bs-input" id="epbEmoji" value="'+(p.emoji||"🧁")+'" maxlength="2"/></div>'+
+    '</div>'+
+    '<label class="bs-label">Contenu *</label>'+
+    '<textarea class="bs-textarea" id="epbContent" style="height:140px;">'+(p.content||"").replace(/</g,"&lt;")+'</textarea>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">'+
+    '<input type="checkbox" id="epbPublished"'+(p.published?" checked":"")+' style="width:18px;height:18px;accent-color:var(--caramel);cursor:pointer;"/>'+
+    '<label for="epbPublished" style="font-size:.84rem;font-weight:700;color:var(--texte);cursor:pointer;">Publié</label>'+
+    '</div>'+
+    '<button class="bs-btn-primary" onclick="saveEditPost(\''+id+'\')">Enregistrer</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'+
+    '<button class="bs-btn-danger" onclick="deletePost(\''+id+'\')">🗑️ Supprimer</button>'
+  );
+}
+async function saveEditPost(id){
+  var title=(document.getElementById("epbTitle").value||"").trim();
+  var content=(document.getElementById("epbContent").value||"").trim();
+  if(!title){showNotif("Titre obligatoire");return;}
+  if(!content){showNotif("Contenu obligatoire");return;}
+  try{
+    var {error}=await sb.from("blog_posts").update({
+      title:title,content:content,
+      emoji:(document.getElementById("epbEmoji").value||"🧁").trim(),
+      published:document.getElementById("epbPublished").checked
+    }).eq("id",id);
+    if(error)throw error;
+    showNotif("Article modifié !");closeModal();await loadBlog();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+async function togglePostPublished(id,val){
+  try{
+    var {error}=await sb.from("blog_posts").update({published:val}).eq("id",id);
+    if(error)throw error;
+    var p=allPosts.find(function(x){return x.id===id;});
+    if(p)p.published=val;
+    renderAdminBlog();
+    showNotif(val?"Article publié ✅":"Article mis en brouillon");
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+async function deletePost(id){
+  if(!confirm("Supprimer cet article définitivement ?"))return;
+  try{
+    var {error}=await sb.from("blog_posts").delete().eq("id",id);
+    if(error)throw error;
+    allPosts=allPosts.filter(function(p){return p.id!==id;});
+    closeModal();renderAdminBlog();showNotif("Article supprimé.");
   }catch(e){showNotif("Erreur : "+e.message);}
 }
 
