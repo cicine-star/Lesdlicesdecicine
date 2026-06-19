@@ -246,13 +246,13 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
   <div class="cat-header" id="ch-6" onclick="toggleCat(6)"><span>🎂 Gâteaux &amp; Créations</span><span class="cat-badge">8</span><span class="cat-arrow">▶</span></div>
   <div class="cat-body" id="cb-6">
 <div class="ir" data-n="Cupcake" data-p="2.2"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Cupcake</div><div class="ip">à partir de 2,20€/pièce</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
-<div class="ir" data-n="Layer Cup classique (choco / mont-blanc / forêt-noire)" data-p="6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Layer Cup classique (choco / mont-blanc / forêt-noire)</div><div class="ip">à partir de 6€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
-<div class="ir" data-n="Layer Cup premium (kinder bueno / spéculos / fraise / m&amp;m's)" data-p="7"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Layer Cup premium (kinder bueno / spéculos / fraise / m&amp;m's)</div><div class="ip">à partir de 7€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Layer Cup classique" data-p="6"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Layer Cup classique</div><div class="ip">à partir de 6€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Layer Cup premium" data-p="7"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Layer Cup premium</div><div class="ip">à partir de 7€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
 <div class="ir" data-n="Bento cake (2 pers)" data-p="14"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Bento cake (2 pers)</div><div class="ip">à partir de 14€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
 <div class="ir" data-n="Letter / Number cake (6 pers)" data-p="30"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Letter / Number cake (6 pers)</div><div class="ip">à partir de 30€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
-<div class="ir" data-n="Gâteau traditionnel 6 pers (Robinson, Amour caché, Ananas, Marbré, Nature)" data-p="18"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Gâteau traditionnel 6 pers (Robinson, Amour caché, Ananas, Marbré, Nature)</div><div class="ip">à partir de 18€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
-<div class="ir" data-n="Layer cake anniversaire (Kinder, Chocolat, Fraise...)" data-p="42"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Layer cake anniversaire (Kinder, Chocolat, Fraise...)</div><div class="ip">à partir de 42€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
-<div class="ir" data-n="Gâteau anniversaire traditionnel (Mont-blanc, Forêt-noire, Goyave)" data-p="21"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Gâteau anniversaire traditionnel (Mont-blanc, Forêt-noire, Goyave)</div><div class="ip">à partir de 21€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Gâteau traditionnel 6 pers" data-p="18"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Gâteau traditionnel 6 pers</div><div class="ip">à partir de 18€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Layer cake anniversaire" data-p="42"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Layer cake anniversaire</div><div class="ip">à partir de 42€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
+<div class="ir" data-n="Gâteau anniversaire traditionnel" data-p="21"><div class="il"><input type="checkbox" onchange="maj()"/><div><div class="in">Gâteau anniversaire traditionnel</div><div class="ip">à partir de 21€</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/></div>
   </div>
 </div>
 <div class="cat-section">
@@ -304,6 +304,7 @@ function setClientType(t){
 }
 var gpsLat=null;
 var gpsLng=null;
+var allFlavors={};
 var blockedDatesSet=[];
 var calYear,calMonth;
 
@@ -416,7 +417,8 @@ function showFlavorPanel(cb,ir){
   var next=ir.nextElementSibling;
   if(next&&next.classList.contains("saveur-panel")){next.remove();ir.classList.remove("has-panel");}
   if(cb.checked){
-    var flavors=getFlavorOptions(ir);
+    var pName=ir.getAttribute("data-n")||"";
+    var flavors=allFlavors[pName]||getFlavorOptions(ir);
     if(flavors.length>0){
       var panel=document.createElement("div");
       panel.className="saveur-panel";
@@ -427,6 +429,18 @@ function showFlavorPanel(cb,ir){
       ir.classList.add("has-panel");
     }
   }
+}
+
+async function loadFlavorsFromDB(){
+  try{
+    var {data,error}=await sb.from("flavors").select("product_name,name").eq("available",true).order("sort_order").order("name");
+    if(error||!data)return;
+    allFlavors={};
+    data.forEach(function(f){
+      if(!allFlavors[f.product_name])allFlavors[f.product_name]=[];
+      allFlavors[f.product_name].push(f.name);
+    });
+  }catch(e){}
 }
 
 function selectFlavor(btn){
@@ -550,6 +564,7 @@ document.getElementById("productSection").addEventListener("change",function(e){
 
 loadBlockedDates();
 renderCal();
+loadFlavorsFromDB();
 loadProductsFromDB();
 
 async function loadProductsFromDB(){

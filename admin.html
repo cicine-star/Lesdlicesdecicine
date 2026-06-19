@@ -349,6 +349,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <button class="main-tab" onclick="setMainTab('stats')">📊 Stats</button>
     <button class="main-tab" onclick="setMainTab('clients')">👥 Clients</button>
     <button class="main-tab" onclick="setMainTab('produits')">🛍️ Produits</button>
+    <button class="main-tab" onclick="setMainTab('saveurs')">🎨 Saveurs</button>
     <button class="main-tab" onclick="setMainTab('avis')">⭐ Avis <span id="avisbadge" style="display:none;background:var(--fuchsia);color:#fff;border-radius:20px;padding:0 6px;font-size:.65rem;margin-left:3px;"></span></button>
     <button class="main-tab" onclick="setMainTab('blog')">📝 Blog</button>
     <button class="main-tab" onclick="setMainTab('parametres')">⚙️ Paramètres</button>
@@ -491,6 +492,27 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <button class="sort-btn" id="sortCmd" onclick="setCliSort('cmd')">Nb commandes</button>
     </div>
     <div id="clientsList"></div>
+  </div>
+
+  <!-- ===== TAB SAVEURS ===== -->
+  <div id="tab-saveurs" class="wrap" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div class="section-title" style="margin-bottom:0;">🎨 Saveurs par produit</div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:.82rem;font-weight:700;color:var(--brun);display:block;margin-bottom:6px;">Produit</label>
+      <select id="saveurProduit" onchange="loadSaveurs()" style="width:100%;padding:9px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.85rem;font-family:inherit;background:#fff;color:var(--texte);">
+        <option value="">— Choisir un produit —</option>
+      </select>
+    </div>
+    <div id="saveursList"></div>
+    <div id="saveurAddBlock" style="display:none;margin-top:12px;background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:14px;">
+      <div style="font-weight:700;font-size:.85rem;color:var(--brun);margin-bottom:10px;">➕ Ajouter une saveur</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="saveurNom" placeholder="Ex : Chocolat" style="flex:1;padding:9px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.85rem;font-family:inherit;"/>
+        <button class="s-add-btn" onclick="addFlavor()">Ajouter</button>
+      </div>
+    </div>
   </div>
 
   <!-- ===== TAB AVIS ===== -->
@@ -654,7 +676,7 @@ function showDashboard(){
   loadTasks();
   // Navigation directe par hash URL (ex: admin.html#planning)
   var hash=location.hash.replace("#","");
-  if(["stocks","planning","taches","stats","avis","produits","parametres"].indexOf(hash)>=0){
+  if(["stocks","planning","taches","stats","avis","produits","saveurs","parametres"].indexOf(hash)>=0){
     setTimeout(function(){setMainTab(hash);},300);
   }
 }
@@ -662,7 +684,7 @@ function showDashboard(){
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
-  var tabs=["commandes","stocks","planning","taches","stats","clients","produits","avis","blog","parametres"];
+  var tabs=["commandes","stocks","planning","taches","stats","clients","produits","saveurs","avis","blog","parametres"];
   tabs.forEach(function(t){
     document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
   });
@@ -676,6 +698,7 @@ function setMainTab(tab){
   if(tab==="clients")loadClients();
   if(tab==="avis"){loadReviews();}
   if(tab==="produits"){loadAdminProducts();}
+  if(tab==="saveurs"){loadSaveursTab();}
   if(tab==="blog"){loadBlog();}
   if(tab==="parametres"){renderSettings();}
 }
@@ -2256,6 +2279,87 @@ async function toggleProductAvail(id){
     p.available=newVal;
     renderAdminProducts();
     showNotif(newVal?"Produit disponible ✅":"Produit masqué ❌");
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+
+/* ====== SAVEURS ====== */
+async function loadSaveursTab(){
+  try{
+    var {data,error}=await sb.from("products").select("name,category").order("category").order("name");
+    if(error||!data)return;
+    var sel=document.getElementById("saveurProduit");
+    var cur=sel.value;
+    sel.innerHTML='<option value="">— Choisir un produit —</option>';
+    data.forEach(function(p){
+      var opt=document.createElement("option");
+      opt.value=p.name;
+      opt.textContent=p.name+(p.category?" ("+p.category+")":"");
+      sel.appendChild(opt);
+    });
+    if(cur){sel.value=cur;}
+    loadSaveurs();
+  }catch(e){}
+}
+async function loadSaveurs(){
+  var pName=document.getElementById("saveurProduit").value;
+  var list=document.getElementById("saveursList");
+  var addBlock=document.getElementById("saveurAddBlock");
+  if(!pName){list.innerHTML="";addBlock.style.display="none";return;}
+  addBlock.style.display="block";
+  list.innerHTML='<div class="s-empty">Chargement…</div>';
+  try{
+    var {data,error}=await sb.from("flavors").select("*").eq("product_name",pName).order("sort_order").order("name");
+    if(error)throw error;
+    renderSaveurs(data||[]);
+  }catch(e){list.innerHTML='<div class="s-empty">Erreur : '+e.message+"</div>";}
+}
+function renderSaveurs(flavors){
+  var list=document.getElementById("saveursList");
+  if(flavors.length===0){
+    list.innerHTML='<div class="s-empty">Aucune saveur pour ce produit. Ajoutez-en ci-dessous.</div>';
+    return;
+  }
+  var html='<div style="background:#fff;border:1.5px solid var(--bordure);border-radius:12px;overflow:hidden;">';
+  flavors.forEach(function(f,i){
+    var avail=f.available!==false;
+    var dotStyle=avail
+      ?"width:14px;height:14px;border-radius:50%;background:#22c55e;cursor:pointer;flex-shrink:0;display:inline-block;box-shadow:0 0 0 2px #dcfce7;"
+      :"width:14px;height:14px;border-radius:50%;background:#ef4444;cursor:pointer;flex-shrink:0;display:inline-block;box-shadow:0 0 0 2px #fee2e2;";
+    var dotTitle=avail?"Disponible — cliquer pour désactiver":"Indisponible — cliquer pour activer";
+    html+='<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;'+(i>0?"border-top:1px solid var(--bordure)":"")+'">';
+    html+='<span onclick="toggleFlavor(\''+f.id+'\','+avail+')" style="'+dotStyle+'" title="'+dotTitle+'"></span>';
+    html+='<span style="flex:1;font-size:.88rem;font-weight:600;color:'+(avail?"var(--texte)":"var(--doux)")+';'+(avail?"":"text-decoration:line-through;")+'">'+f.name+'</span>';
+    html+='<button onclick="deleteFlavor(\''+f.id+'\')" style="padding:4px 10px;border:1.5px solid #fca5a5;background:#fee2e2;color:#991b1b;border-radius:20px;cursor:pointer;font-size:.75rem;font-family:inherit;white-space:nowrap;">Supprimer</button>';
+    html+='</div>';
+  });
+  html+='</div>';
+  list.innerHTML=html;
+}
+async function toggleFlavor(id,current){
+  try{
+    var {error}=await sb.from("flavors").update({available:!current}).eq("id",id);
+    if(error)throw error;
+    loadSaveurs();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+async function deleteFlavor(id){
+  if(!confirm("Supprimer cette saveur ?"))return;
+  try{
+    var {error}=await sb.from("flavors").delete().eq("id",id);
+    if(error)throw error;
+    loadSaveurs();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+async function addFlavor(){
+  var pName=document.getElementById("saveurProduit").value;
+  var nom=(document.getElementById("saveurNom").value||"").trim();
+  if(!pName||!nom){showNotif("Choisissez un produit et entrez un nom.");return;}
+  try{
+    var {error}=await sb.from("flavors").insert({product_name:pName,name:nom,available:true,sort_order:0});
+    if(error)throw error;
+    document.getElementById("saveurNom").value="";
+    showNotif("Saveur ajoutée !");
+    loadSaveurs();
   }catch(e){showNotif("Erreur : "+e.message);}
 }
 
