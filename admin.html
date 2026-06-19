@@ -2131,7 +2131,8 @@ async function loadAdminProducts(){
   try{
     var {data,error}=await sb.from("products").select("*").order("sort_order").order("name");
     if(error)throw error;
-    allProducts=data||[];
+    var seen={};
+    allProducts=(data||[]).filter(function(p){if(seen[p.name])return false;seen[p.name]=true;return true;});
     renderAdminProducts();
   }catch(e){
     document.getElementById("adminProductsGrid").innerHTML='<div class="s-empty">Erreur chargement produits : '+e.message+'</div>';
@@ -2187,8 +2188,9 @@ function openAddProduct(){
     '<select class="bs-select" id="pCat">'+
     '<option>Viennoiseries salées</option><option>Viennoiseries sucrées</option>'+
     '<option>Mignardises salées</option><option>Mignardises sucrées</option>'+
-    '<option>Délibox</option><option>Chocolat & Pain au beurre</option>'+
-    '<option>Gâteaux</option><option>Autre</option>'+
+    '<option>Délibox</option><option>Chocolat &amp; Pain au beurre</option>'+
+    '<option>Gâteaux &amp; Créations</option><option>Tartes &amp; Tartelettes salées</option>'+
+    '<option>Autres délices gourmands</option>'+
     '</select>'+
     '<label class="bs-label">Description (optionnel)</label>'+
     '<textarea class="bs-textarea" id="pDesc" placeholder="Description du produit..."></textarea>'+
@@ -2221,7 +2223,7 @@ async function saveNewProduct(){
 function openEditProduct(id){
   var p=allProducts.find(function(x){return x.id===id;});
   if(!p)return;
-  var cats=["Viennoiseries salées","Viennoiseries sucrées","Mignardises salées","Mignardises sucrées","Délibox","Chocolat & Pain au beurre","Gâteaux","Autre"];
+  var cats=["Viennoiseries salées","Viennoiseries sucrées","Mignardises salées","Mignardises sucrées","Délibox","Chocolat & Pain au beurre","Gâteaux & Créations","Tartes & Tartelettes salées","Autres délices gourmands"];
   var opts=cats.map(function(c){return'<option'+(c===p.category?" selected":"")+'>'+c+'</option>';}).join("");
   openModal(
     '<div class="bs-title">✏️ Modifier le produit</div>'+
