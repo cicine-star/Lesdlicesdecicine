@@ -86,9 +86,19 @@ var APD=['Gâteaux & Créations','Tartes & Tartelettes salées'];
 async function loadProduits(){
   try{
     var {data,error}=await sbP.from("products").select("*").order("sort_order").order("name");
-    if(error||!data)return;
+    if(error){
+      document.getElementById("prodSection").innerHTML='<p style="text-align:center;padding:20px;color:#c0392b;font-size:.82rem;">Erreur Supabase : '+error.message+'</p>';
+      return;
+    }
+    if(!data||!data.length){
+      document.getElementById("prodSection").innerHTML='<p style="text-align:center;padding:20px;color:#c0392b;font-size:.82rem;">Accès refusé ou table vide — vérifiez les droits Supabase (RLS).</p>';
+      return;
+    }
     data=data.filter(function(p){return p.available!==false;});
-    if(!data.length)return;
+    if(!data.length){
+      document.getElementById("prodSection").innerHTML='<p style="text-align:center;padding:20px;color:var(--doux);font-size:.82rem;">Aucun produit disponible pour le moment.</p>';
+      return;
+    }
     var seen={};
     data=data.filter(function(p){if(seen[p.name])return false;seen[p.name]=true;return true;});
     var cats={};

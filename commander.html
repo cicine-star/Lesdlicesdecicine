@@ -570,7 +570,8 @@ loadProductsFromDB();
 async function loadProductsFromDB(){
   try{
     var {data,error}=await sb.from("products").select("*").order("sort_order").order("name");
-    if(error||!data||!data.length)return;
+    if(error){console.error("Supabase products error:",error.message);return;}
+    if(!data||!data.length){console.warn("Supabase products: accès refusé ou table vide (RLS?)");return;}
     data=data.filter(function(p){return p.available!==false;});
     if(!data.length)return;
     var seen={};
