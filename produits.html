@@ -11,37 +11,17 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .wrap{max-width:600px;margin:0 auto;padding:20px 16px 60px;}
 .btn{display:block;width:100%;font-weight:700;font-size:.9rem;padding:14px;border-radius:40px;cursor:pointer;border:none;text-align:center;margin-bottom:10px;text-decoration:none;}
 .btn-c{background:var(--caramel);color:#fff;}
-.btn-b{background:var(--brun);color:#fff;}
-.btn-o{background:transparent;color:var(--brun);border:2px solid var(--brun);}
-.btn-wa{background:#25D366;color:#fff;}
 .back{display:inline-flex;align-items:center;gap:5px;color:var(--caramel);font-weight:700;font-size:.82rem;text-decoration:none;margin-bottom:18px;}
 .title{font-family:"Dancing Script",cursive;font-size:2.2rem;color:var(--brun);margin-bottom:4px;}
 .sub{font-size:.84rem;color:var(--doux);margin-bottom:18px;}
-.hdiv{display:flex;align-items:center;gap:8px;margin:10px 0 16px;}
-.hdiv hr{flex:1;border:none;border-top:1px solid var(--fuchsia);opacity:.5;}
-.hdiv span{color:var(--fuchsia);}
-.fg{margin-bottom:10px;}
-.fg label{display:block;font-size:.75rem;font-weight:700;color:var(--texte);margin-bottom:4px;}
-.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bordure);border-radius:9px;font-family:"Lato",sans-serif;font-size:.84rem;color:var(--texte);background:var(--fond);outline:none;}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--caramel);}
-.fg textarea{resize:vertical;min-height:65px;}
-.fgr{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.fnote{font-size:.72rem;color:var(--caramel);background:var(--carte);border-left:3px solid var(--caramel);padding:7px 10px;border-radius:0 7px 7px 0;margin-bottom:10px;}
-footer{background:var(--brun);color:#e8d5c8;padding:28px 16px 20px;text-align:center;margin-top:20px;}
-.flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:8px;}
-footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
-.flinks{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
-.flink{color:#e8d5c8;font-size:.75rem;text-decoration:none;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;}
 @media(max-width:400px){.fgr{grid-template-columns:1fr;}}
-</style><title>Produits &mdash; Les Douceurs de Cicine</title></head><body><nav><a class="nav-logo" href="index.html">Les Douceurs de Cicine</a><a class="nav-panier" href="panier.html">&#128722; Panier</a></nav><div class="wrap"><a href="index.html" class="back">&#8592; Accueil</a>
-<h2 class="title">Tous nos produits</h2>
-<p class="sub">Cliquez pour voir le d&eacute;tail de chaque cat&eacute;gorie</p>
+</style>
 <style>
 .ac{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;margin-bottom:10px;overflow:hidden;}
 .ah{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;}
 .ah:hover{background:var(--carte);}
 .al{display:flex;align-items:center;gap:10px;}
-.ae{font-size:1.5rem;}
+.ae{font-size:1.2rem;}
 .at{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--brun);}
 .as{font-size:.72rem;color:var(--doux);}
 .aa{color:var(--caramel);transition:transform .3s;}
@@ -63,31 +43,49 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 .bc ul li::before{content:"·";position:absolute;left:0;color:var(--fuchsia);}
 @media(max-width:400px){.p2,.bg{grid-template-columns:1fr;}}
 </style>
+<title>Nos produits — Les Douceurs de Cicine</title></head>
+<body>
+<nav><a class="nav-logo" href="index.html">Les Douceurs de Cicine</a><a class="nav-panier" href="panier.html">Panier</a></nav>
+<div class="wrap">
+<a href="index.html" class="back">&#8592; Accueil</a>
+<h2 class="title">Tous nos produits</h2>
+<p class="sub">Cliquez sur une catégorie pour voir les produits</p>
 
-<div id="prodSection"><div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🥐</span><div><div class="at">Viennoiseries</div><div class="as">Sal&eacute; &amp; sucr&eacute; &mdash; Min. 72h · selon disponibilités</div></div></div><span class="aa">&#9660;</span></div>
-<div class="ab"><div class="np">&#9888;&#65039; Prix indicatifs selon personnalisation</div><div class="p2"><div><div class="st">🧂 Sal&eacute;</div><div class="pr"><span>Petit pain</span><span class="pp">0,50&#8364;</span></div><div class="pr"><span>Pain &agrave; la saucisse</span><span class="pp">1,60&#8364;</span></div><div class="pr"><span>Croissant J-F</span><span class="pp">1,60&#8364;</span></div><div class="pr"><span>Quiche (J/T)</span><span class="pp">3,00&#8364;</span></div><div class="pr"><span>Natte J-F</span><span class="pp">3,00&#8364;</span></div><div class="pr"><span>Hot-dog</span><span class="pp">3,50&#8364;</span></div><div class="pr"><span>Pizzas</span><span class="pp">3,50&#8364;</span></div></div><div><div class="st">&#127852; Sucr&eacute;</div><div class="pr"><span>Pain au chocolat</span><span class="pp">1,20&#8364;</span></div><div class="pr"><span>Pain aux raisins</span><span class="pp">1,50&#8364;</span></div><div class="pr"><span>P&eacute;pito</span><span class="pp">1,70&#8364;</span></div><div class="pr"><span>P&acirc;t&eacute;s goyave/banane</span><span class="pp">1,60&#8364;</span></div><div class="pr"><span>Pomme cannelle nature</span><span class="pp">1,40&#8364;</span></div><div class="pr"><span>Pomme cannelle p&eacute;pite</span><span class="pp">1,60&#8364;</span></div><div class="pr"><span>Natte nature</span><span class="pp">1,50&#8364;</span></div><div class="pr"><span>Natte p&eacute;pite</span><span class="pp">2,00&#8364;</span></div></div></div></div></div>
+<div id="prodSection">
+<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🩷</span><div><div class="at">Viennoiseries salées</div><div class="as">Min. 72h · selon disponibilité</div></div></div><span class="aa">&#9660;</span></div>
+<div class="ab"><div class="pr"><span>Petit pain</span><span class="pp">0,50&euro;</span></div><div class="pr"><span>Pain à la saucisse</span><span class="pp">1,60&euro;</span></div><div class="pr"><span>Croissant jambon-fromage</span><span class="pp">1,60&euro;</span></div><div class="pr"><span>Quiche (jambon/thon)</span><span class="pp">3,00&euro;</span></div><div class="pr"><span>Natte jambon-fromage</span><span class="pp">3,00&euro;</span></div><div class="pr"><span>Hot-dog</span><span class="pp">3,50&euro;</span></div><div class="pr"><span>Pizzas</span><span class="pp">3,50&euro;</span></div></div></div>
 
-<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🍔</span><div><div class="at">Mignardises sal&eacute;es</div><div class="as">Min. 72h · selon disponibilités</div></div></div><span class="aa">&#9660;</span></div>
-<div class="ab"><div class="p2"><div><div class="pr"><span>Roul&eacute; saucisse</span><span class="pp">0,50&#8364;</span></div><div class="pr"><span>Allumette fromage</span><span class="pp">0,50&#8364;</span></div><div class="pr"><span>Pizzas (J/S/T)</span><span class="pp">1,10&#8364;</span></div><div class="pr"><span>Petit pain garni</span><span class="pp">1,20&#8364;</span></div><div class="pr"><span>Tartelette (J/T)</span><span class="pp">1,20&#8364;</span></div></div><div><div class="pr"><span>Croque-monsieur</span><span class="pp">1,30&#8364;</span></div><div class="pr"><span>Hot-dog</span><span class="pp">1,60&#8364;</span></div><div class="pr"><span>Wrap b&#339;uf</span><span class="pp">1,60&#8364;</span></div><div class="pr"><span>Friand (J/S)</span><span class="pp">1,60&#8364;</span></div><div class="pr"><span>Burger b&#339;uf</span><span class="pp">1,60&#8364;</span></div></div></div></div></div>
+<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🩷</span><div><div class="at">Viennoiseries sucrées</div><div class="as">Min. 72h · selon disponibilité</div></div></div><span class="aa">&#9660;</span></div>
+<div class="ab"><div class="pr"><span>Pain au chocolat</span><span class="pp">1,20&euro;</span></div><div class="pr"><span>Pain aux raisins</span><span class="pp">1,50&euro;</span></div><div class="pr"><span>Pépito</span><span class="pp">1,70&euro;</span></div><div class="pr"><span>Pâtés goyave/banane</span><span class="pp">1,60&euro;</span></div><div class="pr"><span>Pomme cannelle nature</span><span class="pp">1,40&euro;</span></div><div class="pr"><span>Pomme cannelle pépite</span><span class="pp">1,60&euro;</span></div><div class="pr"><span>Natte nature</span><span class="pp">1,50&euro;</span></div><div class="pr"><span>Natte pépite</span><span class="pp">2,00&euro;</span></div></div></div>
 
-<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">&#127852;</span><div><div class="at">Mignardises sucr&eacute;es</div><div class="as">Min. 72h · selon disponibilités</div></div></div><span class="aa">&#9660;</span></div>
-<div class="ab"><div class="p2"><div><div class="pr"><span>Choux</span><span class="pp">1,00&#8364;</span></div><div class="pr"><span>&#201;clairs</span><span class="pp">1,10&#8364;</span></div><div class="pr"><span>Tartelettes</span><span class="pp">1,10&#8364;</span></div><div class="pr"><span>Fondant</span><span class="pp">2,00&#8364;</span></div><div class="pr"><span>Flan coco</span><span class="pp">2,00&#8364;</span></div></div><div><div class="pr"><span>Muffin</span><span class="pp">2,00&#8364;</span></div><div class="pr"><span>Gaufres (x2)</span><span class="pp">2,50&#8364;</span></div><div class="pr"><span>Chouquettes (x6)</span><span class="pp">2,50&#8364;</span></div><div class="pr"><span>Verrines mont-blanc/for&ecirc;t-noire</span><span class="pp">2,50&#8364;</span></div><div class="pr"><span>Verrines Oreo/fraise/kinder</span><span class="pp">2,80&#8364;</span></div></div></div></div></div>
+<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🩷</span><div><div class="at">Mignardises salées</div><div class="as">Min. 72h · selon disponibilité</div></div></div><span class="aa">&#9660;</span></div>
+<div class="ab"><div class="pr"><span>Roulé saucisse</span><span class="pp">0,50&euro;</span></div><div class="pr"><span>Allumette fromage</span><span class="pp">0,50&euro;</span></div><div class="pr"><span>Pizzas (jambon/saumon/thon)</span><span class="pp">1,10&euro;</span></div><div class="pr"><span>Petit pain garni</span><span class="pp">1,20&euro;</span></div><div class="pr"><span>Tartelette (jambon/thon)</span><span class="pp">1,20&euro;</span></div><div class="pr"><span>Croque-monsieur</span><span class="pp">1,30&euro;</span></div><div class="pr"><span>Hot-dog</span><span class="pp">1,60&euro;</span></div><div class="pr"><span>Wrap bœuf</span><span class="pp">1,60&euro;</span></div><div class="pr"><span>Friand (jambon/saumon)</span><span class="pp">1,60&euro;</span></div><div class="pr"><span>Burger bœuf</span><span class="pp">1,60&euro;</span></div></div></div>
 
-<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">&#127874;</span><div><div class="at">Autres d&eacute;lices</div><div class="as">Cupcakes, bento, g&acirc;teaux, tartes</div></div></div><span class="aa">&#9660;</span></div>
-<div class="ab"><div class="p2"><div><div class="st">&#129473; Cupcakes</div><div class="pr"><span>Choco/Vanille/Coco/Nutella/Kinder</span><span class="pp">d&egrave;s 2,20&#8364;</span></div><div class="st">&#127956; Layer Cup</div><div class="pr"><span>Choco/Mont-blanc/For&ecirc;t-noire</span><span class="pp">6&#8364;</span></div><div class="pr"><span>Kinder/Sp&eacute;culos/Fraise/M&amp;M's</span><span class="pp">7&#8364;</span></div><div class="st">&#127873; Bento Cake (2 pers)</div><div class="pr"><span>For&ecirc;t-noire/Kinder/Fraise</span><span class="pp">d&egrave;s 14&#8364;</span></div></div><div><div class="st">&#128289; Letter/Number Cake (6 pers)</div><div class="pr"><span>For&ecirc;t-noire/Kinder/Fraise</span><span class="pp">d&egrave;s 30&#8364;</span></div><div class="st">&#127856; G&acirc;teaux traditionnels (6 pers)</div><div class="pr"><span>Robinson/Ananas/Amour cach&eacute;</span><span class="pp">d&egrave;s 18&#8364;</span></div><div class="st">&#129355; Tartes</div><div class="pr"><span>Tartelettes Thon/Jambon/Morue</span><span class="pp">3&#8364;</span></div><div class="pr"><span>Tartes (6 pers)</span><span class="pp">d&egrave;s 16,80&#8364;</span></div></div></div></div></div>
+<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🩷</span><div><div class="at">Mignardises sucrées</div><div class="as">Min. 72h · selon disponibilité</div></div></div><span class="aa">&#9660;</span></div>
+<div class="ab"><div class="pr"><span>Choux</span><span class="pp">1,00&euro;</span></div><div class="pr"><span>Éclairs</span><span class="pp">1,10&euro;</span></div><div class="pr"><span>Tartelettes sucrées</span><span class="pp">1,10&euro;</span></div><div class="pr"><span>Fondant</span><span class="pp">2,00&euro;</span></div><div class="pr"><span>Flan coco</span><span class="pp">2,00&euro;</span></div><div class="pr"><span>Muffin</span><span class="pp">2,00&euro;</span></div><div class="pr"><span>Gaufres (x2)</span><span class="pp">2,50&euro;</span></div><div class="pr"><span>Chouquettes (x6)</span><span class="pp">2,50&euro;</span></div><div class="pr"><span>Verrines mont-blanc/forêt-noire</span><span class="pp">2,50&euro;</span></div><div class="pr"><span>Verrines Oreo/fraise/Kinder</span><span class="pp">2,80&euro;</span></div></div></div>
 
-<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">&#127881;</span><div><div class="at">G&acirc;teaux d&apos;anniversaire</div><div class="as">Sur mesure &mdash; Min. 1 semaine</div></div></div><span class="aa">&#9660;</span></div>
-<div class="ab"><div class="bg"><div class="bc"><h4>Layer Cake</h4><p class="bpt">&Agrave; partir de 42&#8364;</p><ul><li>Chocolat / Kinder Bueno</li><li>Fraise / Sp&eacute;culos</li><li>D&eacute;co personnalis&eacute;e</li></ul></div><div class="bc"><h4>G&acirc;teau traditionnel</h4><p class="bpt">&Agrave; partir de 21&#8364;</p><ul><li>For&ecirc;t-noire / Mont-blanc</li><li>Cacahu&egrave;te / Confiture</li><li>Message inclus</li></ul></div></div></div></div>
+<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🩷</span><div><div class="at">Gâteaux &amp; Créations</div><div class="as">Sur mesure · Min. 1 semaine</div></div></div><span class="aa">&#9660;</span></div>
+<div class="ab"><div class="pr"><span>Cupcake</span><span class="pp">à partir de 2,20&euro;</span></div><div class="pr"><span>Layer Cup classique</span><span class="pp">à partir de 6&euro;</span></div><div class="pr"><span>Layer Cup premium</span><span class="pp">à partir de 7&euro;</span></div><div class="pr"><span>Bento cake (2 pers)</span><span class="pp">à partir de 14&euro;</span></div><div class="pr"><span>Letter / Number cake (6 pers)</span><span class="pp">à partir de 30&euro;</span></div><div class="pr"><span>Gâteau traditionnel 6 pers</span><span class="pp">à partir de 18&euro;</span></div><div class="pr"><span>Layer cake anniversaire</span><span class="pp">à partir de 42&euro;</span></div><div class="pr"><span>Gâteau anniversaire traditionnel</span><span class="pp">à partir de 21&euro;</span></div></div></div>
 
-<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">&#128230;</span><div><div class="at">Les D&eacute;libox</div><div class="as">Min. 1 semaine</div></div></div><span class="aa">&#9660;</span></div>
-<div class="ab"><div class="bg"><div class="bc"><h4>Box D&eacute;couverte</h4><p class="bpt">D&egrave;s 15&#8364;</p><ul><li>2 mini burgers</li><li>2 mini hot-dog</li><li>2 mini tartelettes sal&eacute;es</li><li>2 mini choux</li><li>2 mini &eacute;clairs</li><li>2 mini tartelettes sucr&eacute;es</li></ul></div><div class="bc"><h4>Box Anniversaire</h4><p class="bpt">D&egrave;s 55&#8364;</p><ul><li>1 bento 2 pers</li><li>2 mini wrap b&#339;uf</li><li>2 mini burgers</li><li>2 mini pizzas</li><li>2 mini fondant choco</li><li>2 mini layer cup</li><li>2 salades de fruits</li><li>2 mini gaufres</li></ul></div><div class="bc"><h4>Box Brunch</h4><p class="bpt">D&egrave;s 30&#8364;</p><ul><li>1 bol chocolat 50cl</li><li>2 pommes cannelles</li><li>2 pains au chocolat</li><li>2 mini burgers</li><li>2 fondant choco</li><li>2 jus de fruits</li><li>2 salades de fruits</li></ul></div><div class="bc"><h4>Box Petit D&eacute;j</h4><p class="bpt">D&egrave;s 25&#8364;</p><ul><li>1 bol chocolat 50cl</li><li>2 pains au chocolat</li><li>2 pommes cannelles</li><li>2 pains saucisses</li><li>2 salades de fruits</li><li>2 jus de fruits</li></ul></div></div></div></div>
+<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🩷</span><div><div class="at">Tartes &amp; Tartelettes salées</div><div class="as">Min. 72h · selon disponibilité</div></div></div><span class="aa">&#9660;</span></div>
+<div class="ab"><div class="pr"><span>Tartelette salée (thon/jambon)</span><span class="pp">3&euro;</span></div><div class="pr"><span>Tarte salée 6 pers (thon/jambon)</span><span class="pp">à partir de 16,80&euro;</span></div></div></div>
 
-<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">&#127851;</span><div><div class="at">Chocolat &amp; Pain au beurre</div><div class="as">Min. 72h · selon disponibilités</div></div></div><span class="aa">&#9660;</span></div>
-<div class="ab"><div class="p2"><div><div class="st">&#127851; Chocolat maison</div><div class="pr"><span>50 cl</span><span class="pp">5&#8364;</span></div><div class="pr"><span>1 litre</span><span class="pp">13&#8364;</span></div></div><div><div class="st">&#127838; Pain au beurre nature</div><div class="pr"><span>500g</span><span class="pp">7,50&#8364;</span></div><div class="pr"><span>1 kg</span><span class="pp">14&#8364;</span></div><div class="pr"><span>2 kg</span><span class="pp">24&#8364;</span></div><div class="st">&#127838; Pain au beurre p&eacute;pite</div><div class="pr"><span>500g</span><span class="pp">8&#8364;</span></div><div class="pr"><span>1 kg</span><span class="pp">15&#8364;</span></div><div class="pr"><span>2 kg</span><span class="pp">25&#8364;</span></div></div></div></div></div>
+<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🩷</span><div><div class="at">Délibox</div><div class="as">Coffrets · Min. 1 semaine</div></div></div><span class="aa">&#9660;</span></div>
+<div class="ab"><div class="bg"><div class="bc"><h4>Box Découverte</h4><p class="bpt">Dès 15&euro;</p><ul><li>2 mini burgers</li><li>2 mini hot-dog</li><li>2 mini tartelettes salées</li><li>2 mini choux</li><li>2 mini éclairs</li><li>2 mini tartelettes sucrées</li></ul></div><div class="bc"><h4>Box Anniversaire</h4><p class="bpt">Dès 55&euro;</p><ul><li>1 bento 2 pers</li><li>2 mini wraps bœuf</li><li>2 mini burgers</li><li>2 mini pizzas</li><li>2 mini fondants choco</li><li>2 mini layer cup</li><li>2 salades de fruits</li><li>2 mini gaufres</li></ul></div><div class="bc"><h4>Box Brunch</h4><p class="bpt">Dès 30&euro;</p><ul><li>1 bol chocolat 50 cl</li><li>2 pommes cannelles</li><li>2 pains au chocolat</li><li>2 mini burgers</li><li>2 fondants choco</li><li>2 jus de fruits</li><li>2 salades de fruits</li></ul></div><div class="bc"><h4>Box Petit-déjeuner</h4><p class="bpt">Dès 25&euro;</p><ul><li>1 bol chocolat 50 cl</li><li>2 pains au chocolat</li><li>2 pommes cannelles</li><li>2 pains saucisses</li><li>2 salades de fruits</li><li>2 jus de fruits</li></ul></div></div></div></div>
 
+<div class="ac"><div class="ah" onclick="ac(this)"><div class="al"><span class="ae">🩷</span><div><div class="at">Chocolat &amp; Pain au beurre</div><div class="as">Min. 72h · selon disponibilité</div></div></div><span class="aa">&#9660;</span></div>
+<div class="ab"><div class="p2"><div><div class="st">Chocolat maison</div><div class="pr"><span>50 cl</span><span class="pp">5&euro;</span></div><div class="pr"><span>1 litre</span><span class="pp">13&euro;</span></div></div><div><div class="st">Pain au beurre nature</div><div class="pr"><span>500 g</span><span class="pp">7,50&euro;</span></div><div class="pr"><span>1 kg</span><span class="pp">14&euro;</span></div><div class="pr"><span>2 kg</span><span class="pp">24&euro;</span></div><div class="st">Pain au beurre pépite</div><div class="pr"><span>500 g</span><span class="pp">8&euro;</span></div><div class="pr"><span>1 kg</span><span class="pp">15&euro;</span></div><div class="pr"><span>2 kg</span><span class="pp">25&euro;</span></div></div></div></div></div>
 </div>
-<a href="commander.html" class="btn btn-c" style="margin-top:16px;">&#129473; Commander maintenant</a>
-</div><footer><div class="flogo">Les Douceurs de Cicine</div><div class="flinks"><a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="flink" target="_blank" rel="noopener">📸 Instagram</a><a href="https://www.facebook.com/profile.php?id=61586132193455" class="flink" target="_blank" rel="noopener">👍 Facebook</a><a href="https://snapchat.com/t/KKWM8AMZ" class="flink" target="_blank" rel="noopener">👻 Snapchat</a><a href="https://wa.me/596696111440" class="flink" target="_blank">&#128172; WhatsApp</a></div><p>&#128205; Le Vauclin, Martinique &middot; 0696 11 14 40</p><p>&copy; 2026 Les Douceurs de Cicine</p></footer><a href="https://wa.me/596696111440" target="_blank" rel="noopener" title="Écrire sur WhatsApp" style="position:fixed;bottom:22px;right:18px;z-index:9999;background:#25D366;color:#fff;border-radius:50%;width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;box-shadow:0 4px 18px rgba(37,211,102,.55);text-decoration:none;animation:wapulse 2s ease-in-out infinite;">💬</a><style>@keyframes wapulse{0%,100%{box-shadow:0 4px 18px rgba(37,211,102,.55)}50%{box-shadow:0 4px 28px rgba(37,211,102,.85)}}</style><script>if(localStorage.getItem("cicine_admin")){var _ab=document.createElement("a");_ab.href="admin.html";_ab.title="Retour à l'admin";_ab.innerHTML="⚙️ Admin";_ab.style.cssText="position:fixed;top:68px;right:14px;z-index:9997;background:#5C2E0E;color:#fff;border-radius:30px;padding:7px 14px;font-size:.75rem;font-weight:700;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.25);font-family:Lato,sans-serif;";document.body.appendChild(_ab);}</script>
+
+<a href="commander.html" class="btn btn-c" style="margin-top:16px;">Commander maintenant</a>
+</div>
+
+<footer><div class="flogo">Les Douceurs de Cicine</div><div class="flinks"><a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="flink" target="_blank" rel="noopener">Instagram</a><a href="https://www.facebook.com/profile.php?id=61586132193455" class="flink" target="_blank" rel="noopener">Facebook</a><a href="https://snapchat.com/t/KKWM8AMZ" class="flink" target="_blank" rel="noopener">Snapchat</a><a href="https://wa.me/596696111440" class="flink" target="_blank">WhatsApp</a></div><p>Le Vauclin, Martinique &middot; 0696 11 14 40</p><p>&copy; 2026 Les Douceurs de Cicine</p></footer>
+
+<a href="https://wa.me/596696111440" target="_blank" rel="noopener" title="Écrire sur WhatsApp" style="position:fixed;bottom:22px;right:18px;z-index:9999;background:#25D366;color:#fff;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;box-shadow:0 4px 18px rgba(37,211,102,.55);text-decoration:none;animation:wapulse 2s ease-in-out infinite;">💬</a>
+<style>@keyframes wapulse{0%,100%{box-shadow:0 4px 18px rgba(37,211,102,.55)}50%{box-shadow:0 4px 28px rgba(37,211,102,.85)}}</style>
+<script>if(localStorage.getItem("cicine_admin")){var _ab=document.createElement("a");_ab.href="admin.html";_ab.title="Retour à l'admin";_ab.innerHTML="⚙️ Admin";_ab.style.cssText="position:fixed;top:68px;right:14px;z-index:9997;background:#5C2E0E;color:#fff;border-radius:30px;padding:7px 14px;font-size:.75rem;font-weight:700;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.25);font-family:Lato,sans-serif;";document.body.appendChild(_ab);}</script>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 function ac(h){h.parentElement.classList.toggle("open");}
@@ -95,15 +93,15 @@ var SB_URL="https://uousxxvrgcyvyaahdtda.supabase.co";
 var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
 var sbP=supabase.createClient(SB_URL,SB_KEY);
 var CAT_CFG={
-  'Viennoiseries salées':       {emoji:'🥐',sub:'Salé — Min. 72h · selon disponibilités'},
-  'Viennoiseries sucrées':      {emoji:'🥐',sub:'Sucré — Min. 72h · selon disponibilités'},
-  'Mignardises salées':         {emoji:'🍔',sub:'Min. 72h · selon disponibilités'},
-  'Mignardises sucrées':        {emoji:'🍬',sub:'Min. 72h · selon disponibilités'},
-  'Gâteaux & Créations':        {emoji:'🎂',sub:'Personnalisés — Min. 1 semaine'},
-  'Tartes & Tartelettes salées':{emoji:'🥧',sub:'Min. 72h · selon disponibilités'},
-  'Délibox':                    {emoji:'📦',sub:'Min. 1 semaine'},
-  'Chocolat & Pain au beurre':  {emoji:'🍫',sub:'Min. 72h · selon disponibilités'},
-  'Autres délices gourmands':   {emoji:'🍰',sub:'Min. 72h · selon disponibilités'}
+  'Viennoiseries salées':       {emoji:'🩷',sub:'Salé · Min. 72h · selon disponibilité'},
+  'Viennoiseries sucrées':      {emoji:'🩷',sub:'Sucré · Min. 72h · selon disponibilité'},
+  'Mignardises salées':         {emoji:'🩷',sub:'Min. 72h · selon disponibilité'},
+  'Mignardises sucrées':        {emoji:'🩷',sub:'Min. 72h · selon disponibilité'},
+  'Gâteaux & Créations':        {emoji:'🩷',sub:'Sur mesure · Min. 1 semaine'},
+  'Tartes & Tartelettes salées':{emoji:'🩷',sub:'Min. 72h · selon disponibilité'},
+  'Délibox':                    {emoji:'🩷',sub:'Coffrets · Min. 1 semaine'},
+  'Chocolat & Pain au beurre':  {emoji:'🩷',sub:'Min. 72h · selon disponibilité'},
+  'Autres délices gourmands':   {emoji:'🩷',sub:'Min. 72h · selon disponibilité'}
 };
 var CAT_ORDER=['Viennoiseries salées','Viennoiseries sucrées','Mignardises salées','Mignardises sucrées','Gâteaux & Créations','Tartes & Tartelettes salées','Délibox','Chocolat & Pain au beurre','Autres délices gourmands'];
 var APD=['Gâteaux & Créations','Tartes & Tartelettes salées'];
@@ -122,7 +120,7 @@ async function loadProduits(){
     Object.keys(cats).forEach(function(c){if(CAT_ORDER.indexOf(c)<0)ordered.push(c);});
     var html="";
     ordered.forEach(function(cat){
-      var cfg=CAT_CFG[cat]||{emoji:'🍰',sub:''};
+      var cfg=CAT_CFG[cat]||{emoji:'🩷',sub:''};
       var prods=cats[cat];
       var aP=APD.indexOf(cat)>=0;
       html+='<div class="ac"><div class="ah" onclick="ac(this)">';
