@@ -569,13 +569,15 @@ loadProductsFromDB();
 
 async function loadProductsFromDB(){
   try{
-    var {data,error}=await sb.from("products").select("*").eq("available",true).order("sort_order").order("name");
-    if(error||!data||data.length===0)return;
+    var {data,error}=await sb.from("products").select("*").order("sort_order").order("name");
+    if(error||!data||!data.length)return;
+    data=data.filter(function(p){return p.available!==false;});
+    if(!data.length)return;
     var seen={};
     data=data.filter(function(p){if(seen[p.name])return false;seen[p.name]=true;return true;});
     var sec=document.getElementById("productSection");
     if(sec)sec.innerHTML=renderProductsHTML(data);
-  }catch(e){}
+  }catch(e){console.error("Produits:",e);}
 }
 
 function renderProductsHTML(data){
