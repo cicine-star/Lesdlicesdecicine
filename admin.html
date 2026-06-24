@@ -318,6 +318,9 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   .stat-card{padding:10px 6px;}
   .stat-n{font-size:1.3rem;}
   .main-tab{min-width:68px;font-size:.68rem;padding:10px 5px;}
+  .nav-btn-extra{display:none;}
+  .admin-nav-logo{font-size:1rem;}
+  .nav-btn{font-size:.65rem;padding:4px 8px;}
 }
 @media(max-width:380px){
   .stats-bar{grid-template-columns:1fr;}
@@ -353,8 +356,8 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <button class="nav-cart-btn" onclick="openShoppingList()" title="Liste de courses">
         🛒<span class="nav-cart-badge" id="shopBadge"></span>
       </button>
-      <a href="tableau-de-bord.html" class="nav-btn">📊 Mon plan</a>
-      <a href="caisse.html" class="nav-btn">💰 Caisse</a>
+      <a href="tableau-de-bord.html" class="nav-btn nav-btn-extra">📊 Mon plan</a>
+      <a href="caisse.html" class="nav-btn nav-btn-extra">💰 Caisse</a>
       <a href="index.html" class="nav-btn">🌐 Site</a>
       <button class="nav-logout" onclick="logout()">Déco.</button>
     </div>
