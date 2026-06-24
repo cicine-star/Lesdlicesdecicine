@@ -350,6 +350,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <button class="main-tab" onclick="setMainTab('clients')">👥 Clients</button>
     <button class="main-tab" onclick="setMainTab('produits')">🛍️ Produits</button>
     <button class="main-tab" onclick="setMainTab('saveurs')">🎨 Saveurs</button>
+    <button class="main-tab" onclick="setMainTab('tresorerie')">💰 Trésorerie</button>
     <button class="main-tab" onclick="setMainTab('avis')">⭐ Avis <span id="avisbadge" style="display:none;background:var(--fuchsia);color:#fff;border-radius:20px;padding:0 6px;font-size:.65rem;margin-left:3px;"></span></button>
     <button class="main-tab" onclick="setMainTab('blog')">📝 Blog</button>
     <button class="main-tab" onclick="setMainTab('parametres')">⚙️ Paramètres</button>
@@ -530,6 +531,81 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <div id="adminProductsGrid"></div>
   </div>
 
+  <!-- ===== TAB TRÉSORERIE ===== -->
+  <div id="tab-tresorerie" class="wrap" style="display:none;">
+    <div class="section-title">💰 Trésorerie</div>
+
+    <!-- Cartes solde -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;">
+      <div class="stat-card">
+        <div class="stat-n" id="tr-ca" style="color:#16a34a;">—</div>
+        <div class="stat-l">Recettes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-n" id="tr-dep" style="color:#dc2626;">—</div>
+        <div class="stat-l">Dépenses</div>
+      </div>
+      <div class="stat-card" id="tr-solde-card">
+        <div class="stat-n" id="tr-solde">—</div>
+        <div class="stat-l">Solde disponible</div>
+      </div>
+    </div>
+
+    <!-- Filtre période -->
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+      <select id="tr-periode" onchange="loadTresorerie()" style="padding:8px 12px;border:1.5px solid var(--bordure);border-radius:10px;font-family:'Lato',sans-serif;font-size:.82rem;background:#fff;color:var(--texte);outline:none;">
+        <option value="all">Tout afficher</option>
+        <option value="month" selected>Ce mois</option>
+        <option value="week">Cette semaine</option>
+        <option value="year">Cette année</option>
+      </select>
+      <span id="tr-periode-label" style="font-size:.78rem;color:var(--doux);"></span>
+    </div>
+
+    <!-- Formulaire ajout -->
+    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:14px;margin-bottom:16px;">
+      <div style="font-weight:700;font-size:.88rem;color:var(--brun);margin-bottom:10px;">➕ Ajouter une transaction</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <div>
+          <label style="font-size:.75rem;color:var(--doux);display:block;margin-bottom:3px;">Date</label>
+          <input type="date" id="tr-new-date" style="width:100%;padding:8px 10px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.82rem;font-family:'Lato',sans-serif;outline:none;color:var(--texte);background:var(--fond);">
+        </div>
+        <div>
+          <label style="font-size:.75rem;color:var(--doux);display:block;margin-bottom:3px;">Type</label>
+          <select id="tr-new-type" style="width:100%;padding:8px 10px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.82rem;font-family:'Lato',sans-serif;outline:none;background:var(--fond);color:var(--texte);">
+            <option value="entree">💚 Recette (entrée)</option>
+            <option value="sortie">🔴 Dépense (sortie)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:.75rem;color:var(--doux);display:block;margin-bottom:3px;">Montant (€)</label>
+          <input type="number" id="tr-new-montant" placeholder="0,00" min="0" step="0.01" style="width:100%;padding:8px 10px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.82rem;font-family:'Lato',sans-serif;outline:none;color:var(--texte);background:var(--fond);">
+        </div>
+        <div>
+          <label style="font-size:.75rem;color:var(--doux);display:block;margin-bottom:3px;">Catégorie</label>
+          <select id="tr-new-cat" style="width:100%;padding:8px 10px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.82rem;font-family:'Lato',sans-serif;outline:none;background:var(--fond);color:var(--texte);">
+            <option>Vente produit</option>
+            <option>Commande client</option>
+            <option>Fournitures</option>
+            <option>Emballages</option>
+            <option>Ingrédients</option>
+            <option>Frais livraison</option>
+            <option>Frais divers</option>
+            <option>Autre</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:8px;">
+        <label style="font-size:.75rem;color:var(--doux);display:block;margin-bottom:3px;">Description</label>
+        <input type="text" id="tr-new-desc" placeholder="Ex : Commande anniversaire Mme Martin…" style="width:100%;padding:8px 10px;border:1.5px solid var(--bordure);border-radius:9px;font-size:.82rem;font-family:'Lato',sans-serif;outline:none;color:var(--texte);background:var(--fond);">
+      </div>
+      <button onclick="addTransaction()" style="width:100%;padding:11px;background:var(--brun);color:#fff;border:none;border-radius:30px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:'Lato',sans-serif;">Enregistrer</button>
+    </div>
+
+    <!-- Liste transactions -->
+    <div id="tr-list"></div>
+  </div>
+
   <!-- ===== TAB BLOG ===== -->
   <div id="tab-blog" class="wrap" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
@@ -684,7 +760,7 @@ function showDashboard(){
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
-  var tabs=["commandes","stocks","planning","taches","stats","clients","produits","saveurs","avis","blog","parametres"];
+  var tabs=["commandes","stocks","planning","taches","stats","clients","produits","saveurs","tresorerie","avis","blog","parametres"];
   tabs.forEach(function(t){
     document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
   });
@@ -699,6 +775,7 @@ function setMainTab(tab){
   if(tab==="avis"){loadReviews();}
   if(tab==="produits"){loadAdminProducts();}
   if(tab==="saveurs"){loadSaveursTab();}
+  if(tab==="tresorerie"){loadTresorerie();}
   if(tab==="blog"){loadBlog();}
   if(tab==="parametres"){renderSettings();}
 }
@@ -2363,6 +2440,73 @@ async function addFlavor(){
     showNotif("Saveur ajoutée !");
     loadSaveurs();
   }catch(e){showNotif("Erreur : "+e.message);}
+}
+
+/* ====== TRÉSORERIE ====== */
+async function loadTresorerie(){
+  var periode=document.getElementById("tr-periode").value;
+  var now=new Date();
+  var dateMin=null;
+  if(periode==="week"){
+    var d=new Date(now);d.setDate(d.getDate()-d.getDay()+1);
+    dateMin=d.toISOString().slice(0,10);
+  } else if(periode==="month"){
+    dateMin=now.getFullYear()+"-"+(String(now.getMonth()+1).padStart(2,"0"))+"-01";
+  } else if(periode==="year"){
+    dateMin=now.getFullYear()+"-01-01";
+  }
+  var q=sb.from("tresorerie").select("*").order("date",{ascending:false}).order("created_at",{ascending:false});
+  if(dateMin)q=q.gte("date",dateMin);
+  var {data,error}=await q;
+  if(error){console.error(error);return;}
+  var rows=data||[];
+  var ca=rows.filter(function(r){return r.type==="entree";}).reduce(function(s,r){return s+parseFloat(r.montant||0);},0);
+  var dep=rows.filter(function(r){return r.type==="sortie";}).reduce(function(s,r){return s+parseFloat(r.montant||0);},0);
+  var solde=ca-dep;
+  document.getElementById("tr-ca").textContent=euro(ca);
+  document.getElementById("tr-dep").textContent=euro(dep);
+  document.getElementById("tr-solde").textContent=euro(solde);
+  document.getElementById("tr-solde").style.color=solde>=0?"#16a34a":"#dc2626";
+  document.getElementById("tr-solde-card").style.borderColor=solde>=0?"#16a34a":"#dc2626";
+  var html="";
+  if(!rows.length){html='<p style="text-align:center;color:var(--doux);font-size:.83rem;padding:20px;">Aucune transaction sur cette période.</p>';}
+  rows.forEach(function(r){
+    var isE=r.type==="entree";
+    html+='<div style="background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:11px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;">';
+    html+='<div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">';
+    html+='<span style="font-size:1.2rem;">'+(isE?'💚':'🔴')+'</span>';
+    html+='<div style="min-width:0;">';
+    html+='<div style="font-weight:700;font-size:.85rem;color:var(--texte);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(r.description||r.categorie||'—')+'</div>';
+    html+='<div style="font-size:.72rem;color:var(--doux);">'+r.date+(r.categorie?' · '+r.categorie:'')+'</div>';
+    html+='</div></div>';
+    html+='<div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">';
+    html+='<span style="font-weight:700;font-size:.92rem;color:'+(isE?'#16a34a':'#dc2626')+'">'+(isE?'+':'-')+euro(r.montant)+'</span>';
+    html+='<button onclick="deleteTransaction(\''+r.id+'\')" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:.85rem;padding:2px 5px;" title="Supprimer">🗑️</button>';
+    html+='</div></div>';
+  });
+  document.getElementById("tr-list").innerHTML=html;
+  var today=new Date().toISOString().slice(0,10);
+  if(!document.getElementById("tr-new-date").value)document.getElementById("tr-new-date").value=today;
+}
+
+async function addTransaction(){
+  var date=document.getElementById("tr-new-date").value;
+  var type=document.getElementById("tr-new-type").value;
+  var montant=parseFloat(document.getElementById("tr-new-montant").value);
+  var cat=document.getElementById("tr-new-cat").value;
+  var desc=(document.getElementById("tr-new-desc").value||"").trim();
+  if(!date||!montant||montant<=0){alert("Veuillez renseigner une date et un montant valide.");return;}
+  var {error}=await sb.from("tresorerie").insert({date:date,type:type,montant:montant,categorie:cat,description:desc});
+  if(error){alert("Erreur : "+error.message);return;}
+  document.getElementById("tr-new-montant").value="";
+  document.getElementById("tr-new-desc").value="";
+  loadTresorerie();
+}
+
+async function deleteTransaction(id){
+  if(!confirm("Supprimer cette transaction ?"))return;
+  await sb.from("tresorerie").delete().eq("id",id);
+  loadTresorerie();
 }
 
 /* ====== PARAMÈTRES ====== */
