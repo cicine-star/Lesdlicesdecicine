@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Preuve de projet — Les Douceurs de Cicine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Lato:wght@300;400;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 11pt;
+    color: #1a1a1a;
+    background: #f5f5f5;
+    padding: 30px;
+  }
+
+  .page {
+    background: #fff;
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 20mm 18mm 18mm 18mm;
+    box-shadow: 0 4px 24px rgba(0,0,0,.12);
+    min-height: 297mm;
+    position: relative;
+  }
+
+  /* EN-TÊTE */
+  .entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid #5C2E0E;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+  }
+  .logo {
+    font-family: 'Dancing Script', cursive;
+    font-size: 26pt;
+    color: #5C2E0E;
+    line-height: 1;
+  }
+  .logo-sub {
+    font-size: 8.5pt;
+    color: #7A3B1E;
+    margin-top: 3px;
+    letter-spacing: .04em;
+  }
+  .ref-bloc {
+    text-align: right;
+    font-size: 8.5pt;
+    color: #555;
+    line-height: 1.7;
+  }
+  .ref-bloc strong {
+    color: #5C2E0E;
+    font-size: 9pt;
+  }
+
+  /* TITRE DU DOCUMENT */
+  .doc-titre {
+    text-align: center;
+    margin: 18px 0 6px;
+  }
+  .doc-titre h1 {
+    font-size: 15pt;
+    font-weight: 700;
+    color: #5C2E0E;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .doc-titre .sous-titre {
+    font-size: 9pt;
+    color: #777;
+    margin-top: 3px;
+  }
+  .filet {
+    border: none;
+    border-top: 1px solid #d4a574;
+    margin: 12px 0 18px;
+  }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 16px;
+  }
+  .section-titre {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #5C2E0E;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    border-left: 4px solid #A0522D;
+    padding-left: 8px;
+    margin-bottom: 8px;
+  }
+  .section p, .section li {
+    font-size: 10pt;
+    line-height: 1.65;
+    color: #2a2a2a;
+  }
+  .section ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  .section ul li::before {
+    content: "✦ ";
+    color: #A0522D;
+    font-size: 8pt;
+  }
+  .section ul.sous-liste {
+    padding-left: 16px;
+    margin-top: 3px;
+  }
+  .section ul.sous-liste li::before {
+    content: "– ";
+    color: #999;
+  }
+
+  /* TABLEAU INFO */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+    font-size: 10pt;
+  }
+  .info-table td {
+    padding: 5px 10px;
+    border: 1px solid #e0d0c8;
+  }
+  .info-table td:first-child {
+    font-weight: 700;
+    background: #faf0eb;
+    color: #5C2E0E;
+    width: 38%;
+    white-space: nowrap;
+  }
+
+  /* BANDEAU AVANCEMENT */
+  .avancement {
+    background: #fdf4f0;
+    border: 1.5px solid #e0ccc5;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+  }
+  .avancement-titre {
+    font-weight: 700;
+    font-size: 9.5pt;
+    color: #5C2E0E;
+    margin-bottom: 6px;
+  }
+  .barre-fond {
+    background: #e8d5cc;
+    border-radius: 20px;
+    height: 12px;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .barre-rempli {
+    background: linear-gradient(90deg, #A0522D, #c97b42);
+    height: 100%;
+    width: 65%;
+    border-radius: 20px;
+  }
+  .barre-label {
+    font-size: 8pt;
+    color: #777;
+    text-align: right;
+  }
+
+  /* DÉCLARATION */
+  .declaration {
+    background: #fffaf8;
+    border: 1.5px solid #d4b8a8;
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 9.5pt;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 18px;
+  }
+
+  /* ZONE SIGNATURE */
+  .signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 10px;
+  }
+  .sig-bloc {
+    border: 1.5px solid #c0a090;
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .sig-label {
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #5C2E0E;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .sig-info {
+    font-size: 8pt;
+    color: #888;
+    margin-bottom: 40px;
+  }
+  .sig-ligne {
+    border-top: 1.5px solid #888;
+    margin-top: 8px;
+    padding-top: 4px;
+    font-size: 8pt;
+    color: #aaa;
+    font-style: italic;
+  }
+
+  /* PIED DE PAGE */
+  .pied {
+    position: absolute;
+    bottom: 14mm;
+    left: 18mm;
+    right: 18mm;
+    border-top: 1px solid #ddd;
+    padding-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 7.5pt;
+    color: #aaa;
+  }
+
+  /* IMPRESSION */
+  @media print {
+    body {
+      background: #fff;
+      padding: 0;
+    }
+    .page {
+      box-shadow: none;
+      padding: 14mm 16mm 20mm 16mm;
+      max-width: 100%;
+    }
+    .btn-imprimer {
+      display: none !important;
+    }
+  }
+
+  /* BOUTON IMPRESSION */
+  .btn-imprimer {
+    display: block;
+    width: fit-content;
+    margin: 18px auto 0;
+    background: #5C2E0E;
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-size: 10pt;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Lato', Arial, sans-serif;
+    letter-spacing: .04em;
+  }
+  .btn-imprimer:hover { background: #7A3B1E; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- EN-TÊTE -->
+  <div class="entete">
+    <div>
+      <div class="logo">Les Douceurs de Cicine</div>
+      <div class="logo-sub">Pâtisserie artisanale maison · Le Vauclin, Martinique</div>
+    </div>
+    <div class="ref-bloc">
+      <strong>DOCUMENT DE PREUVE DE PROJET</strong><br/>
+      Réf. : DDC-2026-001<br/>
+      Date : 23 juin 2026<br/>
+      Pages : 1/1
+    </div>
+  </div>
+
+  <!-- TITRE -->
+  <div class="doc-titre">
+    <h1>Déclaration de paternité &amp; journal de projet</h1>
+    <div class="sous-titre">Site e-commerce et espace administration — Les Douceurs de Cicine</div>
+  </div>
+  <hr class="filet"/>
+
+  <!-- IDENTITÉ -->
+  <div class="section">
+    <div class="section-titre">Identité du projet</div>
+    <table class="info-table">
+      <tr><td>Propriétaire</td><td>Les Douceurs de Cicine</td></tr>
+      <tr><td>Adresse e-mail</td><td>pinelfereolc@gmail.com</td></tr>
+      <tr><td>Localisation</td><td>Le Vauclin, Martinique · 0696 11 14 40</td></tr>
+      <tr><td>Date de début du projet</td><td>9 juin 2026</td></tr>
+      <tr><td>Dépôt GitHub (horodaté)</td><td>github.com/cicine-star/lesdlicesdecicine</td></tr>
+      <tr><td>Site en ligne</td><td>cicine-star.github.io/lesdlicesdecicine</td></tr>
+    </table>
+  </div>
+
+  <!-- DESCRIPTION -->
+  <div class="section">
+    <div class="section-titre">Description du projet</div>
+    <p>Site e-commerce et panneau d'administration sur mesure pour une activité de pâtisserie artisanale maison. Le site permet aux clients de passer des commandes et des devis en ligne, et à la propriétaire de gérer ses produits, commandes, saveurs et stocks depuis un espace admin sécurisé, avec synchronisation en temps réel.</p>
+  </div>
+
+  <!-- RÉALISATIONS -->
+  <div class="section">
+    <div class="section-titre">Fonctionnalités réalisées (au 23 juin 2026)</div>
+    <ul>
+      <li>Page commande interactive avec catalogue en accordéons par catégorie, sélecteur de saveurs automatique pour les gâteaux, calcul du total en temps réel, envoi par WhatsApp, calendrier avec dates bloquées</li>
+      <li>Page « Nos produits » avec chargement dynamique depuis la base de données (mise à jour automatique)</li>
+      <li>Page devis, page avis clients, page à propos, CGV</li>
+      <li>Espace administration sécurisé (9 onglets) : Commandes, Stocks, Planning, Tâches, Statistiques, Clients, Produits, Saveurs, Paramètres</li>
+      <li>Gestion des saveurs par produit avec indicateur visuel vert/rouge (disponible / indisponible)</li>
+      <li>Base de données Supabase : produits, commandes, clients, saveurs, stocks, avis, dates bloquées</li>
+    </ul>
+  </div>
+
+  <!-- TECHNOLOGIES -->
+  <div class="section">
+    <div class="section-titre">Technologies utilisées</div>
+    <ul>
+      <li>HTML · CSS · JavaScript (site statique, sans dépendance externe)</li>
+      <li>Supabase (base de données temps réel hébergée)</li>
+      <li>GitHub Pages (hébergement gratuit et versionné)</li>
+      <li>WhatsApp Business API (transmission des commandes)</li>
+    </ul>
+  </div>
+
+  <!-- AVANCEMENT -->
+  <div class="avancement">
+    <div class="avancement-titre">Avancement global du projet au 23 juin 2026</div>
+    <div class="barre-fond"><div class="barre-rempli"></div></div>
+    <div class="barre-label">65 % — Site fonctionnel en ligne · Fonctionnalités avancées en cours</div>
+  </div>
+
+  <!-- À VENIR -->
+  <div class="section">
+    <div class="section-titre">Fonctionnalités prévues</div>
+    <ul>
+      <li>Sélecteur de saveurs sur la page devis</li>
+      <li>Notifications automatiques à la confirmation de commande</li>
+      <li>Système de paiement en ligne (potentiel)</li>
+      <li>Page blog / recettes (potentiel)</li>
+    </ul>
+  </div>
+
+  <!-- DÉCLARATION -->
+  <div class="declaration">
+    <strong>Déclaration de paternité :</strong> Je soussignée, propriétaire de l'activité <em>Les Douceurs de Cicine</em>, déclare être l'unique créatrice et initiatrice de ce projet de site e-commerce, débuté le <strong>9 juin 2026</strong>. Le concept, le design, le contenu et les fonctionnalités décrits dans ce document sont ma propriété intellectuelle exclusive. L'historique de toutes les modifications est enregistré de manière horodatée sur GitHub et constitue une preuve technique complémentaire.
+  </div>
+
+  <!-- SIGNATURES -->
+  <div class="section">
+    <div class="section-titre">Signatures</div>
+    <div class="signatures">
+      <div class="sig-bloc">
+        <div class="sig-label">Propriétaire du projet</div>
+        <div class="sig-info">Les Douceurs de Cicine<br/>Le Vauclin, Martinique</div>
+        <div class="sig-ligne">Signature &amp; date : ___________________</div>
+      </div>
+      <div class="sig-bloc">
+        <div class="sig-label">Témoin (facultatif)</div>
+        <div class="sig-info">Nom : ___________________________<br/>Qualité : _______________________</div>
+        <div class="sig-ligne">Signature &amp; date : ___________________</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIED DE PAGE -->
+  <div class="pied">
+    <span>Les Douceurs de Cicine · Le Vauclin, Martinique · pinelfereolc@gmail.com</span>
+    <span>Document généré le 23 juin 2026 · Réf. DDC-2026-001</span>
+  </div>
+
+</div>
+
+<button class="btn-imprimer" onclick="window.print()">🖨️ Imprimer / Sauvegarder en PDF</button>
+
+</body>
+</html>
