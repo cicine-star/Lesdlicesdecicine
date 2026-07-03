@@ -364,7 +364,8 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   </nav>
 
   <div class="main-tab-bar">
-    <button class="main-tab active" onclick="setMainTab('commandes')">📋 Commandes</button>
+    <button class="main-tab active" onclick="setMainTab('accueil')">🏠 Accueil</button>
+    <button class="main-tab" onclick="setMainTab('commandes')">📋 Commandes</button>
     <button class="main-tab" onclick="setMainTab('stocks')">📦 Stocks</button>
     <button class="main-tab" onclick="setMainTab('planning')">📅 Planning</button>
     <button class="main-tab" onclick="setMainTab('taches')">✅ Tâches</button>
@@ -376,6 +377,46 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <button class="main-tab" onclick="setMainTab('avis')">⭐ Avis <span id="avisbadge" style="display:none;background:var(--fuchsia);color:#fff;border-radius:20px;padding:0 6px;font-size:.65rem;margin-left:3px;"></span></button>
     <button class="main-tab" onclick="setMainTab('blog')">📝 Blog</button>
     <button class="main-tab" onclick="setMainTab('parametres')">⚙️ Paramètres</button>
+  </div>
+
+  <!-- ===== TAB ACCUEIL ===== -->
+  <div id="tab-accueil" class="wrap" style="display:none;">
+
+    <!-- Bonjour -->
+    <div style="margin-bottom:18px;">
+      <div style="font-family:'Dancing Script',cursive;font-size:1.7rem;color:var(--brun);" id="dash-greeting">Bonjour ! 👋</div>
+      <div style="font-size:.78rem;color:var(--doux);" id="dash-date"></div>
+    </div>
+
+    <!-- 3 cartes clés -->
+    <div class="stats-bar" style="margin-bottom:16px;">
+      <div class="stat-card">
+        <div class="stat-n" id="dash-ca" style="color:#16a34a;font-size:1.1rem;">—</div>
+        <div class="stat-l">CA ce mois</div>
+      </div>
+      <div class="stat-card" id="dash-solde-card">
+        <div class="stat-n" id="dash-solde" style="font-size:1.1rem;">—</div>
+        <div class="stat-l">Solde dispo.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-n" id="dash-pending" style="color:var(--caramel);font-size:1.1rem;">—</div>
+        <div class="stat-l">En attente</div>
+      </div>
+    </div>
+
+    <!-- Bouton liste de courses -->
+    <button onclick="openShoppingList()" id="dash-shop-btn" style="position:relative;width:100%;padding:14px;background:var(--brun);color:#fff;border:none;border-radius:14px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:10px;">
+      🛒 Ma liste de courses
+      <span id="dash-shop-badge" style="display:none;background:#dc2626;color:#fff;border-radius:20px;padding:2px 9px;font-size:.72rem;font-weight:700;"></span>
+    </button>
+
+    <!-- Rappel commandes en attente -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div class="section-title" style="margin-bottom:0;">⏳ Commandes à traiter</div>
+      <button onclick="setMainTab('commandes')" style="background:none;border:none;color:var(--caramel);font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Voir toutes →</button>
+    </div>
+    <div id="dash-orders-reminder"></div>
+
   </div>
 
   <!-- ===== TAB COMMANDES ===== -->
@@ -712,7 +753,7 @@ var calYear,calMonth;
 var currentModalDate="";
 var manualLineCount=0;
 var allReviews=[];
-var activeMainTab="commandes";
+var activeMainTab="accueil";
 var allProducts=[];
 var shopSettings={};
 
@@ -774,21 +815,24 @@ function showDashboard(){
   loadTasks();
   // Navigation directe par hash URL (ex: admin.html#planning)
   var hash=location.hash.replace("#","");
-  if(["stocks","planning","taches","stats","avis","produits","saveurs","parametres"].indexOf(hash)>=0){
+  if(["commandes","stocks","planning","taches","stats","avis","produits","saveurs","tresorerie","parametres"].indexOf(hash)>=0){
     setTimeout(function(){setMainTab(hash);},300);
+  } else {
+    setTimeout(function(){setMainTab("accueil");},300);
   }
 }
 
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
-  var tabs=["commandes","stocks","planning","taches","stats","clients","produits","saveurs","tresorerie","avis","blog","parametres"];
+  var tabs=["accueil","commandes","stocks","planning","taches","stats","clients","produits","saveurs","tresorerie","avis","blog","parametres"];
   tabs.forEach(function(t){
     document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
   });
   document.querySelectorAll(".main-tab").forEach(function(el,i){
     el.classList.toggle("active",tabs[i]===tab);
   });
+  if(tab==="accueil"){loadAccueil();}
   if(tab==="stocks")loadStocks();
   if(tab==="planning")renderPlanning();
   if(tab==="taches")renderTasks();
@@ -851,6 +895,7 @@ async function loadOrders(){
   var res=await sb.from("orders").select("*").order("delivery_date",{ascending:true});
   if(res.data)allOrders=res.data;
   renderOrders();updateStats();renderReminders();updateShoppingBadge();
+  if(activeMainTab==="accueil")loadAccueil();
 }
 async function loadBlocked(){
   var res=await sb.from("blocked_dates").select("*");
@@ -2462,6 +2507,65 @@ async function addFlavor(){
     showNotif("Saveur ajoutée !");
     loadSaveurs();
   }catch(e){showNotif("Erreur : "+e.message);}
+}
+
+/* ====== ACCUEIL / DASHBOARD ====== */
+async function loadAccueil(){
+  // Date du jour
+  var now=new Date();
+  var jours=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
+  var mois=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  document.getElementById("dash-date").textContent=jours[now.getDay()]+" "+now.getDate()+" "+mois[now.getMonth()]+" "+now.getFullYear();
+
+  // Commandes en attente
+  var pending=(allOrders||[]).filter(function(o){return o.status==="pending";});
+  var confirmed=(allOrders||[]).filter(function(o){return o.status==="confirmed";});
+  document.getElementById("dash-pending").textContent=pending.length+confirmed.length;
+
+  // Trésorerie ce mois
+  var dateMin=now.getFullYear()+"-"+(String(now.getMonth()+1).padStart(2,"0"))+"-01";
+  try{
+    var {data}=await sb.from("tresorerie").select("type,montant").gte("date",dateMin);
+    var rows=data||[];
+    var ca=rows.filter(function(r){return r.type==="entree";}).reduce(function(s,r){return s+parseFloat(r.montant||0);},0);
+    var dep=rows.filter(function(r){return r.type==="sortie";}).reduce(function(s,r){return s+parseFloat(r.montant||0);},0);
+    var solde=ca-dep;
+    document.getElementById("dash-ca").textContent=euro(ca);
+    document.getElementById("dash-solde").textContent=euro(solde);
+    document.getElementById("dash-solde").style.color=solde>=0?"#16a34a":"#dc2626";
+    document.getElementById("dash-solde-card").style.borderColor=solde>=0?"rgba(22,163,74,.3)":"rgba(220,38,38,.3)";
+  }catch(e){}
+
+  // Badge liste de courses
+  var shopList=computeShoppingList();
+  var badge=document.getElementById("dash-shop-badge");
+  if(shopList.length>0){badge.textContent=shopList.length+" article"+(shopList.length>1?"s":"")+" à acheter";badge.style.display="inline-block";}
+  else{badge.style.display="none";}
+
+  // Rappel commandes en attente + confirmées
+  var toShow=pending.concat(confirmed).slice(0,5);
+  var html="";
+  if(!toShow.length){
+    html='<div style="text-align:center;padding:24px;color:var(--doux);font-size:.85rem;">✅ Aucune commande en attente</div>';
+  } else {
+    toShow.forEach(function(o){
+      var statusLabel=o.status==="pending"?"⏳ En attente":"✅ Confirmée";
+      var statusColor=o.status==="pending"?"var(--caramel)":"#16a34a";
+      html+='<div style="background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;" onclick="setMainTab(\'commandes\')">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">';
+      html+='<span style="font-weight:700;font-size:.88rem;color:var(--texte);">'+(o.name||"Client")+'</span>';
+      html+='<span style="font-size:.72rem;font-weight:700;color:'+statusColor+';">'+statusLabel+'</span>';
+      html+='</div>';
+      html+='<div style="font-size:.75rem;color:var(--doux);">';
+      if(o.delivery_date)html+='📅 '+(o.delivery_date.split("-").reverse().join("/"))+'&nbsp;·&nbsp;';
+      html+=euro(o.total||0);
+      html+='</div></div>';
+    });
+    if(pending.length+confirmed.length>5){
+      html+='<p style="text-align:center;font-size:.75rem;color:var(--doux);margin-top:4px;">+'+(pending.length+confirmed.length-5)+' autres — <span style="color:var(--caramel);cursor:pointer;font-weight:700;" onclick="setMainTab(\'commandes\')">voir toutes</span></p>';
+    }
+  }
+  document.getElementById("dash-orders-reminder").innerHTML=html;
 }
 
 /* ====== TRÉSORERIE ====== */
