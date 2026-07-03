@@ -11,95 +11,81 @@
 body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);font-size:16px;}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;padding:12px 18px;box-shadow:0 2px 8px rgba(92,46,14,.07);}
-.nav-logo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:var(--brun);text-decoration:none;}
+nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;padding:10px 16px;box-shadow:0 2px 8px rgba(92,46,14,.07);}
+.nav-logo{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--brun);text-decoration:none;}
 .nav-links{display:flex;align-items:center;gap:6px;}
-.nav-link{color:var(--doux);font-size:.75rem;font-weight:700;text-decoration:none;padding:6px 10px;border-radius:20px;transition:background .15s;}
-.nav-link:hover{background:var(--fond2);}
-.nav-panier{position:relative;background:var(--caramel);color:#fff;border-radius:30px;padding:8px 16px;font-weight:700;font-size:.8rem;text-decoration:none;}
-.cart-badge{position:absolute;top:-6px;right:-6px;background:var(--fuchsia);color:#fff;border-radius:50%;width:18px;height:18px;font-size:.62rem;font-weight:700;display:none;align-items:center;justify-content:center;}
+.nav-panier{position:relative;background:var(--caramel);color:#fff;border-radius:30px;padding:7px 14px;font-weight:700;font-size:.78rem;text-decoration:none;}
+.cart-badge{position:absolute;top:-6px;right:-6px;background:var(--fuchsia);color:#fff;border-radius:50%;width:17px;height:17px;font-size:.6rem;font-weight:700;display:none;align-items:center;justify-content:center;}
 
 /* HERO */
-.hero{background:linear-gradient(160deg,#5C2E0E 0%,#A0522D 55%,#c97b42 100%);padding:28px 18px 32px;text-align:center;position:relative;overflow:hidden;}
-.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(255,220,180,.18) 0%,transparent 65%);pointer-events:none;}
-.hero-mascotte{width:82px;height:82px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.35);box-shadow:0 6px 20px rgba(0,0,0,.25);margin-bottom:12px;animation:float 3.5s ease-in-out infinite;}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.hero h1{font-family:"Dancing Script",cursive;font-size:2.1rem;color:#fff;line-height:1.1;margin-bottom:5px;text-shadow:0 2px 10px rgba(0,0,0,.2);}
-.hero-tagline{font-size:.82rem;color:rgba(255,255,255,.82);letter-spacing:.04em;margin-bottom:4px;}
-.hero-loc{font-size:.72rem;color:rgba(255,255,255,.6);margin-bottom:18px;}
-.hero-btns{display:flex;flex-direction:column;gap:8px;align-items:center;}
-.hero-btn{display:block;width:100%;max-width:280px;background:#fff;color:var(--brun);font-weight:700;font-size:.88rem;padding:12px 24px;border-radius:40px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.2);text-align:center;}
-.hero-secondary{display:block;width:100%;max-width:280px;color:rgba(255,255,255,.85);font-size:.82rem;font-weight:700;text-decoration:none;padding:11px 20px;border:1.5px solid rgba(255,255,255,.4);border-radius:40px;text-align:center;}
-
-/* SECTIONS */
-.section{padding:24px 16px;}
-.section-inner{max-width:580px;margin:0 auto;}
-.section-title{font-family:"Dancing Script",cursive;font-size:1.7rem;color:var(--brun);text-align:center;margin-bottom:4px;}
-.section-sub{text-align:center;font-size:.78rem;color:var(--doux);margin-bottom:16px;}
+.hero{background:linear-gradient(160deg,#5C2E0E 0%,#A0522D 55%,#c97b42 100%);padding:16px 16px 18px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(255,220,180,.15) 0%,transparent 65%);pointer-events:none;}
+.hero-inner{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.hero-mascotte{width:68px;height:68px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.35);box-shadow:0 4px 16px rgba(0,0,0,.25);flex-shrink:0;animation:float 3.5s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.hero-words h1{font-family:"Dancing Script",cursive;font-size:1.85rem;color:#fff;line-height:1.05;text-shadow:0 2px 10px rgba(0,0,0,.2);}
+.hero-tagline{font-size:.7rem;color:rgba(255,255,255,.7);margin-top:3px;}
+.hero-btns{display:flex;gap:8px;}
+.hero-btn{flex:1;background:#fff;color:var(--brun);font-weight:700;font-size:.8rem;padding:10px 14px;border-radius:40px;text-decoration:none;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.2);}
+.hero-secondary{flex:1;color:rgba(255,255,255,.9);font-size:.8rem;font-weight:700;text-decoration:none;padding:10px 14px;border:1.5px solid rgba(255,255,255,.4);border-radius:40px;text-align:center;}
 
 /* SPÉCIALITÉS */
-.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
-.spec-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:14px 8px;text-align:center;text-decoration:none;display:block;}
-.spec-emoji{font-size:1.6rem;margin-bottom:6px;}
-.spec-name{font-family:"Dancing Script",cursive;font-size:1rem;color:var(--brun);margin-bottom:3px;}
-.spec-sub{font-size:.65rem;color:var(--doux);line-height:1.3;}
+.specs-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:12px 14px;background:#fff;border-bottom:1.5px solid var(--bordure);}
+.spec-card{background:var(--fond);border:1.5px solid var(--bordure);border-radius:12px;padding:10px 6px;text-align:center;text-decoration:none;display:block;}
+.spec-emoji{font-size:1.5rem;margin-bottom:4px;}
+.spec-name{font-family:"Dancing Script",cursive;font-size:.9rem;color:var(--brun);line-height:1.2;}
+.spec-sub{font-size:.6rem;color:var(--doux);margin-top:2px;line-height:1.2;}
 
-/* COMMENT COMMANDER */
-.steps{display:flex;align-items:stretch;gap:0;margin-bottom:16px;}
-.step{flex:1;background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:14px 8px;text-align:center;}
-.step-connector{width:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--caramel);font-size:1rem;font-weight:700;}
-.step-icon{font-size:1.4rem;margin-bottom:5px;}
-.step-num{width:20px;height:20px;border-radius:50%;background:var(--caramel);color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;}
-.step-text{font-size:.7rem;color:var(--doux);line-height:1.4;}
+/* COMMENT COMMANDER — strip compact */
+.how-section{background:var(--fond);border-bottom:1.5px solid var(--bordure);padding:12px 14px;}
+.how-title{font-family:"Dancing Script",cursive;font-size:1.15rem;color:var(--brun);text-align:center;margin-bottom:8px;}
+.steps-row{display:grid;grid-template-columns:1fr 14px 1fr 14px 1fr;align-items:center;gap:3px;margin-bottom:10px;}
+.step-mini{background:#fff;border:1.5px solid var(--bordure);border-radius:10px;padding:9px 5px;text-align:center;}
+.step-num{width:17px;height:17px;border-radius:50%;background:var(--caramel);color:#fff;font-size:.58rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;}
+.step-icon{font-size:1.2rem;margin-bottom:3px;}
+.step-text{font-size:.6rem;color:var(--doux);line-height:1.3;}
 .step-text strong{color:var(--texte);}
-.btn-cmd{display:block;max-width:320px;margin:0 auto;background:var(--caramel);color:#fff;font-weight:700;font-size:.88rem;padding:13px;border-radius:40px;text-align:center;text-decoration:none;}
-.btn-cmd:hover{background:var(--brun);}
+.step-arrow{text-align:center;color:var(--caramel);font-size:.9rem;font-weight:900;}
+.btn-cmd{display:block;background:var(--caramel);color:#fff;font-weight:700;font-size:.85rem;padding:11px;border-radius:40px;text-align:center;text-decoration:none;}
 
-/* POURQUOI */
-.section-dark{background:var(--brun);padding:24px 16px;}
-.section-dark .section-title{color:#f0e0d6;}
-.section-dark .section-sub{color:rgba(255,255,255,.55);}
-.why-grid{display:flex;flex-direction:column;gap:8px;}
-.why-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
-.why-icon{font-size:1.5rem;flex-shrink:0;}
-.why-title{font-family:"Dancing Script",cursive;font-size:1rem;color:#f0e0d6;margin-bottom:2px;}
-.why-text{font-size:.7rem;color:rgba(255,255,255,.65);line-height:1.4;}
-
-/* RÉSEAUX */
-.social-strip{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px;}
-.soc-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);border-radius:30px;padding:9px 16px;font-size:.78rem;font-weight:700;text-decoration:none;transition:background .2s;}
-.soc-btn:hover{background:rgba(255,255,255,.22);}
+/* POURQUOI + SOCIAL */
+.why-section{background:var(--brun);padding:12px 14px;}
+.why-title{font-family:"Dancing Script",cursive;font-size:1.15rem;color:#f0e0d6;text-align:center;margin-bottom:8px;}
+.why-badges{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;}
+.why-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:9px 5px;text-align:center;}
+.why-icon{font-size:1.2rem;margin-bottom:3px;}
+.why-label{font-family:"Dancing Script",cursive;font-size:.85rem;color:#f0e0d6;line-height:1.2;display:block;}
+.why-desc{font-size:.58rem;color:rgba(255,255,255,.58);line-height:1.3;margin-top:2px;}
+.social-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;}
+.soc-btn{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.9);border-radius:30px;padding:7px 13px;font-size:.72rem;font-weight:700;text-decoration:none;}
 
 /* AVIS */
-.reviews-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.review-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;}
-.review-stars{color:#f59e0b;font-size:.85rem;margin-bottom:6px;}
-.review-text{font-size:.83rem;color:var(--texte);line-height:1.6;font-style:italic;margin-bottom:8px;}
-.review-author{font-size:.75rem;font-weight:700;color:var(--caramel);}
-.reviews-link{display:block;text-align:center;color:var(--caramel);font-size:.8rem;font-weight:700;text-decoration:none;margin-top:4px;}
+.avis-section{padding:12px 14px;background:#fff;border-top:1.5px solid var(--bordure);}
+.avis-title{font-family:"Dancing Script",cursive;font-size:1.15rem;color:var(--brun);text-align:center;margin-bottom:8px;}
+.reviews-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-ms-overflow-style:none;}
+.reviews-row::-webkit-scrollbar{display:none;}
+.review-card{flex:0 0 220px;background:var(--fond);border:1.5px solid var(--bordure);border-radius:12px;padding:11px 13px;}
+.review-stars{color:#f59e0b;font-size:.78rem;margin-bottom:4px;}
+.review-text{font-size:.75rem;color:var(--texte);line-height:1.5;font-style:italic;margin-bottom:6px;}
+.review-author{font-size:.68rem;font-weight:700;color:var(--caramel);}
+.reviews-link{display:block;text-align:center;color:var(--caramel);font-size:.75rem;font-weight:700;text-decoration:none;margin-top:8px;}
 
-/* LIENS RAPIDES */
-.quick-links{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:0;}
-.ql{display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 6px;border-radius:14px;font-size:.7rem;font-weight:700;text-decoration:none;text-align:center;background:#fff;border:1.5px solid var(--bordure);color:var(--doux);transition:background .15s,border-color .15s;}
-.ql:hover{background:var(--fond2);border-color:var(--caramel);color:var(--brun);}
-.ql-icon{font-size:1.4rem;}
-@media(max-width:420px){.quick-links{grid-template-columns:repeat(4,1fr);gap:7px;}.ql{padding:11px 4px;font-size:.65rem;}.ql-icon{font-size:1.2rem;}}
-
-/* CTA FINAL */
-.cta-final{background:linear-gradient(135deg,var(--fond2) 0%,#fce8e4 100%);border-top:1.5px solid var(--bordure);padding:26px 16px;text-align:center;}
-.cta-title{font-family:"Dancing Script",cursive;font-size:1.7rem;color:var(--brun);margin-bottom:4px;}
-.cta-sub{font-size:.78rem;color:var(--doux);margin-bottom:18px;}
-.cta-btns{display:flex;flex-direction:column;gap:9px;max-width:300px;margin:0 auto;}
-.btn-full{display:block;width:100%;padding:14px;border-radius:40px;font-weight:700;font-size:.9rem;text-align:center;text-decoration:none;}
+/* LIENS RAPIDES + CTA */
+.bottom-section{padding:12px 14px;display:flex;flex-direction:column;gap:10px;}
+.quick-links{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.ql{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-radius:12px;font-size:.62rem;font-weight:700;text-decoration:none;text-align:center;background:#fff;border:1.5px solid var(--bordure);color:var(--doux);}
+.ql-icon{font-size:1.2rem;}
+.cta-btns{display:flex;gap:8px;}
+.btn-full{flex:1;padding:12px 10px;border-radius:40px;font-weight:700;font-size:.82rem;text-align:center;text-decoration:none;}
 .btn-brun{background:var(--brun);color:#fff;}
 .btn-wa{background:#25D366;color:#fff;}
 
 /* FOOTER */
-footer{background:var(--brun);color:#e8d5c8;padding:28px 16px 20px;text-align:center;}
-.flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:8px;}
-footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
-.flinks{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
-.flink{color:#e8d5c8;font-size:.75rem;text-decoration:none;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;}
+footer{background:var(--brun);color:#e8d5c8;padding:20px 14px 16px;text-align:center;}
+.flogo{font-family:"Dancing Script",cursive;font-size:1.3rem;color:#f0e0d6;margin-bottom:7px;}
+footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
+.flinks{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:8px 0;}
+.flink{color:#e8d5c8;font-size:.7rem;text-decoration:none;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:20px;}
 </style>
 </head>
 <body>
@@ -108,7 +94,6 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 <nav>
   <a class="nav-logo" href="index.html">Les Douceurs de Cicine</a>
   <div class="nav-links">
-    <a class="nav-link" href="produits.html" style="display:none;" id="navProdLink">Produits</a>
     <a class="nav-panier" href="panier.html" id="navCart">
       🛒 Panier
       <span class="cart-badge" id="cartBadge"></span>
@@ -118,130 +103,110 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 
 <!-- HERO -->
 <div class="hero">
-  <img src="mascotte.png" class="hero-mascotte" alt="Cicine"/>
-  <h1>Les Douceurs<br/>de Cicine</h1>
-  <div class="hero-tagline">Le bonheur à chaque bouchée ✨</div>
-  <div class="hero-loc">📍 Le Vauclin, Martinique</div>
+  <div class="hero-inner">
+    <img src="mascotte.png" class="hero-mascotte" alt="Cicine"/>
+    <div class="hero-words">
+      <h1>Les Douceurs<br/>de Cicine</h1>
+      <div class="hero-tagline">✨ Le bonheur à chaque bouchée · Le Vauclin</div>
+    </div>
+  </div>
   <div class="hero-btns">
-    <a href="commander.html" class="hero-btn">🧁 Commander maintenant</a>
-    <a href="produits.html" class="hero-secondary">Voir nos produits</a>
+    <a href="commander.html" class="hero-btn">🧁 Commander</a>
+    <a href="produits.html" class="hero-secondary">Nos produits</a>
   </div>
 </div>
 
 <!-- SPÉCIALITÉS -->
-<div class="section">
-  <div class="section-inner">
-    <div class="section-title">Nos spécialités</div>
-    <div class="section-sub">Des créations artisanales préparées avec amour</div>
-    <div class="spec-grid">
-      <a href="commander.html" class="spec-card">
-        <div class="spec-emoji">🎂</div>
-        <div class="spec-name">Gâteaux & Créations</div>
-        <div class="spec-sub">Sur mesure · à partir de 18€</div>
-      </a>
-      <a href="commander.html" class="spec-card">
-        <div class="spec-emoji">🩷</div>
-        <div class="spec-name">Viennoiseries</div>
-        <div class="spec-sub">Salées & sucrées · Min. 72h</div>
-      </a>
-      <a href="commander.html" class="spec-card">
-        <div class="spec-emoji">🎁</div>
-        <div class="spec-name">Délibox</div>
-        <div class="spec-sub">Coffrets gourmands · Min. 1 sem.</div>
-      </a>
-    </div>
-  </div>
+<div class="specs-strip">
+  <a href="commander.html" class="spec-card">
+    <div class="spec-emoji">🎂</div>
+    <div class="spec-name">Gâteaux</div>
+    <div class="spec-sub">à partir de 18€</div>
+  </a>
+  <a href="commander.html" class="spec-card">
+    <div class="spec-emoji">🩷</div>
+    <div class="spec-name">Viennoiseries</div>
+    <div class="spec-sub">Salées & sucrées</div>
+  </a>
+  <a href="commander.html" class="spec-card">
+    <div class="spec-emoji">🎁</div>
+    <div class="spec-name">Délibox</div>
+    <div class="spec-sub">Coffrets gourmands</div>
+  </a>
 </div>
 
 <!-- COMMENT COMMANDER -->
-<div class="section" style="background:#fff;border-top:1.5px solid var(--bordure);border-bottom:1.5px solid var(--bordure);">
-  <div class="section-inner">
-    <div class="section-title">Comment commander ?</div>
-    <div class="section-sub">Simple et rapide en 3 étapes</div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-icon">🛍️</div>
-        <div class="step-text">Choisissez vos <strong>produits</strong> et quantités</div>
-      </div>
-      <div class="step-connector">›</div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-icon">💬</div>
-        <div class="step-text">Envoyez via <strong>WhatsApp</strong> — réponse sous 48h</div>
-      </div>
-      <div class="step-connector">›</div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-icon">🎉</div>
-        <div class="step-text">Payez l'<strong>acompte</strong> et récupérez ou livraison</div>
-      </div>
+<div class="how-section">
+  <div class="how-title">Comment commander ?</div>
+  <div class="steps-row">
+    <div class="step-mini">
+      <div class="step-num">1</div>
+      <div class="step-icon">🛍️</div>
+      <div class="step-text"><strong>Choisissez</strong> vos produits</div>
     </div>
-    <a href="commander.html" class="btn-cmd">Passer une commande</a>
+    <div class="step-arrow">›</div>
+    <div class="step-mini">
+      <div class="step-num">2</div>
+      <div class="step-icon">💬</div>
+      <div class="step-text"><strong>WhatsApp</strong> — réponse 48h</div>
+    </div>
+    <div class="step-arrow">›</div>
+    <div class="step-mini">
+      <div class="step-num">3</div>
+      <div class="step-icon">🎉</div>
+      <div class="step-text"><strong>Acompte</strong> &amp; récupération</div>
+    </div>
   </div>
+  <a href="commander.html" class="btn-cmd">Passer une commande</a>
 </div>
 
 <!-- POURQUOI CICINE -->
-<div class="section-dark">
-  <div class="section-inner">
-    <div class="section-title">Pourquoi Cicine ?</div>
-    <div class="section-sub">Une pâtissière passionnée à votre service</div>
-    <div class="why-grid">
-      <div class="why-card">
-        <div class="why-icon">🤍</div>
-        <div class="why-title">Fait maison</div>
-        <div class="why-text">Chaque création est préparée avec amour et des produits de qualité</div>
-      </div>
-      <div class="why-card">
-        <div class="why-icon">✨</div>
-        <div class="why-title">Sur mesure</div>
-        <div class="why-text">Vos envies, vos couleurs, vos saveurs — chaque commande est unique</div>
-      </div>
-      <div class="why-card">
-        <div class="why-icon">📍</div>
-        <div class="why-title">Le Vauclin</div>
-        <div class="why-text">Récupération sur place ou livraison en Martinique · 0696 11 14 40</div>
-      </div>
+<div class="why-section">
+  <div class="why-title">Pourquoi Cicine ?</div>
+  <div class="why-badges">
+    <div class="why-badge">
+      <div class="why-icon">🤍</div>
+      <span class="why-label">Fait maison</span>
+      <div class="why-desc">Produits de qualité, préparés avec amour</div>
     </div>
-    <div class="social-strip">
-      <a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="soc-btn" target="_blank" rel="noopener">📸 Instagram</a>
-      <a href="https://www.facebook.com/profile.php?id=61586132193455" class="soc-btn" target="_blank" rel="noopener">👍 Facebook</a>
-      <a href="https://wa.me/596696111440" class="soc-btn" target="_blank">💬 WhatsApp</a>
+    <div class="why-badge">
+      <div class="why-icon">✨</div>
+      <span class="why-label">Sur mesure</span>
+      <div class="why-desc">Vos couleurs &amp; saveurs, chaque commande unique</div>
     </div>
+    <div class="why-badge">
+      <div class="why-icon">📍</div>
+      <span class="why-label">Le Vauclin</span>
+      <div class="why-desc">Retrait sur place ou livraison Martinique</div>
+    </div>
+  </div>
+  <div class="social-row">
+    <a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="soc-btn" target="_blank" rel="noopener">📸 Instagram</a>
+    <a href="https://www.facebook.com/profile.php?id=61586132193455" class="soc-btn" target="_blank" rel="noopener">👍 Facebook</a>
+    <a href="https://wa.me/596696111440" class="soc-btn" target="_blank">💬 WhatsApp</a>
   </div>
 </div>
 
 <!-- AVIS CLIENTS -->
-<div class="section">
-  <div class="section-inner">
-    <div class="section-title">Ce qu'ils disent</div>
-    <div class="section-sub">Vos retours nous font chaud au cœur</div>
-    <div class="reviews-grid" id="homeReviews">
-      <div style="text-align:center;padding:20px;color:var(--doux);font-size:.83rem;">Chargement des avis…</div>
-    </div>
-    <a href="avis.html" class="reviews-link">Voir tous les avis →</a>
+<div class="avis-section">
+  <div class="avis-title">Ce qu'ils disent 💬</div>
+  <div class="reviews-row" id="homeReviews">
+    <div style="width:100%;text-align:center;padding:16px;color:var(--doux);font-size:.78rem;">Chargement…</div>
   </div>
+  <a href="avis.html" class="reviews-link">Tous les avis →</a>
 </div>
 
-<!-- LIENS RAPIDES -->
-<div class="section" style="padding-top:0;">
-  <div class="section-inner">
-    <div class="quick-links">
-      <a href="devis.html" class="ql"><span class="ql-icon">✨</span>Devis</a>
-      <a href="realisations.html" class="ql"><span class="ql-icon">📸</span>Réalisations</a>
-      <a href="apropos.html" class="ql"><span class="ql-icon">💕</span>À propos</a>
-      <a href="cgv.html" class="ql"><span class="ql-icon">📄</span>CGV</a>
-    </div>
+<!-- LIENS RAPIDES + CTA -->
+<div class="bottom-section">
+  <div class="quick-links">
+    <a href="devis.html" class="ql"><span class="ql-icon">✨</span>Devis</a>
+    <a href="realisations.html" class="ql"><span class="ql-icon">📸</span>Réalisations</a>
+    <a href="apropos.html" class="ql"><span class="ql-icon">💕</span>À propos</a>
+    <a href="cgv.html" class="ql"><span class="ql-icon">📄</span>CGV</a>
   </div>
-</div>
-
-<!-- CTA FINAL -->
-<div class="cta-final">
-  <div class="cta-title">Envie d'une douceur ?</div>
-  <div class="cta-sub">Passez votre commande dès maintenant, Cicine prépare tout avec amour 🩷</div>
   <div class="cta-btns">
-    <a href="commander.html" class="btn-full btn-brun">🧁 Commander maintenant</a>
-    <a href="https://wa.me/596696111440" target="_blank" class="btn-full btn-wa">💬 Écrire sur WhatsApp</a>
+    <a href="commander.html" class="btn-full btn-brun">🧁 Commander</a>
+    <a href="https://wa.me/596696111440" target="_blank" class="btn-full btn-wa">💬 WhatsApp</a>
   </div>
 </div>
 
@@ -255,12 +220,12 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
     <a href="https://wa.me/596696111440" class="flink" target="_blank">💬 WhatsApp</a>
   </div>
   <p>📍 Le Vauclin, Martinique · 0696 11 14 40</p>
-  <p><a href="cgv.html" style="color:#c4a898;font-size:.72rem;">Conditions Générales de Vente</a></p>
+  <p><a href="cgv.html" style="color:#c4a898;font-size:.7rem;">Conditions Générales de Vente</a></p>
   <p>© 2026 Les Douceurs de Cicine — Fait avec ❤️</p>
 </footer>
 
 <!-- WhatsApp flottant -->
-<a href="https://wa.me/596696111440" target="_blank" rel="noopener" title="Écrire sur WhatsApp" style="position:fixed;bottom:22px;right:18px;z-index:9999;background:#25D366;color:#fff;border-radius:50%;width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;box-shadow:0 4px 18px rgba(37,211,102,.55);text-decoration:none;animation:wapulse 2s ease-in-out infinite;">💬</a>
+<a href="https://wa.me/596696111440" target="_blank" rel="noopener" title="Écrire sur WhatsApp" style="position:fixed;bottom:22px;right:18px;z-index:9999;background:#25D366;color:#fff;border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 18px rgba(37,211,102,.55);text-decoration:none;animation:wapulse 2s ease-in-out infinite;">💬</a>
 <style>@keyframes wapulse{0%,100%{box-shadow:0 4px 18px rgba(37,211,102,.55)}50%{box-shadow:0 4px 28px rgba(37,211,102,.85)}}</style>
 
 <!-- Araignée admin -->
@@ -280,9 +245,9 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
 (async function(){
   try{
     var sb=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm");
-    var {data}=await sb.from("reviews").select("author,rating,comment,created_at").eq("approved",true).order("created_at",{ascending:false}).limit(3);
+    var {data}=await sb.from("reviews").select("author,rating,comment,created_at").eq("approved",true).order("created_at",{ascending:false}).limit(4);
     if(!data||!data.length){
-      document.getElementById("homeReviews").innerHTML='<p style="text-align:center;color:var(--doux);font-size:.83rem;">Soyez le premier à laisser un avis !</p>';
+      document.getElementById("homeReviews").innerHTML='<p style="width:100%;text-align:center;color:var(--doux);font-size:.75rem;padding:12px;">Soyez la première à laisser un avis !</p>';
       return;
     }
     var html="";
