@@ -33,11 +33,23 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .nav-actions{display:flex;align-items:center;gap:6px;}
 .nav-btn{color:rgba(255,255,255,.85);font-size:.7rem;font-weight:700;text-decoration:none;padding:5px 10px;border-radius:20px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);}
 .nav-logout{background:none;color:rgba(255,255,255,.65);border:none;font-size:.7rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
-/* MAIN TABS */
-.main-tab-bar{display:flex;background:#fff;border-bottom:1.5px solid var(--bordure);overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
-.main-tab-bar::-webkit-scrollbar{display:none;}
-.main-tab{flex:1;min-width:80px;padding:12px 8px;border:none;background:none;font-family:"Lato",sans-serif;font-size:.74rem;font-weight:700;color:var(--doux);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s;}
-.main-tab.active{color:var(--brun);border-bottom-color:var(--caramel);}
+/* MAIN TABS — cachée, remplacée par le menu latéral */
+.main-tab-bar{display:none;}
+/* MENU LATÉRAL */
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;opacity:0;transition:opacity .28s;}
+.sidebar-overlay.open{display:block;opacity:1;}
+.sidebar{position:fixed;top:0;left:0;height:100%;width:260px;background:#fff;z-index:201;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:4px 0 24px rgba(0,0,0,.18);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sidebar-head{background:var(--brun);padding:20px 18px 16px;display:flex;align-items:center;gap:10px;}
+.sidebar-head-logo{font-family:"Dancing Script",cursive;font-size:1.3rem;color:#f0e0d6;flex:1;}
+.sidebar-close{background:none;border:none;color:rgba(255,255,255,.7);font-size:1.4rem;cursor:pointer;line-height:1;padding:0;}
+.sidebar-body{flex:1;overflow-y:auto;padding:10px 0;}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:13px 20px;font-size:.9rem;font-weight:700;color:var(--doux);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:"Lato",sans-serif;transition:background .15s;}
+.sidebar-item:hover{background:var(--fond);}
+.sidebar-item.active{color:var(--brun);background:var(--fond2);border-left:4px solid var(--caramel);}
+.sidebar-item .si-emoji{font-size:1.1rem;width:24px;text-align:center;}
+.sidebar-sep{height:1px;background:var(--bordure);margin:6px 16px;}
+.nav-menu-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:8px;padding:7px 10px;font-size:1.1rem;cursor:pointer;line-height:1;}
 /* WRAP */
 .wrap{max-width:860px;margin:0 auto;padding:16px 14px 80px;}
 /* ORDERS TAB */
@@ -347,10 +359,40 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 </div>
 
 <div id="dashboard">
+  <!-- MENU LATÉRAL -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-head-logo">🧁 Les Douceurs de Cicine</div>
+      <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+    </div>
+    <div class="sidebar-body">
+      <button class="sidebar-item active" id="si-accueil" onclick="setMainTab('accueil');closeSidebar()"><span class="si-emoji">🏠</span>Accueil</button>
+      <button class="sidebar-item" id="si-commandes" onclick="setMainTab('commandes');closeSidebar()"><span class="si-emoji">📋</span>Commandes <span id="siBadge" style="display:none;background:var(--fuchsia);color:#fff;border-radius:20px;padding:0 7px;font-size:.65rem;margin-left:4px;"></span></button>
+      <button class="sidebar-item" id="si-stocks" onclick="setMainTab('stocks');closeSidebar()"><span class="si-emoji">📦</span>Stocks</button>
+      <button class="sidebar-item" id="si-planning" onclick="setMainTab('planning');closeSidebar()"><span class="si-emoji">📅</span>Planning</button>
+      <button class="sidebar-item" id="si-taches" onclick="setMainTab('taches');closeSidebar()"><span class="si-emoji">✅</span>Tâches</button>
+      <div class="sidebar-sep"></div>
+      <button class="sidebar-item" id="si-tresorerie" onclick="setMainTab('tresorerie');closeSidebar()"><span class="si-emoji">💰</span>Trésorerie</button>
+      <button class="sidebar-item" id="si-stats" onclick="setMainTab('stats');closeSidebar()"><span class="si-emoji">📊</span>Statistiques</button>
+      <button class="sidebar-item" id="si-clients" onclick="setMainTab('clients');closeSidebar()"><span class="si-emoji">👥</span>Clients</button>
+      <div class="sidebar-sep"></div>
+      <button class="sidebar-item" id="si-produits" onclick="setMainTab('produits');closeSidebar()"><span class="si-emoji">🛍️</span>Produits</button>
+      <button class="sidebar-item" id="si-saveurs" onclick="setMainTab('saveurs');closeSidebar()"><span class="si-emoji">🎨</span>Saveurs</button>
+      <button class="sidebar-item" id="si-avis" onclick="setMainTab('avis');closeSidebar()"><span class="si-emoji">⭐</span>Avis</button>
+      <button class="sidebar-item" id="si-blog" onclick="setMainTab('blog');closeSidebar()"><span class="si-emoji">📝</span>Blog</button>
+      <div class="sidebar-sep"></div>
+      <button class="sidebar-item" id="si-parametres" onclick="setMainTab('parametres');closeSidebar()"><span class="si-emoji">⚙️</span>Paramètres</button>
+    </div>
+  </div>
+
   <nav class="admin-nav">
-    <div class="admin-nav-logo">
-      🧁 Les Douceurs de Cicine
-      <span class="badge-pending" id="navBadge" style="display:none"></span>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="nav-menu-btn" onclick="openSidebar()" title="Menu">🧁</button>
+      <div class="admin-nav-logo">
+        Les Douceurs de Cicine
+        <span class="badge-pending" id="navBadge" style="display:none"></span>
+      </div>
     </div>
     <div class="nav-actions">
       <button class="nav-cart-btn" onclick="openShoppingList()" title="Liste de courses">
@@ -822,12 +864,26 @@ function showDashboard(){
   }
 }
 
+/* ====== SIDEBAR ====== */
+function openSidebar(){
+  document.getElementById("sidebar").classList.add("open");
+  document.getElementById("sidebarOverlay").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeSidebar(){
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("sidebarOverlay").classList.remove("open");
+  document.body.style.overflow="";
+}
+
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
   var tabs=["accueil","commandes","stocks","planning","taches","stats","clients","produits","saveurs","tresorerie","avis","blog","parametres"];
   tabs.forEach(function(t){
     document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
+    var si=document.getElementById("si-"+t);
+    if(si)si.classList.toggle("active",t===tab);
   });
   document.querySelectorAll(".main-tab").forEach(function(el,i){
     el.classList.toggle("active",tabs[i]===tab);
