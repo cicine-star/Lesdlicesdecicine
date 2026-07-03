@@ -20,55 +20,50 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .cart-badge{position:absolute;top:-6px;right:-6px;background:var(--fuchsia);color:#fff;border-radius:50%;width:18px;height:18px;font-size:.62rem;font-weight:700;display:none;align-items:center;justify-content:center;}
 
 /* HERO */
-.hero{background:linear-gradient(160deg,#5C2E0E 0%,#A0522D 55%,#c97b42 100%);padding:40px 20px 50px;text-align:center;position:relative;overflow:hidden;}
+.hero{background:linear-gradient(160deg,#5C2E0E 0%,#A0522D 55%,#c97b42 100%);padding:28px 18px 32px;text-align:center;position:relative;overflow:hidden;}
 .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(255,220,180,.18) 0%,transparent 65%);pointer-events:none;}
-.hero-mascotte{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,.35);box-shadow:0 8px 32px rgba(0,0,0,.25);margin-bottom:18px;animation:float 3.5s ease-in-out infinite;}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.hero h1{font-family:"Dancing Script",cursive;font-size:2.6rem;color:#fff;line-height:1.1;margin-bottom:8px;text-shadow:0 2px 12px rgba(0,0,0,.2);}
-.hero-tagline{font-size:.88rem;color:rgba(255,255,255,.82);letter-spacing:.06em;margin-bottom:8px;}
-.hero-loc{font-size:.75rem;color:rgba(255,255,255,.6);margin-bottom:28px;}
-.hero-btn{display:inline-block;background:#fff;color:var(--brun);font-weight:700;font-size:.95rem;padding:14px 32px;border-radius:40px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:transform .2s,box-shadow .2s;letter-spacing:.02em;}
-.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.28);}
-.hero-secondary{display:inline-block;margin-left:10px;color:rgba(255,255,255,.85);font-size:.82rem;font-weight:700;text-decoration:none;padding:14px 20px;border:1.5px solid rgba(255,255,255,.4);border-radius:40px;transition:background .2s;}
-.hero-secondary:hover{background:rgba(255,255,255,.12);}
+.hero-mascotte{width:82px;height:82px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.35);box-shadow:0 6px 20px rgba(0,0,0,.25);margin-bottom:12px;animation:float 3.5s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.hero h1{font-family:"Dancing Script",cursive;font-size:2.1rem;color:#fff;line-height:1.1;margin-bottom:5px;text-shadow:0 2px 10px rgba(0,0,0,.2);}
+.hero-tagline{font-size:.82rem;color:rgba(255,255,255,.82);letter-spacing:.04em;margin-bottom:4px;}
+.hero-loc{font-size:.72rem;color:rgba(255,255,255,.6);margin-bottom:18px;}
+.hero-btns{display:flex;flex-direction:column;gap:8px;align-items:center;}
+.hero-btn{display:block;width:100%;max-width:280px;background:#fff;color:var(--brun);font-weight:700;font-size:.88rem;padding:12px 24px;border-radius:40px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.2);text-align:center;}
+.hero-secondary{display:block;width:100%;max-width:280px;color:rgba(255,255,255,.85);font-size:.82rem;font-weight:700;text-decoration:none;padding:11px 20px;border:1.5px solid rgba(255,255,255,.4);border-radius:40px;text-align:center;}
 
 /* SECTIONS */
-.section{padding:36px 20px;}
+.section{padding:24px 16px;}
 .section-inner{max-width:580px;margin:0 auto;}
-.section-title{font-family:"Dancing Script",cursive;font-size:1.9rem;color:var(--brun);text-align:center;margin-bottom:6px;}
-.section-sub{text-align:center;font-size:.82rem;color:var(--doux);margin-bottom:24px;}
+.section-title{font-family:"Dancing Script",cursive;font-size:1.7rem;color:var(--brun);text-align:center;margin-bottom:4px;}
+.section-sub{text-align:center;font-size:.78rem;color:var(--doux);margin-bottom:16px;}
 
 /* SPÉCIALITÉS */
-.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
-.spec-card{background:#fff;border:1.5px solid var(--bordure);border-radius:16px;padding:20px 10px;text-align:center;text-decoration:none;transition:transform .2s,box-shadow .2s;display:block;}
-.spec-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(92,46,14,.13);}
-.spec-emoji{font-size:2rem;margin-bottom:10px;}
-.spec-name{font-family:"Dancing Script",cursive;font-size:1.1rem;color:var(--brun);margin-bottom:4px;}
-.spec-sub{font-size:.68rem;color:var(--doux);line-height:1.4;}
-@media(max-width:420px){.spec-grid{grid-template-columns:1fr;}.spec-card{display:flex;align-items:center;gap:14px;text-align:left;padding:14px 16px;}.spec-emoji{font-size:1.8rem;margin-bottom:0;flex-shrink:0;}}
+.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.spec-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:14px 8px;text-align:center;text-decoration:none;display:block;}
+.spec-emoji{font-size:1.6rem;margin-bottom:6px;}
+.spec-name{font-family:"Dancing Script",cursive;font-size:1rem;color:var(--brun);margin-bottom:3px;}
+.spec-sub{font-size:.65rem;color:var(--doux);line-height:1.3;}
 
 /* COMMENT COMMANDER */
-.steps{display:flex;align-items:stretch;gap:0;margin-bottom:24px;}
-.step{flex:1;background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:20px 12px;text-align:center;}
-.step-connector{width:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--caramel);font-size:1.2rem;font-weight:700;}
-.step-icon{font-size:1.8rem;margin-bottom:8px;}
-.step-num{width:22px;height:22px;border-radius:50%;background:var(--caramel);color:#fff;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
-.step-text{font-size:.75rem;color:var(--doux);line-height:1.45;}
+.steps{display:flex;align-items:stretch;gap:0;margin-bottom:16px;}
+.step{flex:1;background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:14px 8px;text-align:center;}
+.step-connector{width:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--caramel);font-size:1rem;font-weight:700;}
+.step-icon{font-size:1.4rem;margin-bottom:5px;}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--caramel);color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;}
+.step-text{font-size:.7rem;color:var(--doux);line-height:1.4;}
 .step-text strong{color:var(--texte);}
-@media(max-width:420px){.steps{flex-direction:column;gap:8px;}.step-connector{width:auto;height:18px;transform:rotate(90deg);}}
-.btn-cmd{display:block;max-width:340px;margin:0 auto;background:var(--caramel);color:#fff;font-weight:700;font-size:.9rem;padding:14px;border-radius:40px;text-align:center;text-decoration:none;}
+.btn-cmd{display:block;max-width:320px;margin:0 auto;background:var(--caramel);color:#fff;font-weight:700;font-size:.88rem;padding:13px;border-radius:40px;text-align:center;text-decoration:none;}
 .btn-cmd:hover{background:var(--brun);}
 
 /* POURQUOI */
-.section-dark{background:var(--brun);padding:36px 20px;}
+.section-dark{background:var(--brun);padding:24px 16px;}
 .section-dark .section-title{color:#f0e0d6;}
 .section-dark .section-sub{color:rgba(255,255,255,.55);}
-.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-.why-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:20px 14px;text-align:center;}
-.why-icon{font-size:1.8rem;margin-bottom:10px;}
-.why-title{font-family:"Dancing Script",cursive;font-size:1.1rem;color:#f0e0d6;margin-bottom:6px;}
-.why-text{font-size:.72rem;color:rgba(255,255,255,.65);line-height:1.5;}
-@media(max-width:420px){.why-grid{grid-template-columns:1fr;}.why-card{display:flex;align-items:flex-start;gap:14px;text-align:left;padding:14px 16px;}.why-icon{font-size:1.5rem;margin-bottom:0;flex-shrink:0;}}
+.why-grid{display:flex;flex-direction:column;gap:8px;}
+.why-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.why-icon{font-size:1.5rem;flex-shrink:0;}
+.why-title{font-family:"Dancing Script",cursive;font-size:1rem;color:#f0e0d6;margin-bottom:2px;}
+.why-text{font-size:.7rem;color:rgba(255,255,255,.65);line-height:1.4;}
 
 /* RÉSEAUX */
 .social-strip{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px;}
@@ -91,10 +86,10 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 @media(max-width:420px){.quick-links{grid-template-columns:repeat(4,1fr);gap:7px;}.ql{padding:11px 4px;font-size:.65rem;}.ql-icon{font-size:1.2rem;}}
 
 /* CTA FINAL */
-.cta-final{background:linear-gradient(135deg,var(--fond2) 0%,#fce8e4 100%);border-top:1.5px solid var(--bordure);padding:40px 20px;text-align:center;}
-.cta-title{font-family:"Dancing Script",cursive;font-size:2rem;color:var(--brun);margin-bottom:6px;}
-.cta-sub{font-size:.84rem;color:var(--doux);margin-bottom:24px;}
-.cta-btns{display:flex;flex-direction:column;gap:10px;max-width:320px;margin:0 auto;}
+.cta-final{background:linear-gradient(135deg,var(--fond2) 0%,#fce8e4 100%);border-top:1.5px solid var(--bordure);padding:26px 16px;text-align:center;}
+.cta-title{font-family:"Dancing Script",cursive;font-size:1.7rem;color:var(--brun);margin-bottom:4px;}
+.cta-sub{font-size:.78rem;color:var(--doux);margin-bottom:18px;}
+.cta-btns{display:flex;flex-direction:column;gap:9px;max-width:300px;margin:0 auto;}
 .btn-full{display:block;width:100%;padding:14px;border-radius:40px;font-weight:700;font-size:.9rem;text-align:center;text-decoration:none;}
 .btn-brun{background:var(--brun);color:#fff;}
 .btn-wa{background:#25D366;color:#fff;}
@@ -127,8 +122,10 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
   <h1>Les Douceurs<br/>de Cicine</h1>
   <div class="hero-tagline">Le bonheur à chaque bouchée ✨</div>
   <div class="hero-loc">📍 Le Vauclin, Martinique</div>
-  <a href="commander.html" class="hero-btn">🧁 Commander maintenant</a>
-  <a href="produits.html" class="hero-secondary">Voir nos produits</a>
+  <div class="hero-btns">
+    <a href="commander.html" class="hero-btn">🧁 Commander maintenant</a>
+    <a href="produits.html" class="hero-secondary">Voir nos produits</a>
+  </div>
 </div>
 
 <!-- SPÉCIALITÉS -->
