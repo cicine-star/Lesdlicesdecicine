@@ -428,8 +428,9 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <span class="sg-arrow">▼</span>
       </button>
       <div class="sg-body" id="sgb-contenu">
+        <button class="sidebar-item" id="si-pdlsem" onclick="setMainTab('pdlsem');closeSidebar()"><span class="si-emoji">⭐</span>Produit semaine</button>
         <button class="sidebar-item" id="si-blog" onclick="setMainTab('blog');closeSidebar()"><span class="si-emoji">📝</span>Blog</button>
-        <button class="sidebar-item" id="si-avis" onclick="setMainTab('avis');closeSidebar()"><span class="si-emoji">⭐</span>Avis</button>
+        <button class="sidebar-item" id="si-avis" onclick="setMainTab('avis');closeSidebar()"><span class="si-emoji">💬</span>Avis</button>
       </div>
       <div class="sidebar-sep"></div>
 
@@ -676,6 +677,44 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   </div>
 
   <!-- ===== TAB AVIS ===== -->
+  <!-- ===== PRODUIT DE LA SEMAINE ===== -->
+  <div id="tab-pdlsem" class="wrap" style="display:none;">
+    <h2 style="font-family:'Dancing Script',cursive;font-size:1.5rem;color:var(--brun);margin-bottom:16px;">⭐ Produit de la semaine</h2>
+
+    <!-- Formulaire ajout -->
+    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:18px;">
+      <div style="font-weight:700;color:var(--brun);margin-bottom:12px;font-size:.9rem;">Programmer un produit</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <input id="ps-nom" placeholder="Nom du produit *" style="grid-column:1/-1;padding:10px;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Lato',sans-serif;font-size:.85rem;outline:none;"/>
+        <input id="ps-emoji" placeholder="Emoji 🧁" style="padding:10px;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Lato',sans-serif;font-size:.85rem;outline:none;"/>
+        <input id="ps-prix" placeholder="Prix (ex: 25)" style="padding:10px;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Lato',sans-serif;font-size:.85rem;outline:none;"/>
+      </div>
+      <textarea id="ps-desc" placeholder="Description du produit…" rows="2" style="width:100%;padding:10px;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Lato',sans-serif;font-size:.85rem;outline:none;resize:none;margin-bottom:10px;"></textarea>
+      <input id="ps-image" placeholder="URL photo (optionnel)" style="width:100%;padding:10px;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Lato',sans-serif;font-size:.85rem;outline:none;margin-bottom:10px;"/>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:160px;">
+          <label style="font-size:.72rem;color:var(--doux);display:block;margin-bottom:4px;">Date de publication</label>
+          <input type="date" id="ps-date" style="width:100%;padding:9px;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Lato',sans-serif;font-size:.85rem;outline:none;"/>
+        </div>
+        <button onclick="addProduitSemaine()" style="flex-shrink:0;margin-top:16px;background:var(--caramel);color:#fff;border:none;border-radius:40px;padding:10px 20px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:'Lato',sans-serif;">✅ Programmer</button>
+        <button onclick="publierMaintenant()" style="flex-shrink:0;margin-top:16px;background:var(--brun);color:#fff;border:none;border-radius:40px;padding:10px 20px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:'Lato',sans-serif;">🚀 Publier maintenant</button>
+      </div>
+    </div>
+
+    <!-- Produit actuel -->
+    <div style="font-weight:700;color:var(--brun);font-size:.85rem;margin-bottom:10px;">Actuellement mis en avant</div>
+    <div id="ps-current" style="margin-bottom:18px;color:var(--doux);font-size:.8rem;">Chargement…</div>
+
+    <!-- Historique 3 mois -->
+    <div style="font-weight:700;color:var(--brun);font-size:.85rem;margin-bottom:10px;">Historique (3 derniers mois)</div>
+    <div id="ps-history" style="display:flex;flex-direction:column;gap:8px;">Chargement…</div>
+
+    <p style="margin-top:20px;padding:12px;background:#fef9e7;border:1px solid #f0c040;border-radius:10px;font-size:.75rem;color:#7a6000;">
+      💡 <strong>Table Supabase à créer si besoin :</strong><br/>
+      <code style="font-size:.7rem;display:block;margin-top:4px;background:#fff;padding:6px;border-radius:6px;overflow-x:auto;">CREATE TABLE produit_semaine (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, created_at TIMESTAMPTZ DEFAULT now(), nom TEXT NOT NULL, description TEXT, emoji TEXT DEFAULT '🧁', prix TEXT, image_url TEXT, date_publication DATE NOT NULL DEFAULT CURRENT_DATE);</code>
+    </p>
+  </div>
+
   <div id="tab-avis" class="wrap" style="display:none;">
     <div class="section-title">⭐ Avis clients</div>
     <div id="adminAvisList"></div>
@@ -948,7 +987,7 @@ function updateSidebarCourseBadge(){
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
-  var tabs=["accueil","commandes","stocks","planning","taches","stats","clients","produits","saveurs","tresorerie","avis","blog","parametres"];
+  var tabs=["accueil","commandes","stocks","planning","taches","stats","clients","produits","saveurs","tresorerie","pdlsem","avis","blog","parametres"];
   tabs.forEach(function(t){
     document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
     var si=document.getElementById("si-"+t);
@@ -972,6 +1011,7 @@ function setMainTab(tab){
   if(tab==="produits"){loadAdminProducts();}
   if(tab==="saveurs"){loadSaveursTab();}
   if(tab==="tresorerie"){loadTresorerie();}
+  if(tab==="pdlsem"){loadProduitSemaine();}
   if(tab==="blog"){loadBlog();}
   if(tab==="parametres"){renderSettings();}
 }
@@ -2343,6 +2383,84 @@ function exportCSV(){
 }
 
 /* ====== AVIS (REVIEWS) ====== */
+// ========== PRODUIT DE LA SEMAINE ==========
+async function loadProduitSemaine(){
+  var today=new Date().toISOString().slice(0,10);
+  document.getElementById("ps-date").value=today;
+  // Produit actuel
+  try{
+    var {data:cur}=await SB.from("produit_semaine").select("*").lte("date_publication",today).order("date_publication",{ascending:false}).limit(1);
+    var p=cur&&cur[0];
+    var curDiv=document.getElementById("ps-current");
+    if(!p){curDiv.innerHTML='<em>Aucun produit publié pour le moment.</em>';return;}
+    curDiv.innerHTML=`<div style="background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;">
+      <div style="font-size:2rem;">${p.emoji||"🧁"}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;color:var(--brun);">${p.nom}</div>
+        ${p.prix?`<div style="color:var(--caramel);font-size:.78rem;font-weight:700;">${p.prix}€</div>`:""}
+        ${p.description?`<div style="font-size:.75rem;color:var(--doux);margin-top:3px;">${p.description}</div>`:""}
+        <div style="font-size:.68rem;color:var(--doux);margin-top:4px;">Publié le ${p.date_publication}</div>
+      </div>
+      <button onclick="deleteProduitSemaine('${p.id}')" style="background:none;border:none;color:#dc2626;font-size:1.1rem;cursor:pointer;" title="Supprimer">🗑️</button>
+    </div>`;
+  }catch(e){}
+  // Historique 3 mois
+  try{
+    var d3m=new Date();d3m.setMonth(d3m.getMonth()-3);
+    var {data:hist}=await SB.from("produit_semaine").select("*").gte("date_publication",d3m.toISOString().slice(0,10)).order("date_publication",{ascending:false});
+    var hDiv=document.getElementById("ps-history");
+    if(!hist||!hist.length){hDiv.innerHTML='<em style="font-size:.8rem;color:var(--doux);">Aucun historique sur les 3 derniers mois.</em>';return;}
+    hDiv.innerHTML=hist.map(p=>`
+      <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;">
+        <div style="font-size:1.6rem;">${p.emoji||"🧁"}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;color:var(--texte);font-size:.88rem;">${p.nom}</div>
+          ${p.prix?`<span style="color:var(--caramel);font-size:.72rem;font-weight:700;">${p.prix}€ · </span>`:""}
+          <span style="font-size:.72rem;color:var(--doux);">${p.date_publication}</span>
+          ${p.description?`<div style="font-size:.7rem;color:var(--doux);margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${p.description}</div>`:""}
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0;">
+          <button onclick="republierProduitSemaine(${JSON.stringify(p).replace(/"/g,'&quot;')})" style="background:var(--caramel);color:#fff;border:none;border-radius:20px;padding:5px 10px;font-size:.65rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">🔄 Republier</button>
+          <button onclick="deleteProduitSemaine('${p.id}')" style="background:none;border:none;color:#dc2626;font-size:1rem;cursor:pointer;" title="Supprimer">🗑️</button>
+        </div>
+      </div>`).join("");
+  }catch(e){document.getElementById("ps-history").innerHTML='<em style="color:#dc2626;font-size:.8rem;">Erreur de chargement.</em>';}
+}
+
+async function addProduitSemaine(){
+  var nom=document.getElementById("ps-nom").value.trim();
+  var date=document.getElementById("ps-date").value;
+  if(!nom||!date){showNotif("Nom et date obligatoires","error");return;}
+  var obj={nom,description:document.getElementById("ps-desc").value.trim(),emoji:document.getElementById("ps-emoji").value.trim()||"🧁",prix:document.getElementById("ps-prix").value.trim(),image_url:document.getElementById("ps-image").value.trim(),date_publication:date};
+  var {error}=await SB.from("produit_semaine").insert([obj]);
+  if(error){showNotif("Erreur : "+error.message,"error");return;}
+  showNotif("Produit programmé !");
+  document.getElementById("ps-nom").value="";document.getElementById("ps-desc").value="";document.getElementById("ps-emoji").value="";document.getElementById("ps-prix").value="";document.getElementById("ps-image").value="";
+  await loadProduitSemaine();
+}
+
+async function publierMaintenant(){
+  document.getElementById("ps-date").value=new Date().toISOString().slice(0,10);
+  await addProduitSemaine();
+}
+
+function republierProduitSemaine(p){
+  document.getElementById("ps-nom").value=p.nom||"";
+  document.getElementById("ps-desc").value=p.description||"";
+  document.getElementById("ps-emoji").value=p.emoji||"🧁";
+  document.getElementById("ps-prix").value=p.prix||"";
+  document.getElementById("ps-image").value=p.image_url||"";
+  document.getElementById("ps-date").value=new Date().toISOString().slice(0,10);
+  document.getElementById("ps-nom").scrollIntoView({behavior:"smooth"});
+  showNotif("Données pré-remplies — clique sur Publier maintenant pour confirmer","info");
+}
+
+async function deleteProduitSemaine(id){
+  if(!confirm("Supprimer ce produit de l'historique ?"))return;
+  await SB.from("produit_semaine").delete().eq("id",id);
+  showNotif("Supprimé");await loadProduitSemaine();
+}
+
 async function loadReviews(){
   try{
     var res=await sb.from("reviews").select("*").order("created_at",{ascending:false});
