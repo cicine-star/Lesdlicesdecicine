@@ -356,6 +356,16 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 }
 @media(min-width:600px){.stock-grid{display:grid;grid-template-columns:repeat(2,1fr);}}
 @media(max-width:500px){#tr-cards{grid-template-columns:1fr!important;}.tr-form-grid{grid-template-columns:1fr!important;}}
+/* ÉDITEUR DU SITE (onglet Paramètres) */
+.ed-tab{flex-shrink:0;padding:8px 14px;border-radius:30px;border:1.5px solid var(--bordure);background:#fff;font-size:.75rem;font-weight:700;color:var(--doux);cursor:pointer;white-space:nowrap;font-family:'Lato',sans-serif;}
+.ed-tab.active{background:var(--brun);color:#fff;border-color:var(--brun);}
+.ed-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;}
+.ed-card-title{font-weight:700;font-size:.9rem;color:var(--brun);margin-bottom:12px;}
+.ed-spec-row{padding:10px;background:var(--fond);border-radius:10px;margin-bottom:8px;}
+.ed-spec-label{font-size:.72rem;font-weight:700;color:var(--doux);margin-bottom:6px;}
+.ed-photo-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ed-photo-row .bs-input{flex:1;margin-bottom:0;}
+.ed-preview{width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1.5px solid var(--bordure);}
 </style>
 </head>
 <body>
@@ -813,53 +823,215 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <div id="adminBlogList"></div>
   </div>
 
-  <!-- ===== TAB PARAMÈTRES ===== -->
+  <!-- ===== TAB PARAMÈTRES — ÉDITEUR DU SITE ===== -->
   <div id="tab-parametres" class="wrap" style="display:none;">
-    <div class="section-title">⚙️ Paramètres</div>
+    <div class="section-title" style="margin-bottom:14px;">⚙️ Éditeur du site</div>
 
-    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;">
-      <div style="font-weight:700;font-size:.9rem;color:var(--brun);margin-bottom:12px;">🏪 Boutique</div>
-      <label class="bs-label">Nom de la boutique</label>
-      <input class="bs-input" id="set_shop_name" type="text" placeholder="Les Douceurs de Cicine"/>
-      <label class="bs-label">Slogan</label>
-      <input class="bs-input" id="set_shop_tagline" type="text" placeholder="Pâtisserie artisanale..."/>
-      <label class="bs-label">Téléphone</label>
-      <input class="bs-input" id="set_shop_phone" type="tel" placeholder="0696 XX XX XX"/>
-      <label class="bs-label">Adresse</label>
-      <input class="bs-input" id="set_shop_address" type="text" placeholder="Le Vauclin, Martinique"/>
+    <!-- Sous-onglets éditeur -->
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;margin-bottom:16px;">
+      <button class="ed-tab active" id="edt-accueil" onclick="showEdTab('accueil')">🏠 Page d'accueil</button>
+      <button class="ed-tab" id="edt-photos" onclick="showEdTab('photos')">📸 Photos</button>
+      <button class="ed-tab" id="edt-apparence" onclick="showEdTab('apparence')">🎨 Apparence</button>
+      <button class="ed-tab" id="edt-infos" onclick="showEdTab('infos')">ℹ️ Infos & Réseaux</button>
+      <button class="ed-tab" id="edt-email" onclick="showEdTab('email')">📧 Emails</button>
     </div>
 
-    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;">
-      <div style="font-weight:700;font-size:.9rem;color:var(--brun);margin-bottom:12px;">🎨 Couleurs</div>
-      <div class="fgr">
-        <div>
-          <label class="bs-label">Couleur principale</label>
-          <input type="color" id="set_color_primary" value="#5C2E0E" style="width:100%;height:42px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;margin-bottom:11px;"/>
-        </div>
-        <div>
-          <label class="bs-label">Couleur secondaire</label>
-          <input type="color" id="set_color_secondary" value="#A0522D" style="width:100%;height:42px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;margin-bottom:11px;"/>
+    <!-- ======= PAGE D'ACCUEIL ======= -->
+    <div id="ed-accueil">
+
+      <div class="ed-card">
+        <div class="ed-card-title">🦸 Bandeau principal (Hero)</div>
+        <label class="bs-label">Titre principal</label>
+        <input class="bs-input" id="ed_hero_title" placeholder="Les Douceurs de Cicine"/>
+        <label class="bs-label">Sous-titre / accroche</label>
+        <input class="bs-input" id="ed_hero_subtitle" placeholder="Le bonheur à chaque bouchée · Le Vauclin, Martinique"/>
+        <label class="bs-label">Texte du bouton principal</label>
+        <input class="bs-input" id="ed_hero_btn" placeholder="🧁 Commander"/>
+      </div>
+
+      <div class="ed-card">
+        <div class="ed-card-title">🎂 Nos Spécialités (3 cartes)</div>
+        <div style="display:grid;gap:10px;">
+          <div class="ed-spec-row">
+            <div class="ed-spec-label">Carte 1</div>
+            <input class="bs-input" id="ed_spec1_name" placeholder="Nom (ex: Gâteaux & Créations)"/>
+            <div class="ed-photo-row">
+              <input class="bs-input" id="ed_spec1_photo" placeholder="URL ou chemin photo (ex: photos/gateau-rouge-roses.jpg)" oninput="previewPhoto(this,'prev_spec1')"/>
+              <img id="prev_spec1" class="ed-preview" src="photos/gateau-rouge-roses.jpg"/>
+            </div>
+          </div>
+          <div class="ed-spec-row">
+            <div class="ed-spec-label">Carte 2</div>
+            <input class="bs-input" id="ed_spec2_name" placeholder="Nom (ex: Viennoiseries)"/>
+            <div class="ed-photo-row">
+              <input class="bs-input" id="ed_spec2_photo" placeholder="URL ou chemin photo" oninput="previewPhoto(this,'prev_spec2')"/>
+              <img id="prev_spec2" class="ed-preview" src="photos/delibox-aperitif.jpg"/>
+            </div>
+          </div>
+          <div class="ed-spec-row">
+            <div class="ed-spec-label">Carte 3</div>
+            <input class="bs-input" id="ed_spec3_name" placeholder="Nom (ex: Délibox)"/>
+            <div class="ed-photo-row">
+              <input class="bs-input" id="ed_spec3_photo" placeholder="URL ou chemin photo" oninput="previewPhoto(this,'prev_spec3')"/>
+              <img id="prev_spec3" class="ed-preview" src="photos/delibox.jpg"/>
+            </div>
+          </div>
         </div>
       </div>
-      <button onclick="applySettingsColors()" style="padding:9px 18px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:20px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">👁️ Aperçu</button>
-    </div>
 
-    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;">
-      <div style="font-weight:700;font-size:.9rem;color:var(--brun);margin-bottom:12px;">📧 Notifications email</div>
-      <label class="bs-label">Email admin (destinataire des nouvelles commandes)</label>
-      <input class="bs-input" id="set_notif_email" type="email" placeholder="votre@email.com"/>
-      <div style="background:var(--fond2);border-radius:9px;padding:10px 13px;margin-bottom:12px;font-size:.73rem;color:var(--doux);">
-        💡 Créez un compte gratuit sur <strong>emailjs.com</strong> pour activer les notifications email
+      <div class="ed-card">
+        <div class="ed-card-title">🖼️ Grande bannière photo</div>
+        <div class="ed-photo-row">
+          <input class="bs-input" id="ed_banner_photo" placeholder="URL ou chemin photo (ex: photos/gateau-tropical.jpg)" oninput="previewPhoto(this,'prev_banner')"/>
+          <img id="prev_banner" class="ed-preview" src="photos/gateau-tropical.jpg"/>
+        </div>
+        <label class="bs-label">Titre sur la bannière</label>
+        <input class="bs-input" id="ed_banner_title" placeholder="Fait avec amour"/>
+        <label class="bs-label">Texte sous le titre</label>
+        <input class="bs-input" id="ed_banner_text" placeholder="Chaque gâteau est une création unique..."/>
+        <label class="bs-label">Texte du lien</label>
+        <input class="bs-input" id="ed_banner_btn" placeholder="Voir nos réalisations →"/>
       </div>
-      <label class="bs-label">EmailJS — Service ID</label>
-      <input class="bs-input" id="set_emailjs_service" type="text" placeholder="service_xxxxxxx"/>
-      <label class="bs-label">EmailJS — Template ID</label>
-      <input class="bs-input" id="set_emailjs_template" type="text" placeholder="template_xxxxxxx"/>
-      <label class="bs-label">EmailJS — Clé publique</label>
-      <input class="bs-input" id="set_emailjs_pubkey" type="text" placeholder="xxxxxxxxxxxxxxxxxxxx"/>
+
+      <div class="ed-card">
+        <div class="ed-card-title">💕 Section "Pourquoi Cicine ?"</div>
+        <div class="ed-photo-row">
+          <input class="bs-input" id="ed_pourquoi_photo" placeholder="URL ou chemin photo" oninput="previewPhoto(this,'prev_pourquoi')"/>
+          <img id="prev_pourquoi" class="ed-preview" src="photos/gateau-babyshower.jpg"/>
+        </div>
+        <div style="display:grid;gap:8px;margin-top:8px;">
+          <div style="display:grid;grid-template-columns:40px 1fr 1fr;gap:6px;align-items:center;">
+            <input class="bs-input" id="ed_pq1_icon" placeholder="🤍" style="text-align:center;padding:8px 4px;"/>
+            <input class="bs-input" id="ed_pq1_title" placeholder="Titre (ex: Fait maison)"/>
+            <input class="bs-input" id="ed_pq1_text" placeholder="Description courte"/>
+          </div>
+          <div style="display:grid;grid-template-columns:40px 1fr 1fr;gap:6px;align-items:center;">
+            <input class="bs-input" id="ed_pq2_icon" placeholder="✨" style="text-align:center;padding:8px 4px;"/>
+            <input class="bs-input" id="ed_pq2_title" placeholder="Titre"/>
+            <input class="bs-input" id="ed_pq2_text" placeholder="Description courte"/>
+          </div>
+          <div style="display:grid;grid-template-columns:40px 1fr 1fr;gap:6px;align-items:center;">
+            <input class="bs-input" id="ed_pq3_icon" placeholder="📍" style="text-align:center;padding:8px 4px;"/>
+            <input class="bs-input" id="ed_pq3_title" placeholder="Titre"/>
+            <input class="bs-input" id="ed_pq3_text" placeholder="Description courte"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="ed-card">
+        <div class="ed-card-title">📢 Petite mosaïque 3 photos (entre avis et liens)</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <div style="flex:1;min-width:140px;">
+            <input class="bs-input" id="ed_mosaic1" placeholder="Photo 1 (URL ou chemin)" oninput="previewPhoto(this,'prev_m1')"/>
+            <img id="prev_m1" class="ed-preview" src="photos/gateau-rouge-dollars.jpg"/>
+          </div>
+          <div style="flex:1;min-width:140px;">
+            <input class="bs-input" id="ed_mosaic2" placeholder="Photo 2" oninput="previewPhoto(this,'prev_m2')"/>
+            <img id="prev_m2" class="ed-preview" src="photos/cupcakes-valentin.jpg"/>
+          </div>
+          <div style="flex:1;min-width:140px;">
+            <input class="bs-input" id="ed_mosaic3" placeholder="Photo 3" oninput="previewPhoto(this,'prev_m3')"/>
+            <img id="prev_m3" class="ed-preview" src="photos/gateau-chiffre.jpg"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="ed-card">
+        <div class="ed-card-title">🌟 CTA Final ("Envie d'une douceur ?")</div>
+        <label class="bs-label">Titre</label>
+        <input class="bs-input" id="ed_cta_title" placeholder="Envie d'une douceur ?"/>
+        <label class="bs-label">Sous-titre</label>
+        <input class="bs-input" id="ed_cta_sub" placeholder="Cicine prépare tout avec amour 🩷"/>
+      </div>
     </div>
 
-    <button class="bs-btn-primary" onclick="saveSettings()">💾 Sauvegarder les paramètres</button>
+    <!-- ======= PHOTOS ======= -->
+    <div id="ed-photos" style="display:none;">
+      <div class="ed-card">
+        <div class="ed-card-title">📸 Photos disponibles sur le site</div>
+        <p style="font-size:.75rem;color:var(--doux);margin-bottom:12px;">Ces photos sont stockées dans le dossier <code>photos/</code> du site. Tu peux utiliser leurs noms dans les champs ci-dessus.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="photosGrid">
+          <!-- Généré par JS -->
+        </div>
+      </div>
+      <div class="ed-card">
+        <div class="ed-card-title">➕ Ajouter une photo par URL externe</div>
+        <p style="font-size:.73rem;color:var(--doux);margin-bottom:10px;">Copie le lien direct d'une image (Instagram, Google Drive, Dropbox, etc.) et colle-le dans n'importe quel champ photo ci-dessus.</p>
+        <div class="ed-photo-row">
+          <input class="bs-input" id="ed_new_photo_url" placeholder="https://... (lien direct vers l'image)"/>
+          <img id="prev_new" class="ed-preview" style="display:none;"/>
+        </div>
+        <button onclick="testPhotoUrl()" style="margin-top:8px;padding:8px 16px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:20px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">👁️ Tester l'aperçu</button>
+      </div>
+    </div>
+
+    <!-- ======= APPARENCE ======= -->
+    <div id="ed-apparence" style="display:none;">
+      <div class="ed-card">
+        <div class="ed-card-title">🎨 Couleurs du site</div>
+        <div class="fgr">
+          <div>
+            <label class="bs-label">Couleur principale (brun)</label>
+            <input type="color" id="set_color_primary" value="#5C2E0E" style="width:100%;height:44px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;margin-bottom:11px;"/>
+          </div>
+          <div>
+            <label class="bs-label">Couleur secondaire (caramel)</label>
+            <input type="color" id="set_color_secondary" value="#A0522D" style="width:100%;height:44px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;margin-bottom:11px;"/>
+          </div>
+        </div>
+        <button onclick="applySettingsColors()" style="padding:9px 18px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:20px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">👁️ Aperçu en temps réel</button>
+      </div>
+      <div class="ed-card" style="background:#fef9e7;border-color:#f0c040;">
+        <div class="ed-card-title" style="color:#7a6000;">💡 Remettre les couleurs d'origine</div>
+        <p style="font-size:.73rem;color:#7a6000;margin-bottom:10px;">Si tu as changé les couleurs par erreur, execute ce code dans Supabase :</p>
+        <code style="font-size:.68rem;background:#fff;padding:8px;border-radius:8px;display:block;">UPDATE settings SET value='#5C2E0E' WHERE key='color_primary';</code>
+      </div>
+    </div>
+
+    <!-- ======= INFOS & RÉSEAUX ======= -->
+    <div id="ed-infos" style="display:none;">
+      <div class="ed-card">
+        <div class="ed-card-title">🏪 Infos de la boutique</div>
+        <label class="bs-label">Nom de la boutique</label>
+        <input class="bs-input" id="set_shop_name" placeholder="Les Douceurs de Cicine"/>
+        <label class="bs-label">Slogan</label>
+        <input class="bs-input" id="set_shop_tagline" placeholder="Pâtisserie artisanale..."/>
+        <label class="bs-label">Téléphone</label>
+        <input class="bs-input" id="set_shop_phone" type="tel" placeholder="0696 11 14 40"/>
+        <label class="bs-label">Adresse</label>
+        <input class="bs-input" id="set_shop_address" placeholder="Le Vauclin, Martinique"/>
+      </div>
+      <div class="ed-card">
+        <div class="ed-card-title">📱 Réseaux sociaux</div>
+        <label class="bs-label">📸 Instagram (lien complet)</label>
+        <input class="bs-input" id="ed_instagram" placeholder="https://www.instagram.com/..."/>
+        <label class="bs-label">👍 Facebook (lien complet)</label>
+        <input class="bs-input" id="ed_facebook" placeholder="https://www.facebook.com/..."/>
+        <label class="bs-label">💬 WhatsApp (numéro international)</label>
+        <input class="bs-input" id="ed_whatsapp" placeholder="596696111440"/>
+        <label class="bs-label">👻 Snapchat (lien complet)</label>
+        <input class="bs-input" id="ed_snapchat" placeholder="https://snapchat.com/..."/>
+      </div>
+    </div>
+
+    <!-- ======= EMAIL ======= -->
+    <div id="ed-email" style="display:none;">
+      <div class="ed-card">
+        <div class="ed-card-title">📧 Notifications email</div>
+        <label class="bs-label">Email destinataire (nouvelles commandes)</label>
+        <input class="bs-input" id="set_notif_email" type="email" placeholder="votre@email.com"/>
+        <div style="background:var(--fond2);border-radius:9px;padding:10px 13px;margin-bottom:12px;font-size:.73rem;color:var(--doux);">💡 Créez un compte gratuit sur <strong>emailjs.com</strong> pour activer les notifications</div>
+        <label class="bs-label">EmailJS — Service ID</label>
+        <input class="bs-input" id="set_emailjs_service" placeholder="service_xxxxxxx"/>
+        <label class="bs-label">EmailJS — Template ID</label>
+        <input class="bs-input" id="set_emailjs_template" placeholder="template_xxxxxxx"/>
+        <label class="bs-label">EmailJS — Clé publique</label>
+        <input class="bs-input" id="set_emailjs_pubkey" placeholder="xxxxxxxxxxxxxxxxxxxx"/>
+      </div>
+    </div>
+
+    <!-- Bouton sauvegarder global -->
+    <button class="bs-btn-primary" onclick="saveAllSiteSettings()" style="width:100%;margin-top:8px;">💾 Sauvegarder toutes les modifications</button>
   </div>
 </div>
 
@@ -1013,7 +1185,7 @@ function setMainTab(tab){
   if(tab==="tresorerie"){loadTresorerie();}
   if(tab==="pdlsem"){loadProduitSemaine();}
   if(tab==="blog"){loadBlog();}
-  if(tab==="parametres"){renderSettings();}
+  if(tab==="parametres"){renderSettings();loadAllSiteSettings();}
 }
 
 /* ====== HELPERS ====== */
@@ -3060,6 +3232,108 @@ async function deletePost(id){
     allPosts=allPosts.filter(function(p){return p.id!==id;});
     closeModal();renderAdminBlog();showNotif("Article supprimé.");
   }catch(e){showNotif("Erreur : "+e.message);}
+}
+
+/* ====== ÉDITEUR DU SITE ====== */
+function showEdTab(tab){
+  ['accueil','photos','apparence','infos','email'].forEach(function(t){
+    var panel=document.getElementById('ed-'+t);
+    var btn=document.getElementById('edt-'+t);
+    if(panel)panel.style.display=t===tab?'':'none';
+    if(btn)btn.classList.toggle('active',t===tab);
+  });
+  if(tab==='photos')renderPhotosGrid();
+}
+function previewPhoto(input,previewId){
+  var img=document.getElementById(previewId);
+  if(img){img.src=input.value;img.style.display='block';}
+}
+function testPhotoUrl(){
+  var url=document.getElementById('ed_new_photo_url').value;
+  var img=document.getElementById('prev_new');
+  if(img){img.src=url;img.style.display='block';}
+}
+function renderPhotosGrid(){
+  var photos=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
+  var grid=document.getElementById('photosGrid');
+  if(!grid)return;
+  grid.innerHTML=photos.map(function(p){
+    return '<div style="cursor:pointer;" onclick="copyPhotoPath(\'photos/'+p+'.jpg\')">'+
+      '<img src="photos/'+p+'.jpg" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;" onerror="this.style.background=\'#eee\'"/>'+
+      '<div style="font-size:.58rem;color:var(--doux);text-align:center;margin-top:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">'+p+'.jpg</div>'+
+      '</div>';
+  }).join('');
+}
+function copyPhotoPath(path){
+  if(navigator.clipboard)navigator.clipboard.writeText(path);
+  showNotif('Chemin copié : '+path);
+}
+async function saveAllSiteSettings(){
+  var ids={
+    hero_title:'ed_hero_title',hero_subtitle:'ed_hero_subtitle',hero_btn:'ed_hero_btn',
+    spec1_name:'ed_spec1_name',spec1_photo:'ed_spec1_photo',
+    spec2_name:'ed_spec2_name',spec2_photo:'ed_spec2_photo',
+    spec3_name:'ed_spec3_name',spec3_photo:'ed_spec3_photo',
+    banner_photo:'ed_banner_photo',banner_title:'ed_banner_title',banner_text:'ed_banner_text',banner_btn:'ed_banner_btn',
+    pourquoi_photo:'ed_pourquoi_photo',
+    pq1_icon:'ed_pq1_icon',pq1_title:'ed_pq1_title',pq1_text:'ed_pq1_text',
+    pq2_icon:'ed_pq2_icon',pq2_title:'ed_pq2_title',pq2_text:'ed_pq2_text',
+    pq3_icon:'ed_pq3_icon',pq3_title:'ed_pq3_title',pq3_text:'ed_pq3_text',
+    mosaic1:'ed_mosaic1',mosaic2:'ed_mosaic2',mosaic3:'ed_mosaic3',
+    cta_title:'ed_cta_title',cta_sub:'ed_cta_sub',
+    shop_name:'set_shop_name',shop_tagline:'set_shop_tagline',shop_phone:'set_shop_phone',shop_address:'set_shop_address',
+    social_instagram:'ed_instagram',social_facebook:'ed_facebook',social_whatsapp:'ed_whatsapp',social_snapchat:'ed_snapchat',
+    color_primary:'set_color_primary',color_secondary:'set_color_secondary',
+    notif_email:'set_notif_email',emailjs_service:'set_emailjs_service',emailjs_template:'set_emailjs_template',emailjs_pubkey:'set_emailjs_pubkey'
+  };
+  var upserts=[];
+  Object.keys(ids).forEach(function(key){
+    var el=document.getElementById(ids[key]);
+    if(el&&el.value)upserts.push({key:key,value:el.value});
+  });
+  if(!upserts.length){showNotif('Rien à sauvegarder','error');return;}
+  try{
+    var {error}=await sb.from('settings').upsert(upserts,{onConflict:'key'});
+    if(error)throw error;
+    upserts.forEach(function(u){shopSettings[u.key]=u.value;});
+    applySettingsColors();
+    showNotif('✅ Toutes les modifications sauvegardées !');
+  }catch(e){showNotif('Erreur : '+e.message);}
+}
+async function loadAllSiteSettings(){
+  try{
+    var {data}=await sb.from('settings').select('key,value');
+    var s={};(data||[]).forEach(function(r){s[r.key]=r.value;});
+    var map={
+      hero_title:'ed_hero_title',hero_subtitle:'ed_hero_subtitle',hero_btn:'ed_hero_btn',
+      spec1_name:'ed_spec1_name',spec1_photo:'ed_spec1_photo',
+      spec2_name:'ed_spec2_name',spec2_photo:'ed_spec2_photo',
+      spec3_name:'ed_spec3_name',spec3_photo:'ed_spec3_photo',
+      banner_photo:'ed_banner_photo',banner_title:'ed_banner_title',banner_text:'ed_banner_text',banner_btn:'ed_banner_btn',
+      pourquoi_photo:'ed_pourquoi_photo',
+      pq1_icon:'ed_pq1_icon',pq1_title:'ed_pq1_title',pq1_text:'ed_pq1_text',
+      pq2_icon:'ed_pq2_icon',pq2_title:'ed_pq2_title',pq2_text:'ed_pq2_text',
+      pq3_icon:'ed_pq3_icon',pq3_title:'ed_pq3_title',pq3_text:'ed_pq3_text',
+      mosaic1:'ed_mosaic1',mosaic2:'ed_mosaic2',mosaic3:'ed_mosaic3',
+      cta_title:'ed_cta_title',cta_sub:'ed_cta_sub',
+      shop_name:'set_shop_name',shop_tagline:'set_shop_tagline',shop_phone:'set_shop_phone',shop_address:'set_shop_address',
+      social_instagram:'ed_instagram',social_facebook:'ed_facebook',social_whatsapp:'ed_whatsapp',social_snapchat:'ed_snapchat',
+      color_primary:'set_color_primary',color_secondary:'set_color_secondary',
+      notif_email:'set_notif_email',emailjs_service:'set_emailjs_service',emailjs_template:'set_emailjs_template',emailjs_pubkey:'set_emailjs_pubkey'
+    };
+    Object.keys(map).forEach(function(key){
+      var el=document.getElementById(map[key]);
+      if(el&&s[key]!==undefined)el.value=s[key];
+    });
+    // Refresh photo previews for any already-filled fields
+    var previews={ed_spec1_photo:'prev_spec1',ed_spec2_photo:'prev_spec2',ed_spec3_photo:'prev_spec3',
+      ed_banner_photo:'prev_banner',ed_pourquoi_photo:'prev_pourquoi',
+      ed_mosaic1:'prev_mosaic1',ed_mosaic2:'prev_mosaic2',ed_mosaic3:'prev_mosaic3'};
+    Object.keys(previews).forEach(function(inputId){
+      var el=document.getElementById(inputId);
+      if(el&&el.value)previewPhoto(el,previews[inputId]);
+    });
+  }catch(e){}
 }
 
 /* ====== INIT ====== */
