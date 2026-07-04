@@ -388,6 +388,28 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .mosaic-ed-item{position:relative;}
 .mosaic-ed-item img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1.5px solid var(--bordure);display:block;}
 .mosaic-ed-del{position:absolute;top:-7px;right:-7px;width:20px;height:20px;background:#dc2626;color:#fff;border-radius:50%;border:none;font-size:.68rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Lato',sans-serif;}
+/* ====== ÉDITEUR WYSIWYG ====== */
+#tab-parametres{position:fixed;left:0;right:0;bottom:0;z-index:50;flex-direction:column;overflow:hidden;background:#1e1e2e;top:48px;}
+#ed-toolbar{background:var(--brun);color:#fff;display:flex;align-items:center;gap:8px;padding:9px 12px;flex-shrink:0;}
+.edb{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:6px 10px;font-size:.95rem;cursor:pointer;line-height:1;transition:background .15s;}
+.edb.active,.edb:hover{background:rgba(255,255,255,.35);}
+#ed-save-btn{background:var(--fuchsia);color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;white-space:nowrap;}
+#ed-settings-btn{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:20px;padding:7px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;white-space:nowrap;}
+#ed-shell{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;background:#1e1e2e;padding:16px;}
+#ed-device-frame{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);transition:width .25s;position:relative;}
+#ed-device-frame.phone{width:375px;}
+#ed-device-frame.tablet{width:768px;}
+#ed-device-frame.desktop{width:min(1200px,100%);}
+#ed-iframe{width:100%;height:900px;border:none;display:block;}
+#ed-picker-overlay,#ed-settings-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1001;align-items:flex-end;}
+#ed-picker-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:80vh;overflow-y:auto;}
+#ed-settings-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;}
+#ed-sd-tabs{display:flex;border-bottom:1.5px solid var(--bordure);overflow-x:auto;scrollbar-width:none;padding:8px 12px 0;flex-shrink:0;}
+#ed-sd-tabs::-webkit-scrollbar{display:none;}
+.sd-tab{flex-shrink:0;padding:8px 13px;border:none;background:transparent;color:var(--doux);font-size:.78rem;font-weight:700;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;font-family:"Lato",sans-serif;transition:color .15s;}
+.sd-tab.active{color:var(--brun);border-bottom-color:var(--brun);}
+#ed-sd-content{padding:14px;overflow-y:auto;flex:1;}
+.ed-hint{font-size:.72rem;color:rgba(255,255,255,.55);text-align:center;flex:1;padding:0 8px;}
 </style>
 </head>
 <body>
@@ -846,108 +868,56 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   </div>
 
   <!-- ===== TAB PARAMÈTRES — ÉDITEUR DU SITE ===== -->
-  <div id="tab-parametres" class="wrap" style="display:none;">
-    <div class="section-title" style="margin-bottom:14px;">⚙️ Éditeur du site</div>
-    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;margin-bottom:16px;">
-      <button class="ed-tab active" id="edt-layout" onclick="showEdTab('layout')">🗂️ Mise en page</button>
-      <button class="ed-tab" id="edt-photos" onclick="showEdTab('photos')">📸 Photos</button>
-      <button class="ed-tab" id="edt-apparence" onclick="showEdTab('apparence')">🎨 Couleurs</button>
-      <button class="ed-tab" id="edt-infos" onclick="showEdTab('infos')">ℹ️ Infos & Réseaux</button>
-      <button class="ed-tab" id="edt-email" onclick="showEdTab('email')">📧 Emails</button>
-    </div>
-
-    <!-- MISE EN PAGE -->
-    <div id="ed-layout">
-      <div style="font-size:.75rem;color:var(--doux);background:#fff;border:1.5px solid var(--bordure);border-radius:10px;padding:10px 13px;margin-bottom:14px;line-height:1.6;">
-        👁 <strong>Activer/désactiver</strong> · ↑↓ <strong>Réorganiser</strong> · ✏️ <strong>Éditer</strong> chaque section (textes, photos, taille)
+  <div id="tab-parametres" style="display:none;">
+    <!-- Barre d'outils -->
+    <div id="ed-toolbar">
+      <div style="display:flex;gap:5px;">
+        <button class="edb active" id="edb-phone" onclick="setEdDevice('phone')" title="Mobile">📱</button>
+        <button class="edb" id="edb-tablet" onclick="setEdDevice('tablet')" title="Tablette">💻</button>
+        <button class="edb" id="edb-desktop" onclick="setEdDevice('desktop')" title="Bureau">🖥️</button>
       </div>
-      <div class="section-mgr" id="sections-list"></div>
-      <button class="bs-btn-primary" onclick="savePageLayout()" style="margin-top:12px;">💾 Sauvegarder la mise en page</button>
+      <span class="ed-hint">Clique sur un texte ou une photo pour modifier</span>
+      <button id="ed-settings-btn" onclick="openSettingsDrawer()">⚙️ Réglages</button>
+      <button id="ed-save-btn" onclick="saveEditorChanges()">💾 Sauvegarder</button>
     </div>
-
-    <!-- PHOTOS -->
-    <div id="ed-photos" style="display:none;">
-      <div class="ed-card">
-        <div class="ed-card-title">📸 Photos du site — clic = copier le chemin</div>
-        <p style="font-size:.73rem;color:var(--doux);margin-bottom:12px;">Clique sur une photo pour copier son chemin. Colle-le ensuite dans les champs photo des sections.</p>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="photosGrid"></div>
-      </div>
-      <div class="ed-card">
-        <div class="ed-card-title">🌐 Tester une photo externe</div>
-        <p style="font-size:.73rem;color:var(--doux);margin-bottom:10px;">Colle un lien direct vers une image pour vérifier qu'elle s'affiche bien.</p>
-        <div style="display:flex;gap:7px;align-items:center;margin-bottom:10px;">
-          <input class="bs-input" id="ed_new_photo_url" placeholder="https://..." style="margin:0;flex:1;"/>
-          <button onclick="testPhotoUrl()" style="padding:9px 13px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:9px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;white-space:nowrap;">👁️ Voir</button>
-        </div>
-        <img id="prev_new" style="display:none;width:100%;max-height:180px;object-fit:contain;border-radius:10px;border:1.5px solid var(--bordure);"/>
+    <!-- Zone de prévisualisation -->
+    <div id="ed-shell">
+      <div id="ed-device-frame" class="phone">
+        <iframe id="ed-iframe" src="index.html" onload="onIframeReady()"></iframe>
       </div>
     </div>
-
-    <!-- COULEURS -->
-    <div id="ed-apparence" style="display:none;">
-      <div class="ed-card">
-        <div class="ed-card-title">🎨 Couleurs du site</div>
-        <div class="fgr">
-          <div>
-            <label class="bs-label">Couleur principale (brun)</label>
-            <input type="color" id="set_color_primary" value="#5C2E0E" style="width:100%;height:44px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;margin-bottom:11px;"/>
+    <!-- Sélecteur de photo (overlay) -->
+    <div id="ed-picker-overlay" onclick="closePhotoPicker()">
+      <div id="ed-picker-sheet" onclick="event.stopPropagation()">
+        <div style="padding:16px 16px 0;">
+          <div style="font-size:1rem;font-weight:700;color:var(--brun);margin-bottom:4px;">📸 Changer la photo</div>
+          <div style="font-size:.73rem;color:var(--doux);margin-bottom:11px;">Choisis depuis la bibliothèque ou colle un lien</div>
+          <div style="display:flex;gap:7px;align-items:center;margin-bottom:12px;">
+            <input id="ed-picker-url" class="bs-input" placeholder="https://... ou photos/nom.jpg" style="margin:0;flex:1;"/>
+            <button onclick="useExternalPhoto()" style="padding:9px 14px;background:var(--brun);color:#fff;border:none;border-radius:9px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">OK</button>
           </div>
-          <div>
-            <label class="bs-label">Couleur secondaire (caramel)</label>
-            <input type="color" id="set_color_secondary" value="#A0522D" style="width:100%;height:44px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;margin-bottom:11px;"/>
-          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;" id="ed-picker-grid"></div>
         </div>
-        <button onclick="applySettingsColors()" style="padding:9px 18px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:20px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">👁️ Aperçu en temps réel</button>
+        <div style="padding:12px 16px;">
+          <button onclick="closePhotoPicker()" style="width:100%;padding:12px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Annuler</button>
+        </div>
       </div>
-      <div class="ed-card" style="background:#fef9e7;border-color:#f0c040;">
-        <div class="ed-card-title" style="color:#7a6000;">💡 Remettre les couleurs d'origine</div>
-        <code style="font-size:.68rem;background:#fff;padding:8px;border-radius:8px;display:block;">UPDATE settings SET value='#5C2E0E' WHERE key='color_primary';</code>
-      </div>
-      <button class="bs-btn-primary" onclick="saveAllSiteSettings()">💾 Sauvegarder les couleurs</button>
     </div>
-
-    <!-- INFOS & RÉSEAUX -->
-    <div id="ed-infos" style="display:none;">
-      <div class="ed-card">
-        <div class="ed-card-title">🏪 Infos de la boutique</div>
-        <label class="bs-label">Nom de la boutique</label>
-        <input class="bs-input" id="set_shop_name" placeholder="Les Douceurs de Cicine"/>
-        <label class="bs-label">Slogan</label>
-        <input class="bs-input" id="set_shop_tagline" placeholder="Pâtisserie artisanale..."/>
-        <label class="bs-label">Téléphone</label>
-        <input class="bs-input" id="set_shop_phone" type="tel" placeholder="0696 11 14 40"/>
-        <label class="bs-label">Adresse</label>
-        <input class="bs-input" id="set_shop_address" placeholder="Le Vauclin, Martinique"/>
+    <!-- Tiroir de réglages -->
+    <div id="ed-settings-overlay" onclick="closeSettingsDrawer()">
+      <div id="ed-settings-sheet" onclick="event.stopPropagation()">
+        <div id="ed-sd-tabs">
+          <button class="sd-tab active" id="sdt-layout" onclick="showSDTab('layout')">🗂️ Sections</button>
+          <button class="sd-tab" id="sdt-mosaic" onclick="showSDTab('mosaic')">📸 Mosaïque</button>
+          <button class="sd-tab" id="sdt-colors" onclick="showSDTab('colors')">🎨 Couleurs</button>
+          <button class="sd-tab" id="sdt-infos" onclick="showSDTab('infos')">ℹ️ Infos</button>
+          <button class="sd-tab" id="sdt-email" onclick="showSDTab('email')">📧 Email</button>
+        </div>
+        <div id="ed-sd-content"></div>
+        <div style="padding:10px 14px;border-top:1px solid var(--bordure);flex-shrink:0;">
+          <button onclick="closeSettingsDrawer()" style="width:100%;padding:11px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Fermer</button>
+        </div>
       </div>
-      <div class="ed-card">
-        <div class="ed-card-title">📱 Réseaux sociaux</div>
-        <label class="bs-label">📸 Instagram (lien complet)</label>
-        <input class="bs-input" id="ed_instagram" placeholder="https://www.instagram.com/..."/>
-        <label class="bs-label">👍 Facebook (lien complet)</label>
-        <input class="bs-input" id="ed_facebook" placeholder="https://www.facebook.com/..."/>
-        <label class="bs-label">💬 WhatsApp (numéro international)</label>
-        <input class="bs-input" id="ed_whatsapp" placeholder="596696111440"/>
-        <label class="bs-label">👻 Snapchat (lien complet)</label>
-        <input class="bs-input" id="ed_snapchat" placeholder="https://snapchat.com/..."/>
-      </div>
-      <button class="bs-btn-primary" onclick="saveAllSiteSettings()">💾 Sauvegarder</button>
-    </div>
-
-    <!-- EMAIL -->
-    <div id="ed-email" style="display:none;">
-      <div class="ed-card">
-        <div class="ed-card-title">📧 Notifications email</div>
-        <label class="bs-label">Email destinataire (nouvelles commandes)</label>
-        <input class="bs-input" id="set_notif_email" type="email" placeholder="votre@email.com"/>
-        <div style="background:var(--fond2);border-radius:9px;padding:10px 13px;margin-bottom:12px;font-size:.73rem;color:var(--doux);">💡 Compte gratuit sur <strong>emailjs.com</strong> pour activer les notifications</div>
-        <label class="bs-label">EmailJS — Service ID</label>
-        <input class="bs-input" id="set_emailjs_service" placeholder="service_xxxxxxx"/>
-        <label class="bs-label">EmailJS — Template ID</label>
-        <input class="bs-input" id="set_emailjs_template" placeholder="template_xxxxxxx"/>
-        <label class="bs-label">EmailJS — Clé publique</label>
-        <input class="bs-input" id="set_emailjs_pubkey" placeholder="xxxxxxxxxxxxxxxxxxxx"/>
-      </div>
-      <button class="bs-btn-primary" onclick="saveAllSiteSettings()">💾 Sauvegarder</button>
     </div>
   </div>
 </div>
@@ -1078,7 +1048,16 @@ function setMainTab(tab){
   activeMainTab=tab;
   var tabs=["accueil","commandes","stocks","planning","taches","stats","clients","produits","saveurs","tresorerie","pdlsem","avis","blog","parametres"];
   tabs.forEach(function(t){
-    document.getElementById("tab-"+t).style.display=t===tab?"block":"none";
+    var el=document.getElementById("tab-"+t);
+    if(t===tab){
+      el.style.display=(t==="parametres")?"flex":"block";
+      if(t==="parametres"){
+        var nav=document.querySelector(".admin-nav");
+        el.style.top=(nav?nav.offsetHeight:48)+"px";
+      }
+    }else{
+      el.style.display="none";
+    }
     var si=document.getElementById("si-"+t);
     if(si){
       si.classList.toggle("active",t===tab);
@@ -1102,7 +1081,7 @@ function setMainTab(tab){
   if(tab==="tresorerie"){loadTresorerie();}
   if(tab==="pdlsem"){loadProduitSemaine();}
   if(tab==="blog"){loadBlog();}
-  if(tab==="parametres"){renderSettings();loadAllSiteSettings();}
+  if(tab==="parametres"){loadAllSiteSettings();initWysiwygEditor();}
 }
 
 /* ====== HELPERS ====== */
@@ -3151,40 +3130,463 @@ async function deletePost(id){
   }catch(e){showNotif("Erreur : "+e.message);}
 }
 
-/* ====== ÉDITEUR DU SITE ====== */
-function showEdTab(tab){
-  ['layout','photos','apparence','infos','email'].forEach(function(t){
-    var panel=document.getElementById('ed-'+t);
-    var btn=document.getElementById('edt-'+t);
-    if(panel)panel.style.display=t===tab?'':'none';
+/* ====== ÉDITEUR WYSIWYG ====== */
+var _edDevice='phone';
+var _edPickerDomId=null,_edPickerSkey=null;
+var _iframeReady=false;
+var _activeSDTab='layout';
+
+function initWysiwygEditor(){
+  _iframeReady=false;
+  var iframe=document.getElementById('ed-iframe');
+  if(!iframe)return;
+  // Force reload so settings in iframe reflect latest DB values
+  iframe.src='index.html?t='+Date.now();
+}
+
+function onIframeReady(){
+  // Small delay to ensure DOM is fully rendered
+  setTimeout(function(){
+    _iframeReady=true;
+    injectEditMode();
+    setEdDevice(_edDevice);
+  },400);
+}
+
+function injectEditMode(){
+  var iframe=document.getElementById('ed-iframe');
+  if(!iframe)return;
+  var doc=iframe.contentDocument||iframe.contentWindow.document;
+  if(!doc||!doc.body)return;
+
+  // Inject editor styles into iframe
+  var old=doc.getElementById('_ed_style');
+  if(old)old.remove();
+  var style=doc.createElement('style');
+  style.id='_ed_style';
+  style.textContent=
+    '[data-ceditable]{cursor:text!important;}'+
+    '[data-ceditable]:hover{outline:2px dashed #E8407A!important;border-radius:4px;}'+
+    '[data-ceditable]:focus{outline:2px solid #E8407A!important;background:rgba(232,64,122,.05)!important;border-radius:4px;}'+
+    '[data-photo-ed]{cursor:pointer!important;position:relative;}'+
+    '[data-photo-ed]:hover{outline:3px dashed #A0522D!important;}'+
+    '[data-photo-ed]:hover::after{content:"📸 Changer";position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;font-size:12px;padding:4px 10px;border-radius:20px;pointer-events:none;font-family:sans-serif;white-space:nowrap;z-index:9;}'+
+    '.ed-sz-bar{position:fixed;top:8px;left:50%;transform:translateX(-50%);background:#2A1A14;color:#fff;border-radius:30px;padding:6px 12px;display:flex;gap:6px;align-items:center;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.5);font-family:sans-serif;pointer-events:all;}'+
+    '.ed-sz-b{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:3px 7px;font-size:11px;cursor:pointer;font-family:sans-serif;}'+
+    '.ed-sz-b:hover{background:rgba(255,255,255,.35);}'+
+    '.ed-sz-b.on{background:#E8407A;border-color:#E8407A;}';
+  doc.head.appendChild(style);
+
+  // TEXT elements map: domId → settings key
+  var textMap={
+    'site-hero-title':'hero_title',
+    'site-hero-sub':'hero_subtitle',
+    'site-hero-btn':'hero_btn',
+    'site-spec1-name':'spec1_name',
+    'site-spec2-name':'spec2_name',
+    'site-spec3-name':'spec3_name',
+    'site-banner-title':'banner_title',
+    'site-banner-text':'banner_text',
+    'site-banner-btn':'banner_btn',
+    'site-pq1-title':'pq1_title',
+    'site-pq1-text':'pq1_text',
+    'site-pq2-title':'pq2_title',
+    'site-pq2-text':'pq2_text',
+    'site-pq3-title':'pq3_title',
+    'site-pq3-text':'pq3_text',
+    'site-cta-title':'cta_title',
+    'site-cta-sub':'cta_sub'
+  };
+
+  Object.keys(textMap).forEach(function(domId){
+    var el=doc.getElementById(domId);
+    if(!el)return;
+    el.setAttribute('contenteditable','true');
+    el.setAttribute('data-ceditable',textMap[domId]);
+    el.setAttribute('data-skey',textMap[domId]);
+    el.addEventListener('focus',function(){showSzBar(el,textMap[domId],iframe,doc);});
+    el.addEventListener('blur',function(){
+      setTimeout(function(){
+        var bar=doc.getElementById('_ed_szbar');
+        if(bar&&!bar.matches(':hover'))hideSzBar(doc);
+      },120);
+    });
+  });
+
+  // PHOTO elements
+  var photoMap={
+    'site-spec1-img':'spec1_photo',
+    'site-spec2-img':'spec2_photo',
+    'site-spec3-img':'spec3_photo',
+    'site-banner-img':'banner_photo',
+    'site-pourquoi-img':'pourquoi_photo',
+    'site-mosaic1':'mosaic_photo_0',
+    'site-mosaic2':'mosaic_photo_1',
+    'site-mosaic3':'mosaic_photo_2'
+  };
+  Object.keys(photoMap).forEach(function(domId){
+    var el=doc.getElementById(domId);
+    if(!el)return;
+    el.setAttribute('data-photo-ed',photoMap[domId]);
+    // Remove existing click listener by cloning
+    var clone=el.cloneNode(true);
+    el.parentNode.replaceChild(clone,el);
+    clone.addEventListener('click',function(e){
+      e.preventDefault();e.stopPropagation();
+      openPhotoPicker(domId,photoMap[domId]);
+    });
+  });
+
+  // Adjust iframe height to full content
+  iframe.style.height=Math.max(800,doc.documentElement.scrollHeight)+'px';
+}
+
+function showSzBar(el,skey,iframe,doc){
+  hideSzBar(doc);
+  var sizes=['0.6rem','0.75rem','0.88rem','1rem','1.2rem','1.5rem','1.8rem','2rem','2.5rem','3rem'];
+  var labels=['XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL'];
+  var curSize=el.style.fontSize||shopSettings[skey+'_size']||'';
+  var bar=doc.createElement('div');
+  bar.id='_ed_szbar';
+  bar.className='ed-sz-bar';
+  bar.innerHTML='<span style="font-size:10px;opacity:.65;margin-right:2px;">Taille :</span>'+
+    sizes.map(function(s,i){
+      return '<button class="ed-sz-b'+(s===curSize?' on':'')+'" data-sz="'+s+'">'+labels[i]+'</button>';
+    }).join('');
+  bar.querySelectorAll('.ed-sz-b').forEach(function(btn){
+    btn.addEventListener('mousedown',function(e){
+      e.preventDefault();
+      var val=btn.getAttribute('data-sz');
+      bar.querySelectorAll('.ed-sz-b').forEach(function(b){b.classList.remove('on');});
+      btn.classList.add('on');
+      el.style.fontSize=val;
+      shopSettings[skey+'_size']=val;
+    });
+  });
+  doc.body.appendChild(bar);
+}
+function hideSzBar(doc){
+  var old=doc.getElementById('_ed_szbar');
+  if(old)old.remove();
+}
+
+function setEdDevice(dev){
+  _edDevice=dev;
+  var frame=document.getElementById('ed-device-frame');
+  if(frame)frame.className=dev;
+  ['phone','tablet','desktop'].forEach(function(d){
+    var btn=document.getElementById('edb-'+d);
+    if(btn)btn.classList.toggle('active',d===dev);
+  });
+}
+
+function openPhotoPicker(domId,skey){
+  _edPickerDomId=domId;
+  _edPickerSkey=skey;
+  var overlay=document.getElementById('ed-picker-overlay');
+  overlay.style.display='flex';
+  var PHOTOS=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
+  var grid=document.getElementById('ed-picker-grid');
+  grid.innerHTML=PHOTOS.map(function(p){
+    var path='photos/'+p+'.jpg';
+    return '<img src="'+path+'" onclick="selectPhoto(\''+path+'\')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:9px;cursor:pointer;border:2px solid transparent;" onmouseover="this.style.borderColor=\'var(--caramel)\'" onmouseout="this.style.borderColor=\'transparent\'"/>';
+  }).join('');
+  document.getElementById('ed-picker-url').value='';
+}
+function closePhotoPicker(){
+  document.getElementById('ed-picker-overlay').style.display='none';
+  _edPickerDomId=null;_edPickerSkey=null;
+}
+function useExternalPhoto(){
+  var url=document.getElementById('ed-picker-url').value.trim();
+  if(!url)return;
+  applyPhoto(url);
+}
+function selectPhoto(path){applyPhoto(path);}
+function applyPhoto(src){
+  if(!_edPickerDomId)return;
+  var iframe=document.getElementById('ed-iframe');
+  if(!iframe)return;
+  var doc=iframe.contentDocument;
+  var el=doc.getElementById(_edPickerDomId);
+  if(el){
+    if(el.tagName==='IMG')el.src=src;
+    else el.style.backgroundImage='url('+src+')';
+  }
+  if(_edPickerSkey&&_edPickerSkey.startsWith('mosaic_photo_')){
+    var idx=parseInt(_edPickerSkey.replace('mosaic_photo_',''),10);
+    if(!isNaN(idx)){
+      while(mosaicPhotos.length<=idx)mosaicPhotos.push('');
+      mosaicPhotos[idx]=src;
+    }
+  }else if(_edPickerSkey){
+    shopSettings[_edPickerSkey]=src;
+  }
+  closePhotoPicker();
+}
+
+async function saveEditorChanges(){
+  var iframe=document.getElementById('ed-iframe');
+  if(!iframe){showNotif('Iframe non disponible');return;}
+  var doc=iframe.contentDocument;
+  if(!doc){showNotif('Page non chargée');return;}
+  var pairs=[];
+
+  // Collect text values
+  var textMap={
+    'site-hero-title':'hero_title',
+    'site-hero-sub':'hero_subtitle',
+    'site-hero-btn':'hero_btn',
+    'site-spec1-name':'spec1_name',
+    'site-spec2-name':'spec2_name',
+    'site-spec3-name':'spec3_name',
+    'site-banner-title':'banner_title',
+    'site-banner-text':'banner_text',
+    'site-banner-btn':'banner_btn',
+    'site-pq1-title':'pq1_title',
+    'site-pq1-text':'pq1_text',
+    'site-pq2-title':'pq2_title',
+    'site-pq2-text':'pq2_text',
+    'site-pq3-title':'pq3_title',
+    'site-pq3-text':'pq3_text',
+    'site-cta-title':'cta_title',
+    'site-cta-sub':'cta_sub'
+  };
+  Object.keys(textMap).forEach(function(domId){
+    var el=doc.getElementById(domId);
+    if(!el)return;
+    pairs.push({key:textMap[domId],value:(el.textContent||el.innerText||'').trim()});
+  });
+
+  // Photo values from shopSettings
+  ['spec1_photo','spec2_photo','spec3_photo','banner_photo','pourquoi_photo'].forEach(function(k){
+    if(shopSettings[k]!==undefined)pairs.push({key:k,value:shopSettings[k]});
+  });
+
+  // Photo values from iframe directly (in case not yet in shopSettings)
+  var photoMap={'site-spec1-img':'spec1_photo','site-spec2-img':'spec2_photo','site-spec3-img':'spec3_photo','site-banner-img':'banner_photo','site-pourquoi-img':'pourquoi_photo'};
+  Object.keys(photoMap).forEach(function(domId){
+    var el=doc.getElementById(domId);
+    if(el&&el.tagName==='IMG'&&el.src){
+      var src=el.getAttribute('src')||'';
+      if(src&&!src.startsWith('data:'))pairs.push({key:photoMap[domId],value:src});
+    }
+  });
+
+  // Size settings
+  Object.keys(shopSettings).forEach(function(k){
+    if(k.endsWith('_size')&&shopSettings[k])pairs.push({key:k,value:shopSettings[k]});
+  });
+
+  // Layout & mosaic
+  pairs.push({key:'page_layout',value:JSON.stringify(pageLayout)});
+  pairs.push({key:'mosaic_photos',value:JSON.stringify(mosaicPhotos)});
+
+  // Deduplicate (last value wins)
+  var seen={};
+  pairs=pairs.filter(function(p){if(seen[p.key])return false;seen[p.key]=true;return p.value!==undefined&&p.value!==null;});
+
+  try{
+    var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
+    if(error)throw error;
+    pairs.forEach(function(p){shopSettings[p.key]=p.value;});
+    showNotif('✅ Site sauvegardé !');
+    // Reload iframe to reflect saved state
+    setTimeout(function(){initWysiwygEditor();},600);
+  }catch(e){showNotif('Erreur : '+e.message);}
+}
+
+/* ====== TIROIR DE RÉGLAGES ====== */
+function openSettingsDrawer(){
+  document.getElementById('ed-settings-overlay').style.display='flex';
+  showSDTab(_activeSDTab);
+}
+function closeSettingsDrawer(){
+  document.getElementById('ed-settings-overlay').style.display='none';
+}
+function showSDTab(tab){
+  _activeSDTab=tab;
+  ['layout','mosaic','colors','infos','email'].forEach(function(t){
+    var btn=document.getElementById('sdt-'+t);
     if(btn)btn.classList.toggle('active',t===tab);
   });
-  if(tab==='photos')renderPhotosGrid();
-  if(tab==='layout')renderSectionsManager();
+  var c=document.getElementById('ed-sd-content');
+  if(!c)return;
+  switch(tab){
+    case 'layout':
+      c.innerHTML='<div style="font-size:.76rem;font-weight:700;color:var(--brun);margin-bottom:11px;">👁 Afficher/masquer les sections · ↑↓ Réorganiser</div>'+
+        '<div class="section-mgr" id="sd-sec-list"></div>'+
+        '<button class="bs-btn-primary" style="margin-top:12px;" onclick="sdSaveLayout()">💾 Sauvegarder la mise en page</button>';
+      sdRenderSections();
+      break;
+    case 'mosaic':
+      c.innerHTML='<div style="font-size:.74rem;color:var(--doux);margin-bottom:10px;">Ajoute ou retire des photos.</div>'+
+        '<div class="mosaic-ed" id="sd-mosaic-grid"></div>'+
+        '<div style="display:flex;gap:7px;margin-bottom:10px;align-items:center;">'+
+          '<input class="bs-input" id="sd-mosaic-url" placeholder="URL ou photos/nom.jpg" style="margin:0;flex:1;"/>'+
+          '<button onclick="sdAddMosaicPhoto()" style="padding:9px 12px;background:var(--brun);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:\'Lato\',sans-serif;">+ Ajouter</button>'+
+        '</div>'+
+        '<div style="background:var(--fond);border-radius:10px;padding:10px;margin-bottom:12px;">'+
+          '<div style="font-size:.72rem;font-weight:700;color:var(--brun);margin-bottom:7px;">Choisir depuis la bibliothèque</div>'+
+          '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;" id="sd-mosaic-picker"></div>'+
+        '</div>'+
+        '<button class="bs-btn-primary" onclick="sdSaveMosaic()">💾 Sauvegarder la mosaïque</button>';
+      sdRenderMosaicGrid();sdSetupMosaicPicker();
+      break;
+    case 'colors':
+      c.innerHTML='<div class="fgr" style="margin-bottom:12px;">'+
+        '<div><label class="bs-label">Couleur principale (brun)</label>'+
+        '<input type="color" id="sdc_primary" value="'+(shopSettings.color_primary||'#5C2E0E')+'" style="width:100%;height:44px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;"/></div>'+
+        '<div><label class="bs-label">Couleur secondaire (caramel)</label>'+
+        '<input type="color" id="sdc_secondary" value="'+(shopSettings.color_secondary||'#A0522D')+'" style="width:100%;height:44px;padding:3px;border:1.5px solid var(--bordure);border-radius:9px;cursor:pointer;"/></div>'+
+        '</div>'+
+        '<button class="bs-btn-primary" onclick="sdSaveColors()">💾 Sauvegarder les couleurs</button>';
+      break;
+    case 'infos':
+      c.innerHTML='<div class="ed-card">'+
+        '<div class="ed-card-title">🏪 Infos de la boutique</div>'+
+        '<label class="bs-label">Nom</label><input class="bs-input" id="sdi_name" value="'+escHtml(shopSettings.shop_name||'')+'" placeholder="Les Douceurs de Cicine"/>'+
+        '<label class="bs-label">Slogan</label><input class="bs-input" id="sdi_tagline" value="'+escHtml(shopSettings.shop_tagline||'')+'" placeholder="Pâtisserie artisanale..."/>'+
+        '<label class="bs-label">Téléphone</label><input class="bs-input" id="sdi_phone" type="tel" value="'+escHtml(shopSettings.shop_phone||'')+'"/>'+
+        '<label class="bs-label">Adresse</label><input class="bs-input" id="sdi_addr" value="'+escHtml(shopSettings.shop_address||'')+'"/>'+
+        '</div>'+
+        '<div class="ed-card">'+
+        '<div class="ed-card-title">📱 Réseaux sociaux</div>'+
+        '<label class="bs-label">📸 Instagram</label><input class="bs-input" id="sdi_ig" value="'+escHtml(shopSettings.social_instagram||'')+'" placeholder="https://www.instagram.com/..."/>'+
+        '<label class="bs-label">👍 Facebook</label><input class="bs-input" id="sdi_fb" value="'+escHtml(shopSettings.social_facebook||'')+'" placeholder="https://www.facebook.com/..."/>'+
+        '<label class="bs-label">💬 WhatsApp</label><input class="bs-input" id="sdi_wa" value="'+escHtml(shopSettings.social_whatsapp||'')+'" placeholder="596696111440"/>'+
+        '<label class="bs-label">👻 Snapchat</label><input class="bs-input" id="sdi_sn" value="'+escHtml(shopSettings.social_snapchat||'')+'" placeholder="https://snapchat.com/..."/>'+
+        '</div>'+
+        '<button class="bs-btn-primary" onclick="sdSaveInfos()">💾 Sauvegarder</button>';
+      break;
+    case 'email':
+      c.innerHTML='<div class="ed-card">'+
+        '<div class="ed-card-title">📧 Notifications email</div>'+
+        '<label class="bs-label">Email destinataire</label>'+
+        '<input class="bs-input" id="sde_email" type="email" value="'+escHtml(shopSettings.notif_email||'')+'" placeholder="votre@email.com"/>'+
+        '<div style="background:var(--fond2);border-radius:9px;padding:10px 13px;margin-bottom:12px;font-size:.73rem;color:var(--doux);">💡 Compte gratuit sur <strong>emailjs.com</strong> pour activer les notifications</div>'+
+        '<label class="bs-label">EmailJS — Service ID</label><input class="bs-input" id="sde_svc" value="'+escHtml(shopSettings.emailjs_service||'')+'" placeholder="service_xxxxxxx"/>'+
+        '<label class="bs-label">EmailJS — Template ID</label><input class="bs-input" id="sde_tpl" value="'+escHtml(shopSettings.emailjs_template||'')+'" placeholder="template_xxxxxxx"/>'+
+        '<label class="bs-label">EmailJS — Clé publique</label><input class="bs-input" id="sde_key" value="'+escHtml(shopSettings.emailjs_pubkey||'')+'" placeholder="xxxxxxxxxxxxxxxxxxxx"/>'+
+        '</div>'+
+        '<button class="bs-btn-primary" onclick="sdSaveEmail()">💾 Sauvegarder</button>';
+      break;
+  }
 }
-function previewPhoto(input,previewId){
-  var img=document.getElementById(previewId);
-  if(img){img.src=input.value;img.style.display='block';}
-}
-function testPhotoUrl(){
-  var url=document.getElementById('ed_new_photo_url').value;
-  var img=document.getElementById('prev_new');
-  if(img){img.src=url;img.style.display='block';}
-}
-function renderPhotosGrid(){
-  var photos=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
-  var grid=document.getElementById('photosGrid');
-  if(!grid)return;
-  grid.innerHTML=photos.map(function(p){
-    return '<div style="cursor:pointer;" onclick="copyPhotoPath(\'photos/'+p+'.jpg\')">'+
-      '<img src="photos/'+p+'.jpg" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;" onerror="this.style.background=\'#eee\'"/>'+
-      '<div style="font-size:.58rem;color:var(--doux);text-align:center;margin-top:3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">'+p+'.jpg</div>'+
-      '</div>';
+
+function sdRenderSections(){
+  var el=document.getElementById('sd-sec-list');
+  if(!el)return;
+  el.innerHTML=pageLayout.order.map(function(id,i){
+    var sec=SECTIONS.find(function(s){return s.id===id;});
+    if(!sec)return'';
+    var hidden=pageLayout.hidden.indexOf(id)>-1;
+    return'<div class="sm-card'+(hidden?' sec-hidden':'')+'">'+
+      '<span class="sm-handle">☰</span>'+
+      '<button class="sm-vis '+(hidden?'off':'on')+'" onclick="sdToggleVis(\''+id+'\',this)"></button>'+
+      '<span class="sm-label">'+sec.emoji+' '+sec.label+'</span>'+
+      '<div class="sm-updn">'+
+        '<button class="sm-btn" onclick="sdMoveSection(\''+id+'\',-1)"'+(i===0?' disabled style="opacity:.3;cursor:default;"':'')+'>↑</button>'+
+        '<button class="sm-btn" onclick="sdMoveSection(\''+id+'\',1)"'+(i===pageLayout.order.length-1?' disabled style="opacity:.3;cursor:default;"':'')+'>↓</button>'+
+      '</div>'+
+    '</div>';
   }).join('');
 }
-function copyPhotoPath(path){
-  if(navigator.clipboard)navigator.clipboard.writeText(path);
-  showNotif('Chemin copié : '+path);
+function sdToggleVis(id,btn){
+  var hi=pageLayout.hidden.indexOf(id);
+  if(hi>-1){pageLayout.hidden.splice(hi,1);btn.classList.remove('off');btn.classList.add('on');btn.closest('.sm-card').classList.remove('sec-hidden');}
+  else{pageLayout.hidden.push(id);btn.classList.remove('on');btn.classList.add('off');btn.closest('.sm-card').classList.add('sec-hidden');}
+}
+function sdMoveSection(id,dir){
+  var i=pageLayout.order.indexOf(id);
+  if(i<0)return;
+  var ni=i+dir;
+  if(ni<0||ni>=pageLayout.order.length)return;
+  var t=pageLayout.order[i];pageLayout.order[i]=pageLayout.order[ni];pageLayout.order[ni]=t;
+  sdRenderSections();
+}
+async function sdSaveLayout(){
+  var pairs=[{key:'page_layout',value:JSON.stringify(pageLayout)}];
+  var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
+  if(error){showNotif('Erreur : '+error.message);return;}
+  showNotif('✅ Mise en page sauvegardée !');
+  setTimeout(function(){initWysiwygEditor();},400);
+  closeSettingsDrawer();
+}
+
+function sdRenderMosaicGrid(){
+  var grid=document.getElementById('sd-mosaic-grid');
+  if(!grid)return;
+  grid.innerHTML=mosaicPhotos.map(function(url,j){
+    return'<div class="mosaic-ed-item">'+
+      '<img src="'+escHtml(url)+'" onerror="this.style.opacity=\'.3\'"/>'+
+      '<button class="mosaic-ed-del" onclick="sdRemoveMosaicPhoto('+j+')">×</button>'+
+    '</div>';
+  }).join('');
+}
+function sdSetupMosaicPicker(){
+  var grid=document.getElementById('sd-mosaic-picker');
+  if(!grid)return;
+  var PHOTOS=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
+  grid.innerHTML=PHOTOS.map(function(p){var path='photos/'+p+'.jpg';
+    return'<img src="'+path+'" onclick="sdAddMosaicFromPicker(\''+path+'\')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;" onmouseover="this.style.borderColor=\'var(--caramel)\'" onmouseout="this.style.borderColor=\'transparent\'"/>';
+  }).join('');
+}
+function sdRemoveMosaicPhoto(i){mosaicPhotos.splice(i,1);sdRenderMosaicGrid();}
+function sdAddMosaicPhoto(){
+  var input=document.getElementById('sd-mosaic-url');
+  if(!input||!input.value.trim()){showNotif('Entre un chemin ou URL');return;}
+  mosaicPhotos.push(input.value.trim());input.value='';sdRenderMosaicGrid();
+}
+function sdAddMosaicFromPicker(path){mosaicPhotos.push(path);sdRenderMosaicGrid();}
+async function sdSaveMosaic(){
+  var {error}=await sb.from('settings').upsert([{key:'mosaic_photos',value:JSON.stringify(mosaicPhotos)}],{onConflict:'key'});
+  if(error){showNotif('Erreur : '+error.message);return;}
+  shopSettings.mosaic_photos=JSON.stringify(mosaicPhotos);
+  showNotif('✅ Mosaïque sauvegardée !');
+}
+async function sdSaveColors(){
+  var p=document.getElementById('sdc_primary');
+  var s=document.getElementById('sdc_secondary');
+  var pairs=[];
+  if(p)pairs.push({key:'color_primary',value:p.value});
+  if(s)pairs.push({key:'color_secondary',value:s.value});
+  var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
+  if(error){showNotif('Erreur : '+error.message);return;}
+  pairs.forEach(function(pair){shopSettings[pair.key]=pair.value;});
+  applySettingsColors();
+  showNotif('✅ Couleurs sauvegardées !');
+  setTimeout(function(){initWysiwygEditor();},400);
+  closeSettingsDrawer();
+}
+async function sdSaveInfos(){
+  var pairs=[
+    {key:'shop_name',value:document.getElementById('sdi_name').value||''},
+    {key:'shop_tagline',value:document.getElementById('sdi_tagline').value||''},
+    {key:'shop_phone',value:document.getElementById('sdi_phone').value||''},
+    {key:'shop_address',value:document.getElementById('sdi_addr').value||''},
+    {key:'social_instagram',value:document.getElementById('sdi_ig').value||''},
+    {key:'social_facebook',value:document.getElementById('sdi_fb').value||''},
+    {key:'social_whatsapp',value:document.getElementById('sdi_wa').value||''},
+    {key:'social_snapchat',value:document.getElementById('sdi_sn').value||''}
+  ].filter(function(p){return p.value;});
+  var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
+  if(error){showNotif('Erreur : '+error.message);return;}
+  pairs.forEach(function(p){shopSettings[p.key]=p.value;});
+  showNotif('✅ Infos sauvegardées !');
+  closeSettingsDrawer();
+}
+async function sdSaveEmail(){
+  var pairs=[
+    {key:'notif_email',value:document.getElementById('sde_email').value||''},
+    {key:'emailjs_service',value:document.getElementById('sde_svc').value||''},
+    {key:'emailjs_template',value:document.getElementById('sde_tpl').value||''},
+    {key:'emailjs_pubkey',value:document.getElementById('sde_key').value||''}
+  ].filter(function(p){return p.value;});
+  var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
+  if(error){showNotif('Erreur : '+error.message);return;}
+  pairs.forEach(function(p){shopSettings[p.key]=p.value;});
+  showNotif('✅ Email sauvegardé !');
 }
 async function saveAllSiteSettings(){
   var staticIds={
@@ -3212,27 +3614,14 @@ async function loadAllSiteSettings(){
     var {data}=await sb.from('settings').select('key,value');
     var s={};(data||[]).forEach(function(r){s[r.key]=r.value;});
     Object.keys(s).forEach(function(k){shopSettings[k]=s[k];});
-    // Remplir les champs statiques
-    var staticMap={
-      shop_name:'set_shop_name',shop_tagline:'set_shop_tagline',shop_phone:'set_shop_phone',shop_address:'set_shop_address',
-      social_instagram:'ed_instagram',social_facebook:'ed_facebook',social_whatsapp:'ed_whatsapp',social_snapchat:'ed_snapchat',
-      color_primary:'set_color_primary',color_secondary:'set_color_secondary',
-      notif_email:'set_notif_email',emailjs_service:'set_emailjs_service',emailjs_template:'set_emailjs_template',emailjs_pubkey:'set_emailjs_pubkey'
-    };
-    Object.keys(staticMap).forEach(function(key){
-      var el=document.getElementById(staticMap[key]);
-      if(el&&s[key]!==undefined)el.value=s[key];
-    });
     // Charger la mise en page
     if(s.page_layout){try{var pl=JSON.parse(s.page_layout);if(pl.order)pageLayout.order=pl.order;if(pl.hidden)pageLayout.hidden=pl.hidden;}catch(e){}}
     // Charger les photos de la mosaïque
     if(s.mosaic_photos){try{var mp=JSON.parse(s.mosaic_photos);if(Array.isArray(mp)&&mp.length)mosaicPhotos=mp;}catch(e){}}
-    // Re-render si on est sur l'onglet paramètres
-    if(activeMainTab==='parametres')renderSectionsManager();
   }catch(e){}
 }
 
-/* ====== GESTIONNAIRE DE SECTIONS ====== */
+/* ====== SECTIONS STATE ====== */
 var SECTIONS=[
   {id:'hero',emoji:'🦸',label:'Bandeau principal (Hero)'},
   {id:'specs',emoji:'🎂',label:'Nos Spécialités (3 cartes)'},
@@ -3247,272 +3636,7 @@ var SECTIONS=[
 ];
 var pageLayout={order:SECTIONS.map(function(s){return s.id;}),hidden:[]};
 var mosaicPhotos=['photos/gateau-rouge-dollars.jpg','photos/cupcakes-valentin.jpg','photos/gateau-chiffre.jpg'];
-var _pickerTarget=null;
-
-function renderSectionsManager(){
-  var el=document.getElementById('sections-list');
-  if(!el)return;
-  el.innerHTML=pageLayout.order.map(function(id,i){
-    var sec=SECTIONS.find(function(s){return s.id===id;});
-    if(!sec)return '';
-    var hidden=pageLayout.hidden.indexOf(id)>-1;
-    return '<div class="sm-card'+(hidden?' sec-hidden':'')+'">'+
-      '<span class="sm-handle">☰</span>'+
-      '<button class="sm-vis '+(hidden?'off':'on')+'" onclick="toggleSecVis(\''+id+'\',this)"></button>'+
-      '<span class="sm-label">'+sec.emoji+' '+sec.label+'</span>'+
-      '<div class="sm-updn">'+
-        '<button class="sm-btn" onclick="moveSection(\''+id+'\',-1)"'+(i===0?' disabled style="opacity:.3;cursor:default;"':'')+'>↑</button>'+
-        '<button class="sm-btn" onclick="moveSection(\''+id+'\',1)"'+(i===pageLayout.order.length-1?' disabled style="opacity:.3;cursor:default;"':'')+'>↓</button>'+
-      '</div>'+
-      '<button class="sm-edit-btn" onclick="editSection(\''+id+'\')">✏️ Éditer</button>'+
-    '</div>';
-  }).join('');
-}
-function moveSection(id,dir){
-  var i=pageLayout.order.indexOf(id);
-  if(i<0)return;
-  var ni=i+dir;
-  if(ni<0||ni>=pageLayout.order.length)return;
-  var t=pageLayout.order[i];pageLayout.order[i]=pageLayout.order[ni];pageLayout.order[ni]=t;
-  renderSectionsManager();
-}
-function toggleSecVis(id,btn){
-  var hi=pageLayout.hidden.indexOf(id);
-  if(hi>-1){pageLayout.hidden.splice(hi,1);btn.classList.remove('off');btn.classList.add('on');btn.closest('.sm-card').classList.remove('sec-hidden');}
-  else{pageLayout.hidden.push(id);btn.classList.remove('on');btn.classList.add('off');btn.closest('.sm-card').classList.add('sec-hidden');}
-}
-async function savePageLayout(){
-  var pairs=[{key:'page_layout',value:JSON.stringify(pageLayout)},{key:'mosaic_photos',value:JSON.stringify(mosaicPhotos)}];
-  var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
-  if(error){showNotif('Erreur : '+error.message);return;}
-  shopSettings.page_layout=pairs[0].value;shopSettings.mosaic_photos=pairs[1].value;
-  showNotif('✅ Mise en page sauvegardée !');
-}
-
-/* Sélecteur de taille */
-function pickSize(key,val,btn){
-  btn.closest('.szr-btns').querySelectorAll('.sz-btn').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
-  shopSettings[key]=val;
-}
-function szPicker(key,dflt){
-  var vals=['0.6rem','0.75rem','0.88rem','1.05rem','1.3rem','1.7rem','2.2rem'];
-  var lbls=['XS','S','M','L','XL','XXL','3XL'];
-  var cur=shopSettings[key]||dflt;
-  return '<div class="szr"><span class="szr-lbl">Taille :</span><div class="szr-btns">'+
-    vals.map(function(v,i){return '<button class="sz-btn'+(v===cur?' on':'')+'" onclick="pickSize(\''+key+'\',\''+v+'\',this)">'+lbls[i]+'</button>';}).join('')+
-  '</div></div>';
-}
-
-/* Champ photo avec aperçu + bouton bibliothèque */
-function photoField(inputId,prevId,defaultSrc,label){
-  var val=shopSettings[inputId.replace(/^ed_|^set_/,'')]||'';
-  return (label?'<label class="bs-label">'+label+'</label>':'')+
-    '<div style="display:flex;gap:7px;align-items:center;margin-bottom:8px;">'+
-      '<input class="bs-input" id="'+inputId+'" value="'+escHtml(val)+'" placeholder="URL ou photos/nom.jpg" oninput="previewPhoto(this,\''+prevId+'\')" style="margin:0;flex:1;"/>'+
-      '<button onclick="openPickerFor(\''+inputId+'\')" style="padding:8px 9px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:8px;font-size:.78rem;cursor:pointer;font-family:\'Lato\',sans-serif;white-space:nowrap;">📸</button>'+
-    '</div>'+
-    '<img id="'+prevId+'" src="'+(val||defaultSrc)+'" style="width:100%;height:130px;object-fit:cover;border-radius:10px;margin-bottom:10px;border:1.5px solid var(--bordure);"/>';
-}
 function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
-
-/* Sélecteur de photos inline */
-function openPickerFor(inputId){
-  _pickerTarget=inputId;
-  var existing=document.getElementById('inline-picker');
-  if(existing){existing.style.display=existing.style.display==='none'?'block':'none';return;}
-  var div=document.createElement('div');
-  div.id='inline-picker';
-  div.style.cssText='border-top:1.5px solid var(--bordure);margin-top:10px;padding-top:12px;';
-  var PHOTOS=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
-  div.innerHTML='<div style="font-size:.8rem;font-weight:700;color:var(--brun);margin-bottom:8px;">📸 Clique pour choisir</div>'+
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">'+
-    PHOTOS.map(function(p){var path='photos/'+p+'.jpg';return '<img src="'+path+'" onclick="selectFromPicker(\''+path+'\')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:7px;cursor:pointer;border:2px solid transparent;" onmouseover="this.style.borderColor=\'var(--caramel)\'" onmouseout="this.style.borderColor=\'transparent\'"/>';}).join('')+
-    '</div>';
-  document.getElementById('bsContent').appendChild(div);
-}
-function selectFromPicker(path){
-  if(_pickerTarget){
-    var el=document.getElementById(_pickerTarget);
-    if(el){el.value=path;el.dispatchEvent(new Event('input'));}
-  }
-  var p=document.getElementById('inline-picker');if(p)p.style.display='none';
-}
-
-/* ====== ÉDITEURS DE SECTIONS ====== */
-function editSection(id){
-  var html=buildEditorHTML(id);
-  if(id==='mosaic'){openModal(html);setTimeout(function(){setupMosaicPicker();renderMosaicGrid();},60);return;}
-  openModal(html);
-}
-function buildEditorHTML(id){
-  var s=shopSettings;
-  switch(id){
-    case 'hero':
-      return '<div class="bs-title">🦸 Bandeau principal</div>'+
-        '<label class="bs-label">Titre principal</label>'+
-        '<input class="bs-input" id="_hero_title" value="'+escHtml(s.hero_title||'')+'" placeholder="Les Douceurs de Cicine"/>'+
-        szPicker('hero_title_size','2rem')+
-        '<label class="bs-label">Sous-titre</label>'+
-        '<input class="bs-input" id="_hero_sub" value="'+escHtml(s.hero_subtitle||'')+'" placeholder="Le bonheur à chaque bouchée"/>'+
-        szPicker('hero_sub_size','0.73rem')+
-        '<label class="bs-label">Texte du bouton</label>'+
-        '<input class="bs-input" id="_hero_btn" value="'+escHtml(s.hero_btn||'')+'" placeholder="🧁 Commander"/>'+
-        '<button class="bs-btn-primary" onclick="saveSec(\'hero\')">💾 Sauvegarder</button>'+
-        '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
-    case 'specs':
-      var h='<div class="bs-title">🎂 Nos Spécialités</div>'+szPicker('spec_name_size','0.95rem');
-      var defs=['photos/gateau-rouge-roses.jpg','photos/delibox-aperitif.jpg','photos/delibox.jpg'];
-      for(var i=1;i<=3;i++){
-        h+='<div style="background:var(--fond);border-radius:10px;padding:10px;margin-bottom:10px;">'+
-          '<div style="font-size:.74rem;font-weight:700;color:var(--brun);margin-bottom:7px;">Carte '+i+'</div>'+
-          '<label class="bs-label">Nom</label>'+
-          '<input class="bs-input" id="_spec'+i+'_name" value="'+escHtml(s['spec'+i+'_name']||'')+'" placeholder="Nom de la spécialité"/>'+
-          photoField('_spec'+i+'_photo','_prev_spec'+i,defs[i-1],'Photo')+
-          '</div>';
-      }
-      h+='<button class="bs-btn-primary" onclick="saveSec(\'specs\')">💾 Sauvegarder</button>'+
-         '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
-      return h;
-    case 'banner':
-      return '<div class="bs-title">🖼️ Grande bannière</div>'+
-        photoField('_banner_photo','_prev_banner','photos/gateau-tropical.jpg','Photo de fond')+
-        '<label class="bs-label">Titre</label>'+
-        '<input class="bs-input" id="_banner_title" value="'+escHtml(s.banner_title||'')+'" placeholder="Fait avec amour"/>'+
-        szPicker('banner_title_size','2rem')+
-        '<label class="bs-label">Texte</label>'+
-        '<input class="bs-input" id="_banner_text" value="'+escHtml(s.banner_text||'')+'" placeholder="Chaque gâteau est une création unique..."/>'+
-        szPicker('banner_text_size','0.75rem')+
-        '<label class="bs-label">Texte du lien</label>'+
-        '<input class="bs-input" id="_banner_btn" value="'+escHtml(s.banner_btn||'')+'" placeholder="Voir nos réalisations →"/>'+
-        '<button class="bs-btn-primary" onclick="saveSec(\'banner\')">💾 Sauvegarder</button>'+
-        '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
-    case 'pdlsem':
-      return '<div class="bs-title">⭐ Produit de la semaine</div>'+
-        '<div style="background:var(--fond2);border-radius:10px;padding:14px;text-align:center;">'+
-        '<p style="font-size:.8rem;color:var(--doux);margin-bottom:10px;">Géré dans l\'onglet dédié du menu.</p>'+
-        '<button onclick="setMainTab(\'pdlsem\');closeModal();" class="bs-btn-primary" style="width:auto;padding:9px 20px;">Aller à Produit semaine →</button>'+
-        '</div>';
-    case 'how':
-      return '<div class="bs-title">📋 Comment commander</div>'+
-        '<p style="font-size:.78rem;color:var(--doux);margin-bottom:14px;">Cette section affiche les 3 étapes pour commander. Tu peux la masquer depuis le gestionnaire si besoin.</p>'+
-        '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>';
-    case 'pourquoi':
-      var h2='<div class="bs-title">💕 Pourquoi Cicine ?</div>'+
-        photoField('_pourquoi_photo','_prev_pourquoi','photos/gateau-babyshower.jpg','Photo à gauche')+
-        szPicker('pourquoi_text_size','0.73rem')+
-        '<div style="font-size:.75rem;font-weight:700;color:var(--brun);margin-bottom:8px;">3 arguments</div>';
-      for(var j=1;j<=3;j++){
-        h2+='<div style="display:grid;grid-template-columns:36px 1fr 1fr;gap:5px;margin-bottom:7px;">'+
-          '<input class="bs-input" id="_pq'+j+'_icon" value="'+escHtml(s['pq'+j+'_icon']||'')+'" placeholder="🤍" style="text-align:center;padding:8px 3px;"/>'+
-          '<input class="bs-input" id="_pq'+j+'_title" value="'+escHtml(s['pq'+j+'_title']||'')+'" placeholder="Titre"/>'+
-          '<input class="bs-input" id="_pq'+j+'_text" value="'+escHtml(s['pq'+j+'_text']||'')+'" placeholder="Description"/>'+
-          '</div>';
-      }
-      h2+='<button class="bs-btn-primary" onclick="saveSec(\'pourquoi\')">💾 Sauvegarder</button>'+
-          '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
-      return h2;
-    case 'social':
-      return '<div class="bs-title">📱 Réseaux sociaux</div>'+
-        '<p style="font-size:.75rem;color:var(--doux);margin-bottom:12px;">Les liens sont dans l\'onglet <strong>Infos & Réseaux</strong>.</p>'+
-        '<button onclick="showEdTab(\'infos\');closeModal();" class="bs-btn-primary">Aller à Infos & Réseaux →</button>'+
-        '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>';
-    case 'avis':
-      return '<div class="bs-title">💬 Avis clients</div>'+
-        '<p style="font-size:.78rem;color:var(--doux);margin-bottom:12px;">Les avis sont chargés automatiquement depuis la base. Gère-les dans l\'onglet Avis.</p>'+
-        '<button onclick="setMainTab(\'avis\');closeModal();" class="bs-btn-primary">Gérer les avis →</button>'+
-        '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>';
-    case 'mosaic':
-      return '<div class="bs-title">📸 Mosaïque photos</div>'+
-        '<p style="font-size:.75rem;color:var(--doux);margin-bottom:10px;">Ajoute ou retire autant de photos que tu veux !</p>'+
-        '<div class="mosaic-ed" id="mosaic-ed-grid"></div>'+
-        '<div style="display:flex;gap:7px;margin-bottom:10px;align-items:center;">'+
-          '<input class="bs-input" id="mosaic-url" placeholder="URL ou photos/nom.jpg" style="margin:0;flex:1;"/>'+
-          '<button onclick="addMosaicPhoto()" style="padding:9px 12px;background:var(--brun);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:\'Lato\',sans-serif;white-space:nowrap;">+ Ajouter</button>'+
-        '</div>'+
-        '<div style="background:var(--fond);border-radius:10px;padding:10px;">'+
-          '<div style="font-size:.73rem;font-weight:700;color:var(--brun);margin-bottom:7px;">📸 Choisir depuis les photos du site</div>'+
-          '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;" id="mosaic-picker-grid"></div>'+
-        '</div>'+
-        '<button class="bs-btn-primary" style="margin-top:12px;" onclick="saveMosaicPhotos()">💾 Sauvegarder la mosaïque</button>'+
-        '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
-    case 'cta':
-      return '<div class="bs-title">🌟 CTA Final</div>'+
-        '<label class="bs-label">Titre</label>'+
-        '<input class="bs-input" id="_cta_title" value="'+escHtml(s.cta_title||'')+'" placeholder="Envie d\'une douceur ?"/>'+
-        szPicker('cta_title_size','1.6rem')+
-        '<label class="bs-label">Sous-titre</label>'+
-        '<input class="bs-input" id="_cta_sub" value="'+escHtml(s.cta_sub||'')+'" placeholder="Cicine prépare tout avec amour 🩷"/>'+
-        szPicker('cta_sub_size','0.73rem')+
-        '<button class="bs-btn-primary" onclick="saveSec(\'cta\')">💾 Sauvegarder</button>'+
-        '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
-    default:return '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>';
-  }
-}
-
-async function saveSec(id){
-  var pairs=[];
-  function fi(inputId,key){var el=document.getElementById(inputId);if(el)pairs.push({key:key,value:el.value||''});}
-  function fs(key){if(shopSettings[key]!==undefined)pairs.push({key:key,value:shopSettings[key]});}
-  switch(id){
-    case 'hero':
-      fi('_hero_title','hero_title');fi('_hero_sub','hero_subtitle');fi('_hero_btn','hero_btn');
-      fs('hero_title_size');fs('hero_sub_size');break;
-    case 'specs':
-      for(var i=1;i<=3;i++){fi('_spec'+i+'_name','spec'+i+'_name');fi('_spec'+i+'_photo','spec'+i+'_photo');}
-      fs('spec_name_size');break;
-    case 'banner':
-      fi('_banner_photo','banner_photo');fi('_banner_title','banner_title');fi('_banner_text','banner_text');fi('_banner_btn','banner_btn');
-      fs('banner_title_size');fs('banner_text_size');break;
-    case 'pourquoi':
-      fi('_pourquoi_photo','pourquoi_photo');
-      for(var j=1;j<=3;j++){fi('_pq'+j+'_icon','pq'+j+'_icon');fi('_pq'+j+'_title','pq'+j+'_title');fi('_pq'+j+'_text','pq'+j+'_text');}
-      fs('pourquoi_text_size');break;
-    case 'cta':
-      fi('_cta_title','cta_title');fi('_cta_sub','cta_sub');
-      fs('cta_title_size');fs('cta_sub_size');break;
-  }
-  var valid=pairs.filter(function(p){return p.value!==null&&p.value!==undefined;});
-  if(!valid.length){showNotif('Rien à modifier.');return;}
-  var {error}=await sb.from('settings').upsert(valid,{onConflict:'key'});
-  if(error){showNotif('Erreur : '+error.message);return;}
-  valid.forEach(function(p){shopSettings[p.key]=p.value;});
-  showNotif('✅ Section sauvegardée !');
-  closeModal();
-}
-
-/* ====== MOSAÏQUE ====== */
-function renderMosaicGrid(){
-  var grid=document.getElementById('mosaic-ed-grid');
-  if(!grid)return;
-  grid.innerHTML=mosaicPhotos.map(function(url,j){
-    return '<div class="mosaic-ed-item">'+
-      '<img src="'+escHtml(url)+'" onerror="this.style.opacity=\'.3\'"/>'+
-      '<button class="mosaic-ed-del" onclick="removeMosaicPhoto('+j+')">×</button>'+
-    '</div>';
-  }).join('');
-}
-function setupMosaicPicker(){
-  var grid=document.getElementById('mosaic-picker-grid');
-  if(!grid)return;
-  var PHOTOS=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
-  grid.innerHTML=PHOTOS.map(function(p){var path='photos/'+p+'.jpg';
-    return '<img src="'+path+'" onclick="addMosaicFromPicker(\''+path+'\')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;" onmouseover="this.style.borderColor=\'var(--caramel)\'" onmouseout="this.style.borderColor=\'transparent\'"/>';
-  }).join('');
-}
-function removeMosaicPhoto(i){mosaicPhotos.splice(i,1);renderMosaicGrid();}
-function addMosaicPhoto(){
-  var input=document.getElementById('mosaic-url');
-  if(!input||!input.value.trim()){showNotif('Entre un chemin ou URL');return;}
-  mosaicPhotos.push(input.value.trim());input.value='';renderMosaicGrid();
-}
-function addMosaicFromPicker(path){mosaicPhotos.push(path);renderMosaicGrid();}
-async function saveMosaicPhotos(){
-  var {error}=await sb.from('settings').upsert([{key:'mosaic_photos',value:JSON.stringify(mosaicPhotos)}],{onConflict:'key'});
-  if(error){showNotif('Erreur : '+error.message);return;}
-  shopSettings.mosaic_photos=JSON.stringify(mosaicPhotos);
-  showNotif('✅ Mosaïque sauvegardée !');closeModal();
-}
 
 /* ====== INIT ====== */
 window.addEventListener("load",async function(){
