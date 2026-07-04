@@ -356,16 +356,38 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 }
 @media(min-width:600px){.stock-grid{display:grid;grid-template-columns:repeat(2,1fr);}}
 @media(max-width:500px){#tr-cards{grid-template-columns:1fr!important;}.tr-form-grid{grid-template-columns:1fr!important;}}
-/* ÉDITEUR DU SITE (onglet Paramètres) */
+/* ÉDITEUR DU SITE */
 .ed-tab{flex-shrink:0;padding:8px 14px;border-radius:30px;border:1.5px solid var(--bordure);background:#fff;font-size:.75rem;font-weight:700;color:var(--doux);cursor:pointer;white-space:nowrap;font-family:'Lato',sans-serif;}
 .ed-tab.active{background:var(--brun);color:#fff;border-color:var(--brun);}
 .ed-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;}
 .ed-card-title{font-weight:700;font-size:.9rem;color:var(--brun);margin-bottom:12px;}
-.ed-spec-row{padding:10px;background:var(--fond);border-radius:10px;margin-bottom:8px;}
-.ed-spec-label{font-size:.72rem;font-weight:700;color:var(--doux);margin-bottom:6px;}
-.ed-photo-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.ed-photo-row .bs-input{flex:1;margin-bottom:0;}
 .ed-preview{width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1.5px solid var(--bordure);}
+/* SECTION MANAGER */
+.section-mgr{display:flex;flex-direction:column;gap:8px;}
+.sm-card{background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:8px;transition:opacity .2s;}
+.sm-card.sec-hidden{opacity:.4;background:var(--fond);}
+.sm-handle{color:#c0b0aa;font-size:1.1rem;flex-shrink:0;}
+.sm-vis{width:38px;height:22px;border-radius:20px;border:none;cursor:pointer;position:relative;flex-shrink:0;transition:background .2s;padding:0;}
+.sm-vis.on{background:var(--vert);}
+.sm-vis.off{background:#c5b8b4;}
+.sm-vis::after{content:'';position:absolute;top:3px;right:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:all .2s;}
+.sm-vis.off::after{right:19px;}
+.sm-label{flex:1;font-size:.82rem;font-weight:700;color:var(--texte);}
+.sm-updn{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
+.sm-btn{width:24px;height:22px;border:1.5px solid var(--bordure);background:var(--fond);border-radius:5px;font-size:.72rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--brun);}
+.sm-btn:hover{background:var(--fond2);}
+.sm-edit-btn{flex-shrink:0;padding:6px 11px;background:var(--brun);color:#fff;border:none;border-radius:20px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;}
+/* TAILLE DE TEXTE */
+.szr{display:flex;align-items:center;gap:6px;margin-bottom:11px;flex-wrap:wrap;}
+.szr-lbl{font-size:.7rem;font-weight:700;color:var(--doux);min-width:55px;flex-shrink:0;}
+.szr-btns{display:flex;gap:3px;flex-wrap:wrap;}
+.sz-btn{padding:4px 9px;border:1.5px solid var(--bordure);border-radius:20px;background:#fff;font-size:.66rem;font-weight:700;color:var(--doux);cursor:pointer;font-family:'Lato',sans-serif;}
+.sz-btn.on{background:var(--caramel);color:#fff;border-color:var(--caramel);}
+/* MOSAÏQUE ÉDITEUR */
+.mosaic-ed{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px;}
+.mosaic-ed-item{position:relative;}
+.mosaic-ed-item img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1.5px solid var(--bordure);display:block;}
+.mosaic-ed-del{position:absolute;top:-7px;right:-7px;width:20px;height:20px;background:#dc2626;color:#fff;border-radius:50%;border:none;font-size:.68rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Lato',sans-serif;}
 </style>
 </head>
 <body>
@@ -826,146 +848,42 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   <!-- ===== TAB PARAMÈTRES — ÉDITEUR DU SITE ===== -->
   <div id="tab-parametres" class="wrap" style="display:none;">
     <div class="section-title" style="margin-bottom:14px;">⚙️ Éditeur du site</div>
-
-    <!-- Sous-onglets éditeur -->
     <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;margin-bottom:16px;">
-      <button class="ed-tab active" id="edt-accueil" onclick="showEdTab('accueil')">🏠 Page d'accueil</button>
+      <button class="ed-tab active" id="edt-layout" onclick="showEdTab('layout')">🗂️ Mise en page</button>
       <button class="ed-tab" id="edt-photos" onclick="showEdTab('photos')">📸 Photos</button>
-      <button class="ed-tab" id="edt-apparence" onclick="showEdTab('apparence')">🎨 Apparence</button>
+      <button class="ed-tab" id="edt-apparence" onclick="showEdTab('apparence')">🎨 Couleurs</button>
       <button class="ed-tab" id="edt-infos" onclick="showEdTab('infos')">ℹ️ Infos & Réseaux</button>
       <button class="ed-tab" id="edt-email" onclick="showEdTab('email')">📧 Emails</button>
     </div>
 
-    <!-- ======= PAGE D'ACCUEIL ======= -->
-    <div id="ed-accueil">
-
-      <div class="ed-card">
-        <div class="ed-card-title">🦸 Bandeau principal (Hero)</div>
-        <label class="bs-label">Titre principal</label>
-        <input class="bs-input" id="ed_hero_title" placeholder="Les Douceurs de Cicine"/>
-        <label class="bs-label">Sous-titre / accroche</label>
-        <input class="bs-input" id="ed_hero_subtitle" placeholder="Le bonheur à chaque bouchée · Le Vauclin, Martinique"/>
-        <label class="bs-label">Texte du bouton principal</label>
-        <input class="bs-input" id="ed_hero_btn" placeholder="🧁 Commander"/>
+    <!-- MISE EN PAGE -->
+    <div id="ed-layout">
+      <div style="font-size:.75rem;color:var(--doux);background:#fff;border:1.5px solid var(--bordure);border-radius:10px;padding:10px 13px;margin-bottom:14px;line-height:1.6;">
+        👁 <strong>Activer/désactiver</strong> · ↑↓ <strong>Réorganiser</strong> · ✏️ <strong>Éditer</strong> chaque section (textes, photos, taille)
       </div>
-
-      <div class="ed-card">
-        <div class="ed-card-title">🎂 Nos Spécialités (3 cartes)</div>
-        <div style="display:grid;gap:10px;">
-          <div class="ed-spec-row">
-            <div class="ed-spec-label">Carte 1</div>
-            <input class="bs-input" id="ed_spec1_name" placeholder="Nom (ex: Gâteaux & Créations)"/>
-            <div class="ed-photo-row">
-              <input class="bs-input" id="ed_spec1_photo" placeholder="URL ou chemin photo (ex: photos/gateau-rouge-roses.jpg)" oninput="previewPhoto(this,'prev_spec1')"/>
-              <img id="prev_spec1" class="ed-preview" src="photos/gateau-rouge-roses.jpg"/>
-            </div>
-          </div>
-          <div class="ed-spec-row">
-            <div class="ed-spec-label">Carte 2</div>
-            <input class="bs-input" id="ed_spec2_name" placeholder="Nom (ex: Viennoiseries)"/>
-            <div class="ed-photo-row">
-              <input class="bs-input" id="ed_spec2_photo" placeholder="URL ou chemin photo" oninput="previewPhoto(this,'prev_spec2')"/>
-              <img id="prev_spec2" class="ed-preview" src="photos/delibox-aperitif.jpg"/>
-            </div>
-          </div>
-          <div class="ed-spec-row">
-            <div class="ed-spec-label">Carte 3</div>
-            <input class="bs-input" id="ed_spec3_name" placeholder="Nom (ex: Délibox)"/>
-            <div class="ed-photo-row">
-              <input class="bs-input" id="ed_spec3_photo" placeholder="URL ou chemin photo" oninput="previewPhoto(this,'prev_spec3')"/>
-              <img id="prev_spec3" class="ed-preview" src="photos/delibox.jpg"/>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="ed-card">
-        <div class="ed-card-title">🖼️ Grande bannière photo</div>
-        <div class="ed-photo-row">
-          <input class="bs-input" id="ed_banner_photo" placeholder="URL ou chemin photo (ex: photos/gateau-tropical.jpg)" oninput="previewPhoto(this,'prev_banner')"/>
-          <img id="prev_banner" class="ed-preview" src="photos/gateau-tropical.jpg"/>
-        </div>
-        <label class="bs-label">Titre sur la bannière</label>
-        <input class="bs-input" id="ed_banner_title" placeholder="Fait avec amour"/>
-        <label class="bs-label">Texte sous le titre</label>
-        <input class="bs-input" id="ed_banner_text" placeholder="Chaque gâteau est une création unique..."/>
-        <label class="bs-label">Texte du lien</label>
-        <input class="bs-input" id="ed_banner_btn" placeholder="Voir nos réalisations →"/>
-      </div>
-
-      <div class="ed-card">
-        <div class="ed-card-title">💕 Section "Pourquoi Cicine ?"</div>
-        <div class="ed-photo-row">
-          <input class="bs-input" id="ed_pourquoi_photo" placeholder="URL ou chemin photo" oninput="previewPhoto(this,'prev_pourquoi')"/>
-          <img id="prev_pourquoi" class="ed-preview" src="photos/gateau-babyshower.jpg"/>
-        </div>
-        <div style="display:grid;gap:8px;margin-top:8px;">
-          <div style="display:grid;grid-template-columns:40px 1fr 1fr;gap:6px;align-items:center;">
-            <input class="bs-input" id="ed_pq1_icon" placeholder="🤍" style="text-align:center;padding:8px 4px;"/>
-            <input class="bs-input" id="ed_pq1_title" placeholder="Titre (ex: Fait maison)"/>
-            <input class="bs-input" id="ed_pq1_text" placeholder="Description courte"/>
-          </div>
-          <div style="display:grid;grid-template-columns:40px 1fr 1fr;gap:6px;align-items:center;">
-            <input class="bs-input" id="ed_pq2_icon" placeholder="✨" style="text-align:center;padding:8px 4px;"/>
-            <input class="bs-input" id="ed_pq2_title" placeholder="Titre"/>
-            <input class="bs-input" id="ed_pq2_text" placeholder="Description courte"/>
-          </div>
-          <div style="display:grid;grid-template-columns:40px 1fr 1fr;gap:6px;align-items:center;">
-            <input class="bs-input" id="ed_pq3_icon" placeholder="📍" style="text-align:center;padding:8px 4px;"/>
-            <input class="bs-input" id="ed_pq3_title" placeholder="Titre"/>
-            <input class="bs-input" id="ed_pq3_text" placeholder="Description courte"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="ed-card">
-        <div class="ed-card-title">📢 Petite mosaïque 3 photos (entre avis et liens)</div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <div style="flex:1;min-width:140px;">
-            <input class="bs-input" id="ed_mosaic1" placeholder="Photo 1 (URL ou chemin)" oninput="previewPhoto(this,'prev_m1')"/>
-            <img id="prev_m1" class="ed-preview" src="photos/gateau-rouge-dollars.jpg"/>
-          </div>
-          <div style="flex:1;min-width:140px;">
-            <input class="bs-input" id="ed_mosaic2" placeholder="Photo 2" oninput="previewPhoto(this,'prev_m2')"/>
-            <img id="prev_m2" class="ed-preview" src="photos/cupcakes-valentin.jpg"/>
-          </div>
-          <div style="flex:1;min-width:140px;">
-            <input class="bs-input" id="ed_mosaic3" placeholder="Photo 3" oninput="previewPhoto(this,'prev_m3')"/>
-            <img id="prev_m3" class="ed-preview" src="photos/gateau-chiffre.jpg"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="ed-card">
-        <div class="ed-card-title">🌟 CTA Final ("Envie d'une douceur ?")</div>
-        <label class="bs-label">Titre</label>
-        <input class="bs-input" id="ed_cta_title" placeholder="Envie d'une douceur ?"/>
-        <label class="bs-label">Sous-titre</label>
-        <input class="bs-input" id="ed_cta_sub" placeholder="Cicine prépare tout avec amour 🩷"/>
-      </div>
+      <div class="section-mgr" id="sections-list"></div>
+      <button class="bs-btn-primary" onclick="savePageLayout()" style="margin-top:12px;">💾 Sauvegarder la mise en page</button>
     </div>
 
-    <!-- ======= PHOTOS ======= -->
+    <!-- PHOTOS -->
     <div id="ed-photos" style="display:none;">
       <div class="ed-card">
-        <div class="ed-card-title">📸 Photos disponibles sur le site</div>
-        <p style="font-size:.75rem;color:var(--doux);margin-bottom:12px;">Ces photos sont stockées dans le dossier <code>photos/</code> du site. Tu peux utiliser leurs noms dans les champs ci-dessus.</p>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="photosGrid">
-          <!-- Généré par JS -->
-        </div>
+        <div class="ed-card-title">📸 Photos du site — clic = copier le chemin</div>
+        <p style="font-size:.73rem;color:var(--doux);margin-bottom:12px;">Clique sur une photo pour copier son chemin. Colle-le ensuite dans les champs photo des sections.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="photosGrid"></div>
       </div>
       <div class="ed-card">
-        <div class="ed-card-title">➕ Ajouter une photo par URL externe</div>
-        <p style="font-size:.73rem;color:var(--doux);margin-bottom:10px;">Copie le lien direct d'une image (Instagram, Google Drive, Dropbox, etc.) et colle-le dans n'importe quel champ photo ci-dessus.</p>
-        <div class="ed-photo-row">
-          <input class="bs-input" id="ed_new_photo_url" placeholder="https://... (lien direct vers l'image)"/>
-          <img id="prev_new" class="ed-preview" style="display:none;"/>
+        <div class="ed-card-title">🌐 Tester une photo externe</div>
+        <p style="font-size:.73rem;color:var(--doux);margin-bottom:10px;">Colle un lien direct vers une image pour vérifier qu'elle s'affiche bien.</p>
+        <div style="display:flex;gap:7px;align-items:center;margin-bottom:10px;">
+          <input class="bs-input" id="ed_new_photo_url" placeholder="https://..." style="margin:0;flex:1;"/>
+          <button onclick="testPhotoUrl()" style="padding:9px 13px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:9px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;white-space:nowrap;">👁️ Voir</button>
         </div>
-        <button onclick="testPhotoUrl()" style="margin-top:8px;padding:8px 16px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:20px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">👁️ Tester l'aperçu</button>
+        <img id="prev_new" style="display:none;width:100%;max-height:180px;object-fit:contain;border-radius:10px;border:1.5px solid var(--bordure);"/>
       </div>
     </div>
 
-    <!-- ======= APPARENCE ======= -->
+    <!-- COULEURS -->
     <div id="ed-apparence" style="display:none;">
       <div class="ed-card">
         <div class="ed-card-title">🎨 Couleurs du site</div>
@@ -983,12 +901,12 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       </div>
       <div class="ed-card" style="background:#fef9e7;border-color:#f0c040;">
         <div class="ed-card-title" style="color:#7a6000;">💡 Remettre les couleurs d'origine</div>
-        <p style="font-size:.73rem;color:#7a6000;margin-bottom:10px;">Si tu as changé les couleurs par erreur, execute ce code dans Supabase :</p>
         <code style="font-size:.68rem;background:#fff;padding:8px;border-radius:8px;display:block;">UPDATE settings SET value='#5C2E0E' WHERE key='color_primary';</code>
       </div>
+      <button class="bs-btn-primary" onclick="saveAllSiteSettings()">💾 Sauvegarder les couleurs</button>
     </div>
 
-    <!-- ======= INFOS & RÉSEAUX ======= -->
+    <!-- INFOS & RÉSEAUX -->
     <div id="ed-infos" style="display:none;">
       <div class="ed-card">
         <div class="ed-card-title">🏪 Infos de la boutique</div>
@@ -1012,15 +930,16 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <label class="bs-label">👻 Snapchat (lien complet)</label>
         <input class="bs-input" id="ed_snapchat" placeholder="https://snapchat.com/..."/>
       </div>
+      <button class="bs-btn-primary" onclick="saveAllSiteSettings()">💾 Sauvegarder</button>
     </div>
 
-    <!-- ======= EMAIL ======= -->
+    <!-- EMAIL -->
     <div id="ed-email" style="display:none;">
       <div class="ed-card">
         <div class="ed-card-title">📧 Notifications email</div>
         <label class="bs-label">Email destinataire (nouvelles commandes)</label>
         <input class="bs-input" id="set_notif_email" type="email" placeholder="votre@email.com"/>
-        <div style="background:var(--fond2);border-radius:9px;padding:10px 13px;margin-bottom:12px;font-size:.73rem;color:var(--doux);">💡 Créez un compte gratuit sur <strong>emailjs.com</strong> pour activer les notifications</div>
+        <div style="background:var(--fond2);border-radius:9px;padding:10px 13px;margin-bottom:12px;font-size:.73rem;color:var(--doux);">💡 Compte gratuit sur <strong>emailjs.com</strong> pour activer les notifications</div>
         <label class="bs-label">EmailJS — Service ID</label>
         <input class="bs-input" id="set_emailjs_service" placeholder="service_xxxxxxx"/>
         <label class="bs-label">EmailJS — Template ID</label>
@@ -1028,10 +947,8 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <label class="bs-label">EmailJS — Clé publique</label>
         <input class="bs-input" id="set_emailjs_pubkey" placeholder="xxxxxxxxxxxxxxxxxxxx"/>
       </div>
+      <button class="bs-btn-primary" onclick="saveAllSiteSettings()">💾 Sauvegarder</button>
     </div>
-
-    <!-- Bouton sauvegarder global -->
-    <button class="bs-btn-primary" onclick="saveAllSiteSettings()" style="width:100%;margin-top:8px;">💾 Sauvegarder toutes les modifications</button>
   </div>
 </div>
 
@@ -3236,13 +3153,14 @@ async function deletePost(id){
 
 /* ====== ÉDITEUR DU SITE ====== */
 function showEdTab(tab){
-  ['accueil','photos','apparence','infos','email'].forEach(function(t){
+  ['layout','photos','apparence','infos','email'].forEach(function(t){
     var panel=document.getElementById('ed-'+t);
     var btn=document.getElementById('edt-'+t);
     if(panel)panel.style.display=t===tab?'':'none';
     if(btn)btn.classList.toggle('active',t===tab);
   });
   if(tab==='photos')renderPhotosGrid();
+  if(tab==='layout')renderSectionsManager();
 }
 function previewPhoto(input,previewId){
   var img=document.getElementById(previewId);
@@ -3269,71 +3187,331 @@ function copyPhotoPath(path){
   showNotif('Chemin copié : '+path);
 }
 async function saveAllSiteSettings(){
-  var ids={
-    hero_title:'ed_hero_title',hero_subtitle:'ed_hero_subtitle',hero_btn:'ed_hero_btn',
-    spec1_name:'ed_spec1_name',spec1_photo:'ed_spec1_photo',
-    spec2_name:'ed_spec2_name',spec2_photo:'ed_spec2_photo',
-    spec3_name:'ed_spec3_name',spec3_photo:'ed_spec3_photo',
-    banner_photo:'ed_banner_photo',banner_title:'ed_banner_title',banner_text:'ed_banner_text',banner_btn:'ed_banner_btn',
-    pourquoi_photo:'ed_pourquoi_photo',
-    pq1_icon:'ed_pq1_icon',pq1_title:'ed_pq1_title',pq1_text:'ed_pq1_text',
-    pq2_icon:'ed_pq2_icon',pq2_title:'ed_pq2_title',pq2_text:'ed_pq2_text',
-    pq3_icon:'ed_pq3_icon',pq3_title:'ed_pq3_title',pq3_text:'ed_pq3_text',
-    mosaic1:'ed_mosaic1',mosaic2:'ed_mosaic2',mosaic3:'ed_mosaic3',
-    cta_title:'ed_cta_title',cta_sub:'ed_cta_sub',
+  var staticIds={
     shop_name:'set_shop_name',shop_tagline:'set_shop_tagline',shop_phone:'set_shop_phone',shop_address:'set_shop_address',
     social_instagram:'ed_instagram',social_facebook:'ed_facebook',social_whatsapp:'ed_whatsapp',social_snapchat:'ed_snapchat',
     color_primary:'set_color_primary',color_secondary:'set_color_secondary',
     notif_email:'set_notif_email',emailjs_service:'set_emailjs_service',emailjs_template:'set_emailjs_template',emailjs_pubkey:'set_emailjs_pubkey'
   };
   var upserts=[];
-  Object.keys(ids).forEach(function(key){
-    var el=document.getElementById(ids[key]);
+  Object.keys(staticIds).forEach(function(key){
+    var el=document.getElementById(staticIds[key]);
     if(el&&el.value)upserts.push({key:key,value:el.value});
   });
-  if(!upserts.length){showNotif('Rien à sauvegarder','error');return;}
+  if(!upserts.length){showNotif('Rien à sauvegarder');return;}
   try{
     var {error}=await sb.from('settings').upsert(upserts,{onConflict:'key'});
     if(error)throw error;
     upserts.forEach(function(u){shopSettings[u.key]=u.value;});
     applySettingsColors();
-    showNotif('✅ Toutes les modifications sauvegardées !');
+    showNotif('✅ Paramètres sauvegardés !');
   }catch(e){showNotif('Erreur : '+e.message);}
 }
 async function loadAllSiteSettings(){
   try{
     var {data}=await sb.from('settings').select('key,value');
     var s={};(data||[]).forEach(function(r){s[r.key]=r.value;});
-    var map={
-      hero_title:'ed_hero_title',hero_subtitle:'ed_hero_subtitle',hero_btn:'ed_hero_btn',
-      spec1_name:'ed_spec1_name',spec1_photo:'ed_spec1_photo',
-      spec2_name:'ed_spec2_name',spec2_photo:'ed_spec2_photo',
-      spec3_name:'ed_spec3_name',spec3_photo:'ed_spec3_photo',
-      banner_photo:'ed_banner_photo',banner_title:'ed_banner_title',banner_text:'ed_banner_text',banner_btn:'ed_banner_btn',
-      pourquoi_photo:'ed_pourquoi_photo',
-      pq1_icon:'ed_pq1_icon',pq1_title:'ed_pq1_title',pq1_text:'ed_pq1_text',
-      pq2_icon:'ed_pq2_icon',pq2_title:'ed_pq2_title',pq2_text:'ed_pq2_text',
-      pq3_icon:'ed_pq3_icon',pq3_title:'ed_pq3_title',pq3_text:'ed_pq3_text',
-      mosaic1:'ed_mosaic1',mosaic2:'ed_mosaic2',mosaic3:'ed_mosaic3',
-      cta_title:'ed_cta_title',cta_sub:'ed_cta_sub',
+    Object.keys(s).forEach(function(k){shopSettings[k]=s[k];});
+    // Remplir les champs statiques
+    var staticMap={
       shop_name:'set_shop_name',shop_tagline:'set_shop_tagline',shop_phone:'set_shop_phone',shop_address:'set_shop_address',
       social_instagram:'ed_instagram',social_facebook:'ed_facebook',social_whatsapp:'ed_whatsapp',social_snapchat:'ed_snapchat',
       color_primary:'set_color_primary',color_secondary:'set_color_secondary',
       notif_email:'set_notif_email',emailjs_service:'set_emailjs_service',emailjs_template:'set_emailjs_template',emailjs_pubkey:'set_emailjs_pubkey'
     };
-    Object.keys(map).forEach(function(key){
-      var el=document.getElementById(map[key]);
+    Object.keys(staticMap).forEach(function(key){
+      var el=document.getElementById(staticMap[key]);
       if(el&&s[key]!==undefined)el.value=s[key];
     });
-    // Refresh photo previews for any already-filled fields
-    var previews={ed_spec1_photo:'prev_spec1',ed_spec2_photo:'prev_spec2',ed_spec3_photo:'prev_spec3',
-      ed_banner_photo:'prev_banner',ed_pourquoi_photo:'prev_pourquoi',
-      ed_mosaic1:'prev_mosaic1',ed_mosaic2:'prev_mosaic2',ed_mosaic3:'prev_mosaic3'};
-    Object.keys(previews).forEach(function(inputId){
-      var el=document.getElementById(inputId);
-      if(el&&el.value)previewPhoto(el,previews[inputId]);
-    });
+    // Charger la mise en page
+    if(s.page_layout){try{var pl=JSON.parse(s.page_layout);if(pl.order)pageLayout.order=pl.order;if(pl.hidden)pageLayout.hidden=pl.hidden;}catch(e){}}
+    // Charger les photos de la mosaïque
+    if(s.mosaic_photos){try{var mp=JSON.parse(s.mosaic_photos);if(Array.isArray(mp)&&mp.length)mosaicPhotos=mp;}catch(e){}}
+    // Re-render si on est sur l'onglet paramètres
+    if(activeMainTab==='parametres')renderSectionsManager();
   }catch(e){}
+}
+
+/* ====== GESTIONNAIRE DE SECTIONS ====== */
+var SECTIONS=[
+  {id:'hero',emoji:'🦸',label:'Bandeau principal (Hero)'},
+  {id:'specs',emoji:'🎂',label:'Nos Spécialités (3 cartes)'},
+  {id:'banner',emoji:'🖼️',label:'Grande bannière photo'},
+  {id:'pdlsem',emoji:'⭐',label:'Produit de la semaine'},
+  {id:'how',emoji:'📋',label:'Comment commander'},
+  {id:'pourquoi',emoji:'💕',label:'Pourquoi Cicine ?'},
+  {id:'social',emoji:'📱',label:'Réseaux sociaux'},
+  {id:'avis',emoji:'💬',label:'Avis clients'},
+  {id:'mosaic',emoji:'📸',label:'Mosaïque photos'},
+  {id:'cta',emoji:'🌟',label:'CTA Final'},
+];
+var pageLayout={order:SECTIONS.map(function(s){return s.id;}),hidden:[]};
+var mosaicPhotos=['photos/gateau-rouge-dollars.jpg','photos/cupcakes-valentin.jpg','photos/gateau-chiffre.jpg'];
+var _pickerTarget=null;
+
+function renderSectionsManager(){
+  var el=document.getElementById('sections-list');
+  if(!el)return;
+  el.innerHTML=pageLayout.order.map(function(id,i){
+    var sec=SECTIONS.find(function(s){return s.id===id;});
+    if(!sec)return '';
+    var hidden=pageLayout.hidden.indexOf(id)>-1;
+    return '<div class="sm-card'+(hidden?' sec-hidden':'')+'">'+
+      '<span class="sm-handle">☰</span>'+
+      '<button class="sm-vis '+(hidden?'off':'on')+'" onclick="toggleSecVis(\''+id+'\',this)"></button>'+
+      '<span class="sm-label">'+sec.emoji+' '+sec.label+'</span>'+
+      '<div class="sm-updn">'+
+        '<button class="sm-btn" onclick="moveSection(\''+id+'\',-1)"'+(i===0?' disabled style="opacity:.3;cursor:default;"':'')+'>↑</button>'+
+        '<button class="sm-btn" onclick="moveSection(\''+id+'\',1)"'+(i===pageLayout.order.length-1?' disabled style="opacity:.3;cursor:default;"':'')+'>↓</button>'+
+      '</div>'+
+      '<button class="sm-edit-btn" onclick="editSection(\''+id+'\')">✏️ Éditer</button>'+
+    '</div>';
+  }).join('');
+}
+function moveSection(id,dir){
+  var i=pageLayout.order.indexOf(id);
+  if(i<0)return;
+  var ni=i+dir;
+  if(ni<0||ni>=pageLayout.order.length)return;
+  var t=pageLayout.order[i];pageLayout.order[i]=pageLayout.order[ni];pageLayout.order[ni]=t;
+  renderSectionsManager();
+}
+function toggleSecVis(id,btn){
+  var hi=pageLayout.hidden.indexOf(id);
+  if(hi>-1){pageLayout.hidden.splice(hi,1);btn.classList.remove('off');btn.classList.add('on');btn.closest('.sm-card').classList.remove('sec-hidden');}
+  else{pageLayout.hidden.push(id);btn.classList.remove('on');btn.classList.add('off');btn.closest('.sm-card').classList.add('sec-hidden');}
+}
+async function savePageLayout(){
+  var pairs=[{key:'page_layout',value:JSON.stringify(pageLayout)},{key:'mosaic_photos',value:JSON.stringify(mosaicPhotos)}];
+  var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
+  if(error){showNotif('Erreur : '+error.message);return;}
+  shopSettings.page_layout=pairs[0].value;shopSettings.mosaic_photos=pairs[1].value;
+  showNotif('✅ Mise en page sauvegardée !');
+}
+
+/* Sélecteur de taille */
+function pickSize(key,val,btn){
+  btn.closest('.szr-btns').querySelectorAll('.sz-btn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  shopSettings[key]=val;
+}
+function szPicker(key,dflt){
+  var vals=['0.6rem','0.75rem','0.88rem','1.05rem','1.3rem','1.7rem','2.2rem'];
+  var lbls=['XS','S','M','L','XL','XXL','3XL'];
+  var cur=shopSettings[key]||dflt;
+  return '<div class="szr"><span class="szr-lbl">Taille :</span><div class="szr-btns">'+
+    vals.map(function(v,i){return '<button class="sz-btn'+(v===cur?' on':'')+'" onclick="pickSize(\''+key+'\',\''+v+'\',this)">'+lbls[i]+'</button>';}).join('')+
+  '</div></div>';
+}
+
+/* Champ photo avec aperçu + bouton bibliothèque */
+function photoField(inputId,prevId,defaultSrc,label){
+  var val=shopSettings[inputId.replace(/^ed_|^set_/,'')]||'';
+  return (label?'<label class="bs-label">'+label+'</label>':'')+
+    '<div style="display:flex;gap:7px;align-items:center;margin-bottom:8px;">'+
+      '<input class="bs-input" id="'+inputId+'" value="'+escHtml(val)+'" placeholder="URL ou photos/nom.jpg" oninput="previewPhoto(this,\''+prevId+'\')" style="margin:0;flex:1;"/>'+
+      '<button onclick="openPickerFor(\''+inputId+'\')" style="padding:8px 9px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:8px;font-size:.78rem;cursor:pointer;font-family:\'Lato\',sans-serif;white-space:nowrap;">📸</button>'+
+    '</div>'+
+    '<img id="'+prevId+'" src="'+(val||defaultSrc)+'" style="width:100%;height:130px;object-fit:cover;border-radius:10px;margin-bottom:10px;border:1.5px solid var(--bordure);"/>';
+}
+function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+/* Sélecteur de photos inline */
+function openPickerFor(inputId){
+  _pickerTarget=inputId;
+  var existing=document.getElementById('inline-picker');
+  if(existing){existing.style.display=existing.style.display==='none'?'block':'none';return;}
+  var div=document.createElement('div');
+  div.id='inline-picker';
+  div.style.cssText='border-top:1.5px solid var(--bordure);margin-top:10px;padding-top:12px;';
+  var PHOTOS=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
+  div.innerHTML='<div style="font-size:.8rem;font-weight:700;color:var(--brun);margin-bottom:8px;">📸 Clique pour choisir</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">'+
+    PHOTOS.map(function(p){var path='photos/'+p+'.jpg';return '<img src="'+path+'" onclick="selectFromPicker(\''+path+'\')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:7px;cursor:pointer;border:2px solid transparent;" onmouseover="this.style.borderColor=\'var(--caramel)\'" onmouseout="this.style.borderColor=\'transparent\'"/>';}).join('')+
+    '</div>';
+  document.getElementById('bsContent').appendChild(div);
+}
+function selectFromPicker(path){
+  if(_pickerTarget){
+    var el=document.getElementById(_pickerTarget);
+    if(el){el.value=path;el.dispatchEvent(new Event('input'));}
+  }
+  var p=document.getElementById('inline-picker');if(p)p.style.display='none';
+}
+
+/* ====== ÉDITEURS DE SECTIONS ====== */
+function editSection(id){
+  var html=buildEditorHTML(id);
+  if(id==='mosaic'){openModal(html);setTimeout(function(){setupMosaicPicker();renderMosaicGrid();},60);return;}
+  openModal(html);
+}
+function buildEditorHTML(id){
+  var s=shopSettings;
+  switch(id){
+    case 'hero':
+      return '<div class="bs-title">🦸 Bandeau principal</div>'+
+        '<label class="bs-label">Titre principal</label>'+
+        '<input class="bs-input" id="_hero_title" value="'+escHtml(s.hero_title||'')+'" placeholder="Les Douceurs de Cicine"/>'+
+        szPicker('hero_title_size','2rem')+
+        '<label class="bs-label">Sous-titre</label>'+
+        '<input class="bs-input" id="_hero_sub" value="'+escHtml(s.hero_subtitle||'')+'" placeholder="Le bonheur à chaque bouchée"/>'+
+        szPicker('hero_sub_size','0.73rem')+
+        '<label class="bs-label">Texte du bouton</label>'+
+        '<input class="bs-input" id="_hero_btn" value="'+escHtml(s.hero_btn||'')+'" placeholder="🧁 Commander"/>'+
+        '<button class="bs-btn-primary" onclick="saveSec(\'hero\')">💾 Sauvegarder</button>'+
+        '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
+    case 'specs':
+      var h='<div class="bs-title">🎂 Nos Spécialités</div>'+szPicker('spec_name_size','0.95rem');
+      var defs=['photos/gateau-rouge-roses.jpg','photos/delibox-aperitif.jpg','photos/delibox.jpg'];
+      for(var i=1;i<=3;i++){
+        h+='<div style="background:var(--fond);border-radius:10px;padding:10px;margin-bottom:10px;">'+
+          '<div style="font-size:.74rem;font-weight:700;color:var(--brun);margin-bottom:7px;">Carte '+i+'</div>'+
+          '<label class="bs-label">Nom</label>'+
+          '<input class="bs-input" id="_spec'+i+'_name" value="'+escHtml(s['spec'+i+'_name']||'')+'" placeholder="Nom de la spécialité"/>'+
+          photoField('_spec'+i+'_photo','_prev_spec'+i,defs[i-1],'Photo')+
+          '</div>';
+      }
+      h+='<button class="bs-btn-primary" onclick="saveSec(\'specs\')">💾 Sauvegarder</button>'+
+         '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
+      return h;
+    case 'banner':
+      return '<div class="bs-title">🖼️ Grande bannière</div>'+
+        photoField('_banner_photo','_prev_banner','photos/gateau-tropical.jpg','Photo de fond')+
+        '<label class="bs-label">Titre</label>'+
+        '<input class="bs-input" id="_banner_title" value="'+escHtml(s.banner_title||'')+'" placeholder="Fait avec amour"/>'+
+        szPicker('banner_title_size','2rem')+
+        '<label class="bs-label">Texte</label>'+
+        '<input class="bs-input" id="_banner_text" value="'+escHtml(s.banner_text||'')+'" placeholder="Chaque gâteau est une création unique..."/>'+
+        szPicker('banner_text_size','0.75rem')+
+        '<label class="bs-label">Texte du lien</label>'+
+        '<input class="bs-input" id="_banner_btn" value="'+escHtml(s.banner_btn||'')+'" placeholder="Voir nos réalisations →"/>'+
+        '<button class="bs-btn-primary" onclick="saveSec(\'banner\')">💾 Sauvegarder</button>'+
+        '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
+    case 'pdlsem':
+      return '<div class="bs-title">⭐ Produit de la semaine</div>'+
+        '<div style="background:var(--fond2);border-radius:10px;padding:14px;text-align:center;">'+
+        '<p style="font-size:.8rem;color:var(--doux);margin-bottom:10px;">Géré dans l\'onglet dédié du menu.</p>'+
+        '<button onclick="setMainTab(\'pdlsem\');closeModal();" class="bs-btn-primary" style="width:auto;padding:9px 20px;">Aller à Produit semaine →</button>'+
+        '</div>';
+    case 'how':
+      return '<div class="bs-title">📋 Comment commander</div>'+
+        '<p style="font-size:.78rem;color:var(--doux);margin-bottom:14px;">Cette section affiche les 3 étapes pour commander. Tu peux la masquer depuis le gestionnaire si besoin.</p>'+
+        '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>';
+    case 'pourquoi':
+      var h2='<div class="bs-title">💕 Pourquoi Cicine ?</div>'+
+        photoField('_pourquoi_photo','_prev_pourquoi','photos/gateau-babyshower.jpg','Photo à gauche')+
+        szPicker('pourquoi_text_size','0.73rem')+
+        '<div style="font-size:.75rem;font-weight:700;color:var(--brun);margin-bottom:8px;">3 arguments</div>';
+      for(var j=1;j<=3;j++){
+        h2+='<div style="display:grid;grid-template-columns:36px 1fr 1fr;gap:5px;margin-bottom:7px;">'+
+          '<input class="bs-input" id="_pq'+j+'_icon" value="'+escHtml(s['pq'+j+'_icon']||'')+'" placeholder="🤍" style="text-align:center;padding:8px 3px;"/>'+
+          '<input class="bs-input" id="_pq'+j+'_title" value="'+escHtml(s['pq'+j+'_title']||'')+'" placeholder="Titre"/>'+
+          '<input class="bs-input" id="_pq'+j+'_text" value="'+escHtml(s['pq'+j+'_text']||'')+'" placeholder="Description"/>'+
+          '</div>';
+      }
+      h2+='<button class="bs-btn-primary" onclick="saveSec(\'pourquoi\')">💾 Sauvegarder</button>'+
+          '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
+      return h2;
+    case 'social':
+      return '<div class="bs-title">📱 Réseaux sociaux</div>'+
+        '<p style="font-size:.75rem;color:var(--doux);margin-bottom:12px;">Les liens sont dans l\'onglet <strong>Infos & Réseaux</strong>.</p>'+
+        '<button onclick="showEdTab(\'infos\');closeModal();" class="bs-btn-primary">Aller à Infos & Réseaux →</button>'+
+        '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>';
+    case 'avis':
+      return '<div class="bs-title">💬 Avis clients</div>'+
+        '<p style="font-size:.78rem;color:var(--doux);margin-bottom:12px;">Les avis sont chargés automatiquement depuis la base. Gère-les dans l\'onglet Avis.</p>'+
+        '<button onclick="setMainTab(\'avis\');closeModal();" class="bs-btn-primary">Gérer les avis →</button>'+
+        '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>';
+    case 'mosaic':
+      return '<div class="bs-title">📸 Mosaïque photos</div>'+
+        '<p style="font-size:.75rem;color:var(--doux);margin-bottom:10px;">Ajoute ou retire autant de photos que tu veux !</p>'+
+        '<div class="mosaic-ed" id="mosaic-ed-grid"></div>'+
+        '<div style="display:flex;gap:7px;margin-bottom:10px;align-items:center;">'+
+          '<input class="bs-input" id="mosaic-url" placeholder="URL ou photos/nom.jpg" style="margin:0;flex:1;"/>'+
+          '<button onclick="addMosaicPhoto()" style="padding:9px 12px;background:var(--brun);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:\'Lato\',sans-serif;white-space:nowrap;">+ Ajouter</button>'+
+        '</div>'+
+        '<div style="background:var(--fond);border-radius:10px;padding:10px;">'+
+          '<div style="font-size:.73rem;font-weight:700;color:var(--brun);margin-bottom:7px;">📸 Choisir depuis les photos du site</div>'+
+          '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;" id="mosaic-picker-grid"></div>'+
+        '</div>'+
+        '<button class="bs-btn-primary" style="margin-top:12px;" onclick="saveMosaicPhotos()">💾 Sauvegarder la mosaïque</button>'+
+        '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
+    case 'cta':
+      return '<div class="bs-title">🌟 CTA Final</div>'+
+        '<label class="bs-label">Titre</label>'+
+        '<input class="bs-input" id="_cta_title" value="'+escHtml(s.cta_title||'')+'" placeholder="Envie d\'une douceur ?"/>'+
+        szPicker('cta_title_size','1.6rem')+
+        '<label class="bs-label">Sous-titre</label>'+
+        '<input class="bs-input" id="_cta_sub" value="'+escHtml(s.cta_sub||'')+'" placeholder="Cicine prépare tout avec amour 🩷"/>'+
+        szPicker('cta_sub_size','0.73rem')+
+        '<button class="bs-btn-primary" onclick="saveSec(\'cta\')">💾 Sauvegarder</button>'+
+        '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>';
+    default:return '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>';
+  }
+}
+
+async function saveSec(id){
+  var pairs=[];
+  function fi(inputId,key){var el=document.getElementById(inputId);if(el)pairs.push({key:key,value:el.value||''});}
+  function fs(key){if(shopSettings[key]!==undefined)pairs.push({key:key,value:shopSettings[key]});}
+  switch(id){
+    case 'hero':
+      fi('_hero_title','hero_title');fi('_hero_sub','hero_subtitle');fi('_hero_btn','hero_btn');
+      fs('hero_title_size');fs('hero_sub_size');break;
+    case 'specs':
+      for(var i=1;i<=3;i++){fi('_spec'+i+'_name','spec'+i+'_name');fi('_spec'+i+'_photo','spec'+i+'_photo');}
+      fs('spec_name_size');break;
+    case 'banner':
+      fi('_banner_photo','banner_photo');fi('_banner_title','banner_title');fi('_banner_text','banner_text');fi('_banner_btn','banner_btn');
+      fs('banner_title_size');fs('banner_text_size');break;
+    case 'pourquoi':
+      fi('_pourquoi_photo','pourquoi_photo');
+      for(var j=1;j<=3;j++){fi('_pq'+j+'_icon','pq'+j+'_icon');fi('_pq'+j+'_title','pq'+j+'_title');fi('_pq'+j+'_text','pq'+j+'_text');}
+      fs('pourquoi_text_size');break;
+    case 'cta':
+      fi('_cta_title','cta_title');fi('_cta_sub','cta_sub');
+      fs('cta_title_size');fs('cta_sub_size');break;
+  }
+  var valid=pairs.filter(function(p){return p.value!==null&&p.value!==undefined;});
+  if(!valid.length){showNotif('Rien à modifier.');return;}
+  var {error}=await sb.from('settings').upsert(valid,{onConflict:'key'});
+  if(error){showNotif('Erreur : '+error.message);return;}
+  valid.forEach(function(p){shopSettings[p.key]=p.value;});
+  showNotif('✅ Section sauvegardée !');
+  closeModal();
+}
+
+/* ====== MOSAÏQUE ====== */
+function renderMosaicGrid(){
+  var grid=document.getElementById('mosaic-ed-grid');
+  if(!grid)return;
+  grid.innerHTML=mosaicPhotos.map(function(url,j){
+    return '<div class="mosaic-ed-item">'+
+      '<img src="'+escHtml(url)+'" onerror="this.style.opacity=\'.3\'"/>'+
+      '<button class="mosaic-ed-del" onclick="removeMosaicPhoto('+j+')">×</button>'+
+    '</div>';
+  }).join('');
+}
+function setupMosaicPicker(){
+  var grid=document.getElementById('mosaic-picker-grid');
+  if(!grid)return;
+  var PHOTOS=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
+  grid.innerHTML=PHOTOS.map(function(p){var path='photos/'+p+'.jpg';
+    return '<img src="'+path+'" onclick="addMosaicFromPicker(\''+path+'\')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;" onmouseover="this.style.borderColor=\'var(--caramel)\'" onmouseout="this.style.borderColor=\'transparent\'"/>';
+  }).join('');
+}
+function removeMosaicPhoto(i){mosaicPhotos.splice(i,1);renderMosaicGrid();}
+function addMosaicPhoto(){
+  var input=document.getElementById('mosaic-url');
+  if(!input||!input.value.trim()){showNotif('Entre un chemin ou URL');return;}
+  mosaicPhotos.push(input.value.trim());input.value='';renderMosaicGrid();
+}
+function addMosaicFromPicker(path){mosaicPhotos.push(path);renderMosaicGrid();}
+async function saveMosaicPhotos(){
+  var {error}=await sb.from('settings').upsert([{key:'mosaic_photos',value:JSON.stringify(mosaicPhotos)}],{onConflict:'key'});
+  if(error){showNotif('Erreur : '+error.message);return;}
+  shopSettings.mosaic_photos=JSON.stringify(mosaicPhotos);
+  showNotif('✅ Mosaïque sauvegardée !');closeModal();
 }
 
 /* ====== INIT ====== */

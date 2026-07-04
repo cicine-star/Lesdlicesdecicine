@@ -134,6 +134,14 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .btn-brun{background:var(--brun);color:#fff;}
 .btn-wa{background:#25D366;color:#fff;}
 
+/* MOBILE - Pourquoi Cicine */
+@media(max-width:520px){
+  .split-section{flex-direction:column;}
+  .split-img{width:100%;height:180px;}
+  .split-text{padding:16px 14px;}
+  .split-title{font-size:1.2rem;}
+  .split-list li{font-size:.72rem;}
+}
 /* FOOTER */
 footer{background:var(--brun);color:#e8d5c8;padding:24px 14px 16px;text-align:center;}
 .flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:7px;}
@@ -183,8 +191,11 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
   </div>
 </nav>
 
+<!-- SECTIONS DU SITE (ordre et visibilité gérés depuis l'admin) -->
+<div id="page-sections">
+
 <!-- HERO -->
-<div class="hero">
+<div class="hero" id="section-hero">
   <div class="hero-inner">
     <div class="hero-left">
       <div class="hero-badge">✨ Pâtisserie artisanale</div>
@@ -202,7 +213,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 </div>
 
 <!-- SPÉCIALITÉS avec photos en fond -->
-<div class="specs">
+<div class="specs" id="section-specs">
   <div class="section-title">Nos spécialités</div>
   <div class="section-sub">Des créations uniques faites avec amour</div>
   <div class="spec-grid">
@@ -222,7 +233,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 </div>
 
 <!-- GRANDE PHOTO BANNIÈRE -->
-<div class="photo-banner">
+<div class="photo-banner" id="section-banner">
   <img src="photos/gateau-tropical.jpg" alt="Création Cicine" id="site-banner-img"/>
   <div class="photo-banner-overlay">
     <h2 id="site-banner-title">Fait avec amour</h2>
@@ -232,7 +243,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 </div>
 
 <!-- PRODUIT DE LA SEMAINE -->
-<div class="pdlsem">
+<div class="pdlsem" id="section-pdlsem">
   <div class="pdlsem-inner">
     <div class="pdlsem-title-col">
       <div class="pdlsem-label">⭐ Coup de cœur</div>
@@ -250,7 +261,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 </div>
 
 <!-- COMMENT COMMANDER -->
-<div class="how">
+<div class="how" id="section-how">
   <div class="section-title">Comment commander ?</div>
   <div class="section-sub">Simple en 3 étapes</div>
   <div class="steps-row">
@@ -276,7 +287,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 </div>
 
 <!-- PHOTO SPLIT — Pourquoi Cicine -->
-<div class="split-section">
+<div class="split-section" id="section-pourquoi">
   <div class="split-img">
     <img src="photos/gateau-babyshower.jpg" alt="Création Cicine" id="site-pourquoi-img"/>
   </div>
@@ -291,14 +302,14 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 </div>
 
 <!-- RÉSEAUX SOCIAUX -->
-<div class="social-strip">
+<div class="social-strip" id="section-social">
   <a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="soc-btn" target="_blank" rel="noopener" id="site-ig">📸 Instagram</a>
   <a href="https://www.facebook.com/profile.php?id=61586132193455" class="soc-btn" target="_blank" rel="noopener" id="site-fb">👍 Facebook</a>
   <a href="https://wa.me/596696111440" class="soc-btn" target="_blank" id="site-wa">💬 WhatsApp</a>
 </div>
 
 <!-- AVIS CLIENTS -->
-<div class="avis">
+<div class="avis" id="section-avis">
   <div class="section-title">Ce qu'ils disent</div>
   <div class="section-sub">Vos retours nous font chaud au cœur 💕</div>
   <div class="reviews-scroll" id="homeReviews">
@@ -308,14 +319,14 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 </div>
 
 <!-- PETITE MOSAÏQUE PHOTO -->
-<div class="mosaic-strip">
+<div class="mosaic-strip" id="section-mosaic">
   <img src="photos/gateau-rouge-dollars.jpg" alt="Création" id="site-mosaic1"/>
   <img src="photos/cupcakes-valentin.jpg" alt="Cupcakes" id="site-mosaic2"/>
   <img src="photos/gateau-chiffre.jpg" alt="Gâteau chiffre" id="site-mosaic3"/>
 </div>
 
 <!-- LIENS RAPIDES -->
-<div class="quick">
+<div class="quick" id="section-quick">
   <div class="quick-grid">
     <a href="devis.html" class="ql"><span class="ql-ico">✨</span>Devis</a>
     <a href="realisations.html" class="ql"><span class="ql-ico">📸</span>Réalisations</a>
@@ -325,7 +336,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 </div>
 
 <!-- CTA FINAL -->
-<div class="cta">
+<div class="cta" id="section-cta">
   <div class="cta-title" id="site-cta-title">Envie d'une douceur ?</div>
   <div class="cta-sub" id="site-cta-sub">Cicine prépare tout avec amour 🩷</div>
   <div class="cta-btns">
@@ -333,6 +344,8 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
     <a href="https://wa.me/596696111440" target="_blank" class="btn-full btn-wa">💬 WhatsApp</a>
   </div>
 </div>
+
+</div><!-- /page-sections -->
 
 <!-- FOOTER -->
 <footer>
@@ -369,30 +382,56 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
     var {data}=await SB.from("settings").select("key,value");
     if(!data)return;
     var s={};data.forEach(function(r){s[r.key]=r.value;});
-    function set(id,val){var el=document.getElementById(id);if(el&&val)el.textContent=val;}
-    function src(id,val){var el=document.getElementById(id);if(el&&val)el.src=val;}
-    function href(id,val){var el=document.getElementById(id);if(el&&val)el.href=val;}
+    function setText(id,val){var el=document.getElementById(id);if(el&&val)el.textContent=val;}
+    function setHtml(id,val){var el=document.getElementById(id);if(el&&val)el.innerHTML=val;}
+    function setSrc(id,val){var el=document.getElementById(id);if(el&&val)el.src=val;}
+    function setHref(id,val){var el=document.getElementById(id);if(el&&val)el.href=val;}
+    function setFz(id,key,dflt){var el=document.getElementById(id);if(el)el.style.fontSize=s[key]||dflt;}
+    // Couleurs
     if(s.color_primary)document.documentElement.style.setProperty("--brun",s.color_primary);
     if(s.color_secondary)document.documentElement.style.setProperty("--caramel",s.color_secondary);
-    if(s.hero_title){var h=document.getElementById("site-hero-title");if(h)h.innerHTML=s.hero_title.replace(" de ","<br/>de ");}
-    set("site-hero-sub",s.hero_subtitle);
-    set("site-hero-btn",s.hero_btn);
-    src("site-spec1-img",s.spec1_photo);set("site-spec1-name",s.spec1_name);
-    src("site-spec2-img",s.spec2_photo);set("site-spec2-name",s.spec2_name);
-    src("site-spec3-img",s.spec3_photo);set("site-spec3-name",s.spec3_name);
-    src("site-banner-img",s.banner_photo);
-    set("site-banner-title",s.banner_title);
-    set("site-banner-text",s.banner_text);
-    set("site-banner-btn",s.banner_btn);
-    src("site-pourquoi-img",s.pourquoi_photo);
-    set("site-pq1-icon",s.pq1_icon);set("site-pq1-title",s.pq1_title);set("site-pq1-text",s.pq1_text);
-    set("site-pq2-icon",s.pq2_icon);set("site-pq2-title",s.pq2_title);set("site-pq2-text",s.pq2_text);
-    set("site-pq3-icon",s.pq3_icon);set("site-pq3-title",s.pq3_title);set("site-pq3-text",s.pq3_text);
-    src("site-mosaic1",s.mosaic1);src("site-mosaic2",s.mosaic2);src("site-mosaic3",s.mosaic3);
-    set("site-cta-title",s.cta_title);set("site-cta-sub",s.cta_sub);
-    href("site-ig",s.social_instagram);
-    href("site-fb",s.social_facebook);
+    // Hero
+    if(s.hero_title){var h=document.getElementById("site-hero-title");if(h)h.innerHTML=s.hero_title;}
+    setText("site-hero-sub",s.hero_subtitle);setText("site-hero-btn",s.hero_btn);
+    setFz("site-hero-title","hero_title_size","2rem");setFz("site-hero-sub","hero_sub_size","0.73rem");
+    // Spécialités
+    setSrc("site-spec1-img",s.spec1_photo);setText("site-spec1-name",s.spec1_name);
+    setSrc("site-spec2-img",s.spec2_photo);setText("site-spec2-name",s.spec2_name);
+    setSrc("site-spec3-img",s.spec3_photo);setText("site-spec3-name",s.spec3_name);
+    setFz("site-spec1-name","spec_name_size","0.95rem");setFz("site-spec2-name","spec_name_size","0.95rem");setFz("site-spec3-name","spec_name_size","0.95rem");
+    // Bannière
+    setSrc("site-banner-img",s.banner_photo);
+    setText("site-banner-title",s.banner_title);setText("site-banner-text",s.banner_text);setText("site-banner-btn",s.banner_btn);
+    setFz("site-banner-title","banner_title_size","2rem");setFz("site-banner-text","banner_text_size","0.75rem");
+    // Pourquoi
+    setSrc("site-pourquoi-img",s.pourquoi_photo);
+    setText("site-pq1-icon",s.pq1_icon);setText("site-pq1-title",s.pq1_title);setText("site-pq1-text",s.pq1_text);
+    setText("site-pq2-icon",s.pq2_icon);setText("site-pq2-title",s.pq2_title);setText("site-pq2-text",s.pq2_text);
+    setText("site-pq3-icon",s.pq3_icon);setText("site-pq3-title",s.pq3_title);setText("site-pq3-text",s.pq3_text);
+    setFz("site-pq1-text","pourquoi_text_size","0.73rem");setFz("site-pq2-text","pourquoi_text_size","0.73rem");setFz("site-pq3-text","pourquoi_text_size","0.73rem");
+    // Mosaïque dynamique
+    if(s.mosaic_photos){try{
+      var mp=JSON.parse(s.mosaic_photos);
+      var mosaic=document.getElementById("section-mosaic");
+      if(mosaic&&Array.isArray(mp)&&mp.length){
+        mosaic.innerHTML=mp.map(function(url,i){return '<img src="'+url+'" alt="Création" id="site-mosaic'+(i+1)+'"/>';}).join('');
+      }
+    }catch(e){}}
+    // CTA
+    setText("site-cta-title",s.cta_title);setText("site-cta-sub",s.cta_sub);
+    setFz("site-cta-title","cta_title_size","1.6rem");setFz("site-cta-sub","cta_sub_size","0.73rem");
+    // Réseaux sociaux
+    setHref("site-ig",s.social_instagram);setHref("site-fb",s.social_facebook);
     if(s.social_whatsapp){var wa=document.getElementById("site-wa");if(wa)wa.href="https://wa.me/"+s.social_whatsapp.replace(/\D/g,"");}
+    // Ordre et visibilité des sections
+    if(s.page_layout){try{
+      var pl=JSON.parse(s.page_layout);
+      var container=document.getElementById("page-sections");
+      if(container){
+        (pl.hidden||[]).forEach(function(id){var el=document.getElementById("section-"+id);if(el)el.style.display="none";});
+        (pl.order||[]).forEach(function(id){var el=document.getElementById("section-"+id);if(el)container.appendChild(el);});
+      }
+    }catch(e){}}
   }catch(e){}
 })();
 
