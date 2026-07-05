@@ -82,6 +82,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .ci-ctrl{display:flex;align-items:center;gap:7px;}
 .ci-minus,.ci-plus{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--bordure);background:var(--fond);cursor:pointer;font-size:1rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
 .ci-qty{font-weight:700;font-size:.85rem;min-width:18px;text-align:center;}
+.ci-qty-input{width:42px;font-weight:700;font-size:.85rem;text-align:center;border:1.5px solid var(--bordure);border-radius:6px;padding:2px 4px;font-family:'Lato',sans-serif;background:#fff;color:var(--texte);}
 .ci-sub{font-weight:700;font-size:.82rem;color:var(--brun);min-width:48px;text-align:right;}
 .cart-foot{padding:10px 14px 14px;flex-shrink:0;}
 .cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
@@ -377,6 +378,7 @@ function removeFromCart(name){
   if(cart.length===0)collapseCart();
 }
 function viderPanier(){cart=[];renderCart();renderProds();collapseCart();}
+function setQty(name,val){var q=parseInt(val)||1;var item=cart.find(i=>i.name===name);if(item){item.qty=Math.max(1,q);renderCart();renderProds();}}
 function cartTotal(){return cart.reduce((s,i)=>s+i.price*i.qty,0);}
 function renderCart(){
   var total=cartTotal();
@@ -399,7 +401,7 @@ function renderCart(){
         <span class="ci-name">${item.name}</span>
         <div class="ci-ctrl">
           <button class="ci-minus" onclick="removeFromCart('${item.name.replace(/'/g,"\\'")}')">−</button>
-          <span class="ci-qty">${item.qty}</span>
+          <input type="number" class="ci-qty-input" value="${item.qty}" min="1" oninput="setQty('${item.name.replace(/'/g,"\\'")}',this.value)"/>
           <button class="ci-plus" onclick="addToCart('${item.name.replace(/'/g,"\\'")}',${item.price})">+</button>
         </div>
         <span class="ci-sub">${euro(item.price*item.qty)}</span>
