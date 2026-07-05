@@ -440,11 +440,11 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <div class="sidebar-sep"></div>
 
       <!-- Groupe : Stock & Produits -->
-      <button class="sg-header open" id="sg-stock" onclick="toggleGroup('stock')">
+      <button class="sg-header" id="sg-stock" onclick="toggleGroup('stock')">
         <div class="sg-header-left"><span class="sg-emoji">📦</span><span class="sg-label">Stock & Produits</span></div>
         <span class="sg-arrow">▼</span>
       </button>
-      <div class="sg-body open" id="sgb-stock">
+      <div class="sg-body" id="sgb-stock">
         <button class="sidebar-item" id="si-stocks" onclick="setMainTab('stocks');closeSidebar()"><span class="si-emoji">📦</span>Stocks</button>
         <button class="sidebar-item" id="si-produits" onclick="setMainTab('produits');closeSidebar()"><span class="si-emoji">🛍️</span>Produits</button>
         <button class="sidebar-item" id="si-saveurs" onclick="setMainTab('saveurs');closeSidebar()"><span class="si-emoji">🎨</span>Saveurs</button>
@@ -692,6 +692,18 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 
   <!-- ===== TAB CLIENTS ===== -->
   <div id="tab-clients" class="wrap" style="display:none;">
+
+    <!-- COMPTES CLIENTS (espace client) -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div class="section-title" style="margin-bottom:0;">👤 Comptes clients (espace client)</div>
+      <button onclick="openAddClientAccount()" style="padding:7px 14px;background:var(--brun);color:#fff;border:none;border-radius:20px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">+ Ajouter</button>
+    </div>
+    <div id="clientAccountsList" style="margin-bottom:20px;">
+      <div style="font-size:.78rem;color:var(--doux);text-align:center;padding:14px;">Chargement…</div>
+    </div>
+    <div style="height:1.5px;background:var(--bordure);margin-bottom:18px;"></div>
+
+    <!-- HISTORIQUE COMMANDES PAR CLIENT -->
     <div class="stats-bar" style="margin-bottom:14px;">
       <div class="stat-card"><div class="stat-n" id="cliTotal">—</div><div class="stat-l">Clients</div></div>
       <div class="stat-card"><div class="stat-n" id="cliPart">—</div><div class="stat-l">Particuliers</div></div>
@@ -1855,6 +1867,7 @@ function savePlanNote(dayStr,val){
 
 /* ====== CLIENTS ====== */
 async function loadClients(){
+  loadClientAccounts();
   try{
     var {data,error}=await sb.from("clients").select("*").order("name");
     if(error&&error.code==="42P01"){
@@ -3637,6 +3650,88 @@ var SECTIONS=[
 var pageLayout={order:SECTIONS.map(function(s){return s.id;}),hidden:[]};
 var mosaicPhotos=['photos/gateau-rouge-dollars.jpg','photos/cupcakes-valentin.jpg','photos/gateau-chiffre.jpg'];
 function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+/* ====== COMPTES CLIENTS ====== */
+var allClientAccounts=[];
+async function loadClientAccounts(){
+  var el=document.getElementById('clientAccountsList');
+  if(!el)return;
+  try{
+    var {data,error}=await sb.from('client_accounts').select('*').order('created_at',{ascending:false});
+    if(error){
+      if(error.code==='42P01'){
+        el.innerHTML='<div style="background:#fef9e7;border:1.5px solid #f0c040;border-radius:10px;padding:12px 14px;font-size:.75rem;color:#7a6000;">'+
+          '⚠️ Table à créer dans Supabase :<br>'+
+          '<code style="display:block;margin-top:6px;background:#fff;padding:8px;border-radius:6px;font-size:.68rem;word-break:break-all;">'+
+          'CREATE TABLE client_accounts (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, prenom text NOT NULL, phone text NOT NULL UNIQUE, email text, created_at timestamptz DEFAULT now());<br>'+
+          'ALTER TABLE client_accounts ENABLE ROW LEVEL SECURITY;<br>'+
+          'CREATE POLICY "Public insert" ON client_accounts FOR INSERT WITH CHECK (true);<br>'+
+          'CREATE POLICY "Self read" ON client_accounts FOR SELECT USING (true);<br>'+
+          'CREATE POLICY "Auth all" ON client_accounts FOR ALL USING (auth.role()=\'authenticated\');'+
+          '</code></div>';
+      }else{
+        el.innerHTML='<div style="font-size:.78rem;color:#dc2626;padding:10px;">Erreur : '+error.message+'</div>';
+      }
+      return;
+    }
+    allClientAccounts=data||[];
+    renderClientAccounts();
+  }catch(e){
+    el.innerHTML='<div style="font-size:.78rem;color:var(--doux);padding:10px;">Impossible de charger les comptes.</div>';
+  }
+}
+function renderClientAccounts(){
+  var el=document.getElementById('clientAccountsList');
+  if(!el)return;
+  if(!allClientAccounts.length){
+    el.innerHTML='<div style="font-size:.78rem;color:var(--doux);text-align:center;padding:14px;">Aucun compte client. Clique sur + Ajouter pour en créer un.</div>';
+    return;
+  }
+  el.innerHTML=allClientAccounts.map(function(c){
+    var date=c.created_at?(new Date(c.created_at)).toLocaleDateString('fr-FR'):'';
+    return '<div style="background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:7px;">'+
+      '<div style="width:38px;height:38px;border-radius:50%;background:var(--brun);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;flex-shrink:0;">'+(c.prenom||'?')[0].toUpperCase()+'</div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-weight:700;font-size:.88rem;color:var(--texte);">'+escHtml(c.prenom)+'</div>'+
+        '<div style="font-size:.74rem;color:var(--doux);">'+escHtml(c.phone)+(c.email?' · '+escHtml(c.email):'')+'</div>'+
+      '</div>'+
+      '<div style="font-size:.65rem;color:var(--doux);flex-shrink:0;">'+date+'</div>'+
+      '<button onclick="deleteClientAccount(\''+c.id+'\')" style="background:none;border:none;font-size:1rem;cursor:pointer;color:#dc2626;padding:4px;">🗑️</button>'+
+    '</div>';
+  }).join('');
+}
+function openAddClientAccount(){
+  openModal(
+    '<div class="bs-title">👤 Ajouter un compte client</div>'+
+    '<label class="bs-label">Prénom *</label>'+
+    '<input class="bs-input" id="nca_prenom" placeholder="Ex : Marie"/>'+
+    '<label class="bs-label">Numéro de téléphone *</label>'+
+    '<input class="bs-input" id="nca_phone" type="tel" placeholder="Ex : 0696 12 34 56"/>'+
+    '<label class="bs-label">Email (optionnel)</label>'+
+    '<input class="bs-input" id="nca_email" type="email" placeholder="marie@email.com"/>'+
+    '<button class="bs-btn-primary" onclick="saveClientAccount()">✅ Créer le compte</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
+  );
+}
+async function saveClientAccount(){
+  var prenom=(document.getElementById('nca_prenom').value||'').trim();
+  var phone=(document.getElementById('nca_phone').value||'').trim().replace(/[\s\.\-]/g,'');
+  var email=(document.getElementById('nca_email').value||'').trim();
+  if(!prenom||!phone){showNotif('Prénom et téléphone obligatoires');return;}
+  var row={prenom:prenom,phone:phone};
+  if(email)row.email=email;
+  var {error}=await sb.from('client_accounts').insert(row);
+  if(error){showNotif('Erreur : '+(error.message.includes('unique')?'Ce numéro existe déjà.':error.message));return;}
+  showNotif('✅ Compte créé !');closeModal();loadClientAccounts();
+}
+async function deleteClientAccount(id){
+  if(!confirm('Supprimer ce compte client ?'))return;
+  var {error}=await sb.from('client_accounts').delete().eq('id',id);
+  if(error){showNotif('Erreur : '+error.message);return;}
+  showNotif('Compte supprimé.');
+  allClientAccounts=allClientAccounts.filter(function(c){return c.id!==id;});
+  renderClientAccounts();
+}
 
 /* ====== INIT ====== */
 window.addEventListener("load",async function(){

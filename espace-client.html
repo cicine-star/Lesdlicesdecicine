@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧁</text></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<title>Mon espace — Les Douceurs de Cicine</title>
+<style>
+:root{--fond:#FBE9E7;--fond2:#F5DCDA;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);min-height:100vh;}
+/* NAV */
+nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;padding:10px 16px;box-shadow:0 2px 8px rgba(92,46,14,.07);}
+.nav-logo{font-family:"Dancing Script",cursive;font-size:1.35rem;color:var(--brun);text-decoration:none;}
+/* WRAP */
+.wrap{max-width:480px;margin:0 auto;padding:24px 16px 60px;}
+/* CARD */
+.card{background:#fff;border:1.5px solid var(--bordure);border-radius:20px;padding:28px 24px;box-shadow:0 4px 20px rgba(92,46,14,.08);margin-bottom:18px;}
+.card-title{font-family:"Dancing Script",cursive;font-size:1.7rem;color:var(--brun);text-align:center;margin-bottom:6px;}
+.card-sub{font-size:.82rem;color:var(--doux);text-align:center;margin-bottom:22px;line-height:1.55;}
+/* FORM */
+label{display:block;font-size:.78rem;font-weight:700;color:var(--doux);margin-bottom:5px;margin-top:12px;}
+input{width:100%;padding:13px 14px;border:1.5px solid var(--bordure);border-radius:12px;font-size:.95rem;font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);outline:none;}
+input:focus{border-color:var(--caramel);}
+.btn-primary{width:100%;padding:14px;background:var(--brun);color:#fff;border:none;border-radius:40px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;margin-top:18px;}
+.btn-primary:hover{background:var(--caramel);}
+.btn-secondary{width:100%;padding:12px;background:transparent;color:var(--doux);border:1.5px solid var(--bordure);border-radius:40px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;margin-top:10px;}
+.err{color:#dc2626;font-size:.78rem;margin-top:8px;display:none;text-align:center;}
+/* ESPACE CONNECTÉ */
+#espacConnecte{display:none;}
+.profil-head{display:flex;align-items:center;gap:14px;background:var(--fond2);border-radius:14px;padding:16px;margin-bottom:18px;}
+.profil-avatar{width:52px;height:52px;border-radius:50%;background:var(--brun);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;flex-shrink:0;}
+.profil-name{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--brun);}
+.profil-phone{font-size:.78rem;color:var(--doux);}
+/* COMMANDES */
+.section-title{font-size:1rem;font-weight:700;color:var(--brun);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.order-card{background:#fff;border:1.5px solid var(--bordure);border-radius:14px;margin-bottom:11px;overflow:hidden;}
+.oc-head{background:var(--fond2);padding:10px 14px;display:flex;align-items:center;flex-wrap:wrap;gap:7px;border-bottom:1px solid var(--bordure);}
+.oc-date{font-size:.78rem;font-weight:700;color:var(--brun);}
+.badge{border-radius:20px;padding:3px 9px;font-size:.65rem;font-weight:700;}
+.badge-livraison{background:#dbeafe;color:#1e40af;}
+.badge-recup{background:#d1fae5;color:#065f46;}
+.sl-pending{background:#fef9c3;color:#854d0e;}
+.sl-confirmed{background:#dbeafe;color:#1e40af;}
+.sl-ready{background:#f3e8ff;color:#6b21a8;}
+.sl-done{background:#d1fae5;color:#065f46;}
+.sl-cancelled{background:#fee2e2;color:#991b1b;}
+.oc-body{padding:12px 14px;}
+.oc-items{font-size:.8rem;color:var(--doux);margin-bottom:6px;line-height:1.6;}
+.oc-total{font-size:.88rem;font-weight:700;color:var(--brun);}
+.oc-empty{text-align:center;padding:30px 20px;color:var(--doux);font-size:.88rem;line-height:1.7;}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid var(--bordure);display:flex;justify-content:space-around;padding:10px 0 14px;z-index:90;}
+.bn-btn{display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;font-size:.62rem;font-weight:700;color:var(--doux);font-family:"Lato",sans-serif;}
+.bn-btn.active{color:var(--brun);}
+.bn-icon{font-size:1.3rem;}
+/* Loading */
+.loading{text-align:center;padding:30px;color:var(--doux);font-size:.88rem;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">🧁 Les Douceurs de Cicine</a>
+  <button onclick="deconnexion()" id="btnDeco" style="display:none;background:none;border:1.5px solid var(--bordure);border-radius:20px;padding:6px 14px;font-size:.75rem;font-weight:700;color:var(--doux);cursor:pointer;font-family:'Lato',sans-serif;">Se déconnecter</button>
+</nav>
+
+<!-- ====== ÉCRAN DE CONNEXION ====== -->
+<div id="ecranConnexion" class="wrap">
+  <div class="card">
+    <div class="card-title">Mon espace 🩷</div>
+    <div class="card-sub">Connecte-toi avec ton prénom et ton numéro de téléphone pour suivre tes commandes</div>
+
+    <label>Ton prénom</label>
+    <input type="text" id="inp_prenom" placeholder="Ex : Marie" autocomplete="given-name"/>
+
+    <label>Ton numéro de téléphone</label>
+    <input type="tel" id="inp_phone" placeholder="Ex : 0696 12 34 56" autocomplete="tel"/>
+
+    <p class="err" id="loginErr">Prénom ou numéro introuvable. Vérifie les informations ou inscris-toi.</p>
+
+    <button class="btn-primary" onclick="seConnecter()">Se connecter</button>
+    <button class="btn-secondary" onclick="showInscription()">Créer mon compte</button>
+  </div>
+</div>
+
+<!-- ====== ÉCRAN D'INSCRIPTION ====== -->
+<div id="ecranInscription" class="wrap" style="display:none;">
+  <div class="card">
+    <div class="card-title">Créer mon compte 🧁</div>
+    <div class="card-sub">Inscris-toi pour suivre tes commandes et accéder à ton historique</div>
+
+    <label>Ton prénom *</label>
+    <input type="text" id="reg_prenom" placeholder="Ex : Marie" autocomplete="given-name"/>
+
+    <label>Ton numéro de téléphone *</label>
+    <input type="tel" id="reg_phone" placeholder="Ex : 0696 12 34 56" autocomplete="tel"/>
+
+    <label>Ton email (optionnel)</label>
+    <input type="email" id="reg_email" placeholder="marie@email.com" autocomplete="email"/>
+
+    <p class="err" id="regErr">Ce numéro de téléphone est déjà utilisé. Connecte-toi à la place.</p>
+
+    <button class="btn-primary" onclick="sInscrire()">Créer mon compte</button>
+    <button class="btn-secondary" onclick="showConnexion()">J'ai déjà un compte</button>
+  </div>
+</div>
+
+<!-- ====== ESPACE CONNECTÉ ====== -->
+<div id="espacConnecte" class="wrap">
+
+  <div class="profil-head">
+    <div class="profil-avatar" id="profileAvatar">?</div>
+    <div>
+      <div class="profil-name" id="profileName">—</div>
+      <div class="profil-phone" id="profilePhone">—</div>
+    </div>
+  </div>
+
+  <div class="section-title">📦 Mes commandes</div>
+  <div id="mesCommandes"><div class="loading">Chargement...</div></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+var SB_URL="https://uousxxvrgcyvyaahdtda.supabase.co";
+var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
+var SB=supabase.createClient(SB_URL,SB_KEY);
+
+var SESSION_KEY="cicine_client";
+var clientSession=null;
+
+/* ====== UTILS ====== */
+function normalizePhone(p){return (p||"").replace(/[\s\.\-]/g,"").replace(/^0/,"0");}
+function showConnexion(){
+  document.getElementById("ecranConnexion").style.display="block";
+  document.getElementById("ecranInscription").style.display="none";
+  document.getElementById("espacConnecte").style.display="none";
+  document.getElementById("loginErr").style.display="none";
+}
+function showInscription(){
+  document.getElementById("ecranConnexion").style.display="none";
+  document.getElementById("ecranInscription").style.display="block";
+  document.getElementById("espacConnecte").style.display="none";
+  document.getElementById("regErr").style.display="none";
+}
+function showEspace(){
+  document.getElementById("ecranConnexion").style.display="none";
+  document.getElementById("ecranInscription").style.display="none";
+  document.getElementById("espacConnecte").style.display="block";
+  document.getElementById("btnDeco").style.display="";
+}
+function badgeStatut(s){
+  var map={
+    "en attente":"<span class='badge sl-pending'>⏳ En attente</span>",
+    "confirmée":"<span class='badge sl-confirmed'>✅ Confirmée</span>",
+    "prête":"<span class='badge sl-ready'>🎁 Prête</span>",
+    "livrée":"<span class='badge sl-done'>🚀 Livrée</span>",
+    "récupérée":"<span class='badge sl-done'>✅ Récupérée</span>",
+    "annulée":"<span class='badge sl-cancelled'>❌ Annulée</span>"
+  };
+  return map[s]||("<span class='badge sl-pending'>"+s+"</span>");
+}
+function fmtDate(d){
+  if(!d)return "";
+  var dt=new Date(d);
+  return dt.toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"});
+}
+function euro(v){return parseFloat(v||0).toFixed(2).replace(".",",")+"€";}
+
+/* ====== CONNEXION ====== */
+async function seConnecter(){
+  var prenom=(document.getElementById("inp_prenom").value||"").trim();
+  var phone=normalizePhone(document.getElementById("inp_phone").value);
+  document.getElementById("loginErr").style.display="none";
+  if(!prenom||!phone){document.getElementById("loginErr").style.display="block";document.getElementById("loginErr").textContent="Merci de remplir ton prénom et ton numéro.";return;}
+  try{
+    var {data,error}=await SB.from("client_accounts")
+      .select("*")
+      .ilike("prenom",prenom)
+      .eq("phone",phone)
+      .maybeSingle();
+    if(error)throw error;
+    if(!data){
+      document.getElementById("loginErr").style.display="block";
+      return;
+    }
+    ouvrirSession(data);
+  }catch(e){
+    document.getElementById("loginErr").style.display="block";
+    document.getElementById("loginErr").textContent="Erreur de connexion. Réessaie.";
+  }
+}
+
+/* ====== INSCRIPTION ====== */
+async function sInscrire(){
+  var prenom=(document.getElementById("reg_prenom").value||"").trim();
+  var phone=normalizePhone(document.getElementById("reg_phone").value);
+  var email=(document.getElementById("reg_email").value||"").trim();
+  document.getElementById("regErr").style.display="none";
+  if(!prenom||!phone){
+    document.getElementById("regErr").style.display="block";
+    document.getElementById("regErr").textContent="Merci de remplir ton prénom et ton numéro.";
+    return;
+  }
+  try{
+    // Vérifier si le numéro existe déjà
+    var {data:existing}=await SB.from("client_accounts").select("id").eq("phone",phone).maybeSingle();
+    if(existing){
+      document.getElementById("regErr").style.display="block";
+      return;
+    }
+    var row={prenom:prenom,phone:phone};
+    if(email)row.email=email;
+    var {data,error}=await SB.from("client_accounts").insert(row).select().single();
+    if(error)throw error;
+    ouvrirSession(data);
+  }catch(e){
+    document.getElementById("regErr").style.display="block";
+    document.getElementById("regErr").textContent="Erreur : "+e.message;
+  }
+}
+
+/* ====== SESSION ====== */
+function ouvrirSession(client){
+  clientSession=client;
+  localStorage.setItem(SESSION_KEY,JSON.stringify(client));
+  afficherEspace(client);
+}
+function deconnexion(){
+  localStorage.removeItem(SESSION_KEY);
+  clientSession=null;
+  document.getElementById("btnDeco").style.display="none";
+  showConnexion();
+}
+
+/* ====== ESPACE ====== */
+function afficherEspace(client){
+  showEspace();
+  var init=(client.prenom||"?")[0].toUpperCase();
+  document.getElementById("profileAvatar").textContent=init;
+  document.getElementById("profileName").textContent=client.prenom;
+  document.getElementById("profilePhone").textContent=client.phone;
+  chargerCommandes(client);
+}
+
+async function chargerCommandes(client){
+  var el=document.getElementById("mesCommandes");
+  el.innerHTML='<div class="loading">Chargement de tes commandes...</div>';
+  try{
+    // Chercher par téléphone dans la table orders
+    var {data,error}=await SB.from("orders")
+      .select("*")
+      .eq("phone",client.phone)
+      .order("created_at",{ascending:false});
+    if(error)throw error;
+    if(!data||data.length===0){
+      el.innerHTML='<div class="oc-empty">🧁 Aucune commande pour l\'instant.<br><a href="commander.html" style="color:var(--caramel);font-weight:700;text-decoration:none;">Passer une commande →</a></div>';
+      return;
+    }
+    el.innerHTML=data.map(function(o){
+      var items=(o.items||[]);
+      if(typeof items==="string"){try{items=JSON.parse(items);}catch(e){items=[];}}
+      var itemsStr=Array.isArray(items)?items.map(function(it){return (it.qty||it.quantite||1)+"× "+(it.nom||it.name||"");}).join(", "):"";
+      var typeBadge=o.type==="livraison"?"<span class='badge badge-livraison'>🛵 Livraison</span>":"<span class='badge badge-recup'>🏪 Retrait</span>";
+      return '<div class="order-card">'+
+        '<div class="oc-head">'+
+          '<span class="oc-date">'+fmtDate(o.delivery_date||o.date||o.created_at)+'</span>'+
+          typeBadge+
+          badgeStatut(o.status||o.statut||"en attente")+
+        '</div>'+
+        '<div class="oc-body">'+
+          (itemsStr?'<div class="oc-items">'+itemsStr+'</div>':'')+
+          '<div class="oc-total">Total : '+euro(o.total)+'</div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }catch(e){
+    el.innerHTML='<div class="oc-empty">⚠️ Impossible de charger les commandes.</div>';
+  }
+}
+
+/* ====== INIT ====== */
+window.addEventListener("load",function(){
+  var saved=localStorage.getItem(SESSION_KEY);
+  if(saved){
+    try{
+      var client=JSON.parse(saved);
+      if(client&&client.prenom&&client.phone){
+        afficherEspace(client);
+        return;
+      }
+    }catch(e){}
+  }
+  showConnexion();
+});
+</script>
+
+</body>
+</html>
