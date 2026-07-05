@@ -186,41 +186,34 @@ function euro(v){return parseFloat(v||0).toFixed(2).replace(".",",")+"€";}
 
 /* ====== CONNEXION ====== */
 async function seConnecter(){
-  var prenom=(document.getElementById("inp_prenom").value||"").trim();
-  var phone=normalizePhone(document.getElementById("inp_phone").value);
-  document.getElementById("loginErr").style.display="none";
-  if(!prenom||!phone){document.getElementById("loginErr").style.display="block";document.getElementById("loginErr").textContent="Merci de remplir ton prénom et ton numéro.";return;}
+  var prenomSaisi=(document.getElementById("inp_prenom").value||"").trim().toLowerCase();
+  var phoneSaisi=normalizePhone(document.getElementById("inp_phone").value);
+  var errEl=document.getElementById("loginErr");
+  errEl.style.display="none";
+  if(!prenomSaisi||!phoneSaisi){errEl.style.display="block";errEl.textContent="Merci de remplir ton prénom et ton numéro.";return;}
   try{
-    // Recherche par prénom uniquement, puis on compare le tel côté client
-    // (évite les problèmes de format d'espaces/tirets en base)
-    var {data:rows,error}=await SB.from("client_accounts")
-      .select("*")
-      .ilike("prenom",prenom);
+    // On charge tous les comptes et on compare en mémoire
+    // (évite tout problème de format ou de policy Supabase côté filtre)
+    var {data:rows,error}=await SB.from("client_accounts").select("*");
     if(error)throw error;
     if(!rows||rows.length===0){
-      // Tester si la table est accessible (détection RLS)
-      var {data:testRow}=await SB.from("client_accounts").select("id").limit(1);
-      if(!testRow||testRow.length===0){
-        console.error("client_accounts inaccessible : politique RLS manquante — ajouter SELECT policy dans Supabase.");
-        document.getElementById("loginErr").style.display="block";
-        document.getElementById("loginErr").textContent="Erreur de configuration. Contacte Cicine.";
-        return;
-      }
-      document.getElementById("loginErr").style.display="block";
+      console.error("client_accounts vide ou inaccessible. Vérifier RLS anon SELECT policy dans Supabase.");
+      errEl.style.display="block";
+      errEl.textContent="Erreur de configuration. Contacte Cicine.";
       return;
     }
-    // Comparer les numéros en supprimant tous les caractères non numériques
-    var data=rows.find(function(r){return normalizePhone(r.phone)===phone;})||null;
-    if(!data){
-      document.getElementById("loginErr").style.display="block";
-      return;
-    }
-    ouvrirSession(data);
+    var found=rows.find(function(r){
+      var rp=(r.prenom||"").trim().toLowerCase();
+      var rt=normalizePhone(r.phone);
+      return rp===prenomSaisi && rt===phoneSaisi;
+    })||null;
+    if(!found){errEl.style.display="block";return;}
+    ouvrirSession(found);
     setTimeout(function(){window.location.href="index.html";},800);
   }catch(e){
     console.error("Login error:",e);
-    document.getElementById("loginErr").style.display="block";
-    document.getElementById("loginErr").textContent="Erreur de connexion : "+(e.message||"réessaie.");
+    errEl.style.display="block";
+    errEl.textContent="Erreur de connexion : "+(e.message||"réessaie.");
   }
 }
 
