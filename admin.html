@@ -395,12 +395,26 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .edb.active,.edb:hover{background:rgba(255,255,255,.35);}
 #ed-save-btn{background:var(--fuchsia);color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;white-space:nowrap;}
 #ed-settings-btn{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:20px;padding:7px 12px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;white-space:nowrap;}
+.ed-hint{font-size:.72rem;color:rgba(255,255,255,.55);text-align:center;flex:1;padding:0 8px;}
+#ed-main{flex:1;display:flex;overflow:hidden;}
 #ed-shell{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;background:#1e1e2e;padding:16px;}
 #ed-device-frame{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);transition:width .25s;position:relative;}
 #ed-device-frame.phone{width:375px;}
 #ed-device-frame.tablet{width:768px;}
 #ed-device-frame.desktop{width:min(1200px,100%);}
 #ed-iframe{width:100%;height:900px;border:none;display:block;}
+/* Panneau d'édition de bloc */
+#sec-panel{width:0;background:#fff;overflow:hidden;transition:width .25s cubic-bezier(.4,0,.2,1);flex-shrink:0;border-left:1.5px solid var(--bordure);}
+#sec-panel.open{width:300px;}
+#sec-panel-inner{width:300px;height:100%;overflow-y:auto;padding:14px;box-sizing:border-box;}
+#sec-panel-header{display:flex;align-items:center;gap:8px;margin-bottom:11px;padding-bottom:10px;border-bottom:1.5px solid var(--bordure);}
+#sec-panel-title{font-size:.88rem;font-weight:700;color:var(--brun);flex:1;}
+.sp-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--doux);padding:2px;line-height:1;}
+#sec-panel-actions{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap;}
+.spa-btn{flex:1;min-width:0;padding:8px 6px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:9px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;text-align:center;white-space:nowrap;}
+.spa-btn:hover{background:var(--fond);}
+.spa-btn.sec-masked{background:#fee2e2;color:#991b1b;border-color:#fca5a5;}
+/* Photo + réglages overlays */
 #ed-picker-overlay,#ed-settings-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1001;align-items:flex-end;}
 #ed-picker-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:80vh;overflow-y:auto;}
 #ed-settings-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;}
@@ -409,7 +423,6 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .sd-tab{flex-shrink:0;padding:8px 13px;border:none;background:transparent;color:var(--doux);font-size:.78rem;font-weight:700;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;font-family:"Lato",sans-serif;transition:color .15s;}
 .sd-tab.active{color:var(--brun);border-bottom-color:var(--brun);}
 #ed-sd-content{padding:14px;overflow-y:auto;flex:1;}
-.ed-hint{font-size:.72rem;color:rgba(255,255,255,.55);text-align:center;flex:1;padding:0 8px;}
 </style>
 </head>
 <body>
@@ -888,14 +901,31 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <button class="edb" id="edb-tablet" onclick="setEdDevice('tablet')" title="Tablette">💻</button>
         <button class="edb" id="edb-desktop" onclick="setEdDevice('desktop')" title="Bureau">🖥️</button>
       </div>
-      <span class="ed-hint">Clique sur un texte ou une photo pour modifier</span>
+      <span class="ed-hint">Clique sur un bloc pour le modifier</span>
       <button id="ed-settings-btn" onclick="openSettingsDrawer()">⚙️ Réglages</button>
       <button id="ed-save-btn" onclick="saveEditorChanges()">💾 Sauvegarder</button>
     </div>
-    <!-- Zone de prévisualisation -->
-    <div id="ed-shell">
-      <div id="ed-device-frame" class="phone">
-        <iframe id="ed-iframe" src="index.html" onload="onIframeReady()"></iframe>
+    <!-- Zone principale : iframe + panneau bloc -->
+    <div id="ed-main">
+      <div id="ed-shell">
+        <div id="ed-device-frame" class="phone">
+          <iframe id="ed-iframe" src="index.html" onload="onIframeReady()"></iframe>
+        </div>
+      </div>
+      <!-- Panneau d'édition du bloc sélectionné -->
+      <div id="sec-panel">
+        <div id="sec-panel-inner">
+          <div id="sec-panel-header">
+            <span id="sec-panel-title"></span>
+            <button class="sp-close" onclick="closeSecPanel()">×</button>
+          </div>
+          <div id="sec-panel-actions">
+            <button class="spa-btn" id="sec-panel-vis" onclick="toggleSecVis()"></button>
+            <button class="spa-btn" onclick="moveSecUp()">↑ Monter</button>
+            <button class="spa-btn" onclick="moveSecDown()">↓ Descendre</button>
+          </div>
+          <div id="sec-panel-fields"></div>
+        </div>
       </div>
     </div>
     <!-- Sélecteur de photo (overlay) -->
@@ -903,7 +933,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <div id="ed-picker-sheet" onclick="event.stopPropagation()">
         <div style="padding:16px 16px 0;">
           <div style="font-size:1rem;font-weight:700;color:var(--brun);margin-bottom:4px;">📸 Changer la photo</div>
-          <div style="font-size:.73rem;color:var(--doux);margin-bottom:11px;">Choisis depuis la bibliothèque ou colle un lien</div>
+          <div style="font-size:.73rem;color:var(--doux);margin-bottom:11px;">Colle un lien ou choisis dans la bibliothèque</div>
           <div style="display:flex;gap:7px;align-items:center;margin-bottom:12px;">
             <input id="ed-picker-url" class="bs-input" placeholder="https://... ou photos/nom.jpg" style="margin:0;flex:1;"/>
             <button onclick="useExternalPhoto()" style="padding:9px 14px;background:var(--brun);color:#fff;border:none;border-radius:9px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">OK</button>
@@ -915,13 +945,11 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         </div>
       </div>
     </div>
-    <!-- Tiroir de réglages -->
+    <!-- Tiroir de réglages (Couleurs / Infos / Email) -->
     <div id="ed-settings-overlay" onclick="closeSettingsDrawer()">
       <div id="ed-settings-sheet" onclick="event.stopPropagation()">
         <div id="ed-sd-tabs">
-          <button class="sd-tab active" id="sdt-layout" onclick="showSDTab('layout')">🗂️ Sections</button>
-          <button class="sd-tab" id="sdt-mosaic" onclick="showSDTab('mosaic')">📸 Mosaïque</button>
-          <button class="sd-tab" id="sdt-colors" onclick="showSDTab('colors')">🎨 Couleurs</button>
+          <button class="sd-tab active" id="sdt-colors" onclick="showSDTab('colors')">🎨 Couleurs</button>
           <button class="sd-tab" id="sdt-infos" onclick="showSDTab('infos')">ℹ️ Infos</button>
           <button class="sd-tab" id="sdt-email" onclick="showSDTab('email')">📧 Email</button>
         </div>
@@ -3145,20 +3173,71 @@ async function deletePost(id){
 
 /* ====== ÉDITEUR WYSIWYG ====== */
 var _edDevice='phone';
-var _edPickerDomId=null,_edPickerSkey=null;
+var _edPickerDomId=null,_edPickerSkey=null,_edPickerThumbId=null;
 var _iframeReady=false;
-var _activeSDTab='layout';
+var _selectedSecKey=null;
+var _activeSDTab='colors';
+
+var ED_SECTIONS_CFG=[
+  {key:'hero',label:'Bandeau principal',emoji:'🦸',domId:'section-hero',
+   fields:[
+    {type:'text',id:'site-hero-title',label:'Titre principal'},
+    {type:'text',id:'site-hero-sub',label:'Sous-titre'},
+    {type:'text',id:'site-hero-btn',label:'Bouton Commander'},
+   ]},
+  {key:'specs',label:'Nos Spécialités',emoji:'🎂',domId:'section-specs',
+   fields:[
+    {type:'photo',id:'site-spec1-img',label:'Photo spécialité 1',key:'spec1_photo'},
+    {type:'text',id:'site-spec1-name',label:'Nom spécialité 1'},
+    {type:'photo',id:'site-spec2-img',label:'Photo spécialité 2',key:'spec2_photo'},
+    {type:'text',id:'site-spec2-name',label:'Nom spécialité 2'},
+    {type:'photo',id:'site-spec3-img',label:'Photo spécialité 3',key:'spec3_photo'},
+    {type:'text',id:'site-spec3-name',label:'Nom spécialité 3'},
+   ]},
+  {key:'banner',label:'Grande bannière',emoji:'🖼️',domId:'section-banner',
+   fields:[
+    {type:'photo',id:'site-banner-img',label:'Photo bannière',key:'banner_photo'},
+    {type:'text',id:'site-banner-title',label:'Titre'},
+    {type:'text',id:'site-banner-text',label:'Texte'},
+    {type:'text',id:'site-banner-btn',label:'Bouton'},
+   ]},
+  {key:'pdlsem',label:'Produit de la semaine',emoji:'⭐',domId:'section-pdlsem',fields:[]},
+  {key:'how',label:'Comment commander',emoji:'📋',domId:'section-how',fields:[]},
+  {key:'pourquoi',label:'Pourquoi Cicine ?',emoji:'💕',domId:'section-pourquoi',
+   fields:[
+    {type:'photo',id:'site-pourquoi-img',label:'Photo',key:'pourquoi_photo'},
+    {type:'text',id:'site-pq1-title',label:'Point 1 : titre'},
+    {type:'text',id:'site-pq1-text',label:'Point 1 : texte'},
+    {type:'text',id:'site-pq2-title',label:'Point 2 : titre'},
+    {type:'text',id:'site-pq2-text',label:'Point 2 : texte'},
+    {type:'text',id:'site-pq3-title',label:'Point 3 : titre'},
+    {type:'text',id:'site-pq3-text',label:'Point 3 : texte'},
+   ]},
+  {key:'social',label:'Réseaux sociaux',emoji:'📱',domId:'section-social',fields:[]},
+  {key:'avis',label:'Avis clients',emoji:'💬',domId:'section-avis',fields:[]},
+  {key:'mosaic',label:'Mosaïque photos',emoji:'📸',domId:'section-mosaic',
+   fields:[
+    {type:'photo',id:'site-mosaic1',label:'Photo 1',key:'mosaic_photo_0'},
+    {type:'photo',id:'site-mosaic2',label:'Photo 2',key:'mosaic_photo_1'},
+    {type:'photo',id:'site-mosaic3',label:'Photo 3',key:'mosaic_photo_2'},
+   ]},
+  {key:'cta',label:"Appel à l'action",emoji:'🌟',domId:'section-cta',
+   fields:[
+    {type:'text',id:'site-cta-title',label:'Titre'},
+    {type:'text',id:'site-cta-sub',label:'Sous-titre'},
+   ]},
+  {key:'quick',label:'Liens rapides',emoji:'⚡',domId:'section-quick',fields:[]},
+];
 
 function initWysiwygEditor(){
   _iframeReady=false;
+  closeSecPanel();
   var iframe=document.getElementById('ed-iframe');
   if(!iframe)return;
-  // Force reload so settings in iframe reflect latest DB values
   iframe.src='index.html?t='+Date.now();
 }
 
 function onIframeReady(){
-  // Small delay to ensure DOM is fully rendered
   setTimeout(function(){
     _iframeReady=true;
     injectEditMode();
@@ -3172,115 +3251,149 @@ function injectEditMode(){
   var doc=iframe.contentDocument||iframe.contentWindow.document;
   if(!doc||!doc.body)return;
 
-  // Inject editor styles into iframe
   var old=doc.getElementById('_ed_style');
   if(old)old.remove();
   var style=doc.createElement('style');
   style.id='_ed_style';
   style.textContent=
-    '[data-ceditable]{cursor:text!important;}'+
-    '[data-ceditable]:hover{outline:2px dashed #E8407A!important;border-radius:4px;}'+
-    '[data-ceditable]:focus{outline:2px solid #E8407A!important;background:rgba(232,64,122,.05)!important;border-radius:4px;}'+
-    '[data-photo-ed]{cursor:pointer!important;position:relative;}'+
-    '[data-photo-ed]:hover{outline:3px dashed #A0522D!important;}'+
-    '[data-photo-ed]:hover::after{content:"📸 Changer";position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fff;font-size:12px;padding:4px 10px;border-radius:20px;pointer-events:none;font-family:sans-serif;white-space:nowrap;z-index:9;}'+
-    '.ed-sz-bar{position:fixed;top:8px;left:50%;transform:translateX(-50%);background:#2A1A14;color:#fff;border-radius:30px;padding:6px 12px;display:flex;gap:6px;align-items:center;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.5);font-family:sans-serif;pointer-events:all;}'+
-    '.ed-sz-b{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:3px 7px;font-size:11px;cursor:pointer;font-family:sans-serif;}'+
-    '.ed-sz-b:hover{background:rgba(255,255,255,.35);}'+
-    '.ed-sz-b.on{background:#E8407A;border-color:#E8407A;}';
+    '.ed-sec-ov{position:absolute;inset:0;z-index:99;cursor:pointer;transition:background .15s;background:transparent;}'+
+    '.ed-sec-ov:hover{background:rgba(232,64,122,.07);outline:2.5px dashed #E8407A;outline-offset:-2px;}'+
+    '.ed-sec-ov.sel{background:rgba(232,64,122,.12);outline:2.5px solid #E8407A;outline-offset:-2px;}'+
+    '.ed-sec-lbl{position:absolute;top:6px;left:6px;background:#E8407A;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;pointer-events:none;opacity:0;transition:opacity .15s;white-space:nowrap;font-family:sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.3);}'+
+    '.ed-sec-ov:hover .ed-sec-lbl,.ed-sec-ov.sel .ed-sec-lbl{opacity:1;}';
   doc.head.appendChild(style);
 
-  // TEXT elements map: domId → settings key
-  var textMap={
-    'site-hero-title':'hero_title',
-    'site-hero-sub':'hero_subtitle',
-    'site-hero-btn':'hero_btn',
-    'site-spec1-name':'spec1_name',
-    'site-spec2-name':'spec2_name',
-    'site-spec3-name':'spec3_name',
-    'site-banner-title':'banner_title',
-    'site-banner-text':'banner_text',
-    'site-banner-btn':'banner_btn',
-    'site-pq1-title':'pq1_title',
-    'site-pq1-text':'pq1_text',
-    'site-pq2-title':'pq2_title',
-    'site-pq2-text':'pq2_text',
-    'site-pq3-title':'pq3_title',
-    'site-pq3-text':'pq3_text',
-    'site-cta-title':'cta_title',
-    'site-cta-sub':'cta_sub'
-  };
-
-  Object.keys(textMap).forEach(function(domId){
-    var el=doc.getElementById(domId);
+  ED_SECTIONS_CFG.forEach(function(sec){
+    var el=doc.getElementById(sec.domId);
     if(!el)return;
-    el.setAttribute('contenteditable','true');
-    el.setAttribute('data-ceditable',textMap[domId]);
-    el.setAttribute('data-skey',textMap[domId]);
-    el.addEventListener('focus',function(){showSzBar(el,textMap[domId],iframe,doc);});
-    el.addEventListener('blur',function(){
-      setTimeout(function(){
-        var bar=doc.getElementById('_ed_szbar');
-        if(bar&&!bar.matches(':hover'))hideSzBar(doc);
-      },120);
+    el.style.position='relative';
+    var prev=el.querySelector('.ed-sec-ov');
+    if(prev)prev.remove();
+    var ov=doc.createElement('div');
+    ov.className='ed-sec-ov';
+    var lbl=doc.createElement('span');
+    lbl.className='ed-sec-lbl';
+    lbl.textContent=sec.emoji+' '+sec.label;
+    ov.appendChild(lbl);
+    ov.addEventListener('click',function(e){
+      e.stopPropagation();
+      doc.querySelectorAll('.ed-sec-ov').forEach(function(o){o.classList.remove('sel');});
+      ov.classList.add('sel');
+      window.parent.selectSection(sec.key);
     });
+    el.insertBefore(ov,el.firstChild);
   });
 
-  // PHOTO elements
-  var photoMap={
-    'site-spec1-img':'spec1_photo',
-    'site-spec2-img':'spec2_photo',
-    'site-spec3-img':'spec3_photo',
-    'site-banner-img':'banner_photo',
-    'site-pourquoi-img':'pourquoi_photo',
-    'site-mosaic1':'mosaic_photo_0',
-    'site-mosaic2':'mosaic_photo_1',
-    'site-mosaic3':'mosaic_photo_2'
-  };
-  Object.keys(photoMap).forEach(function(domId){
-    var el=doc.getElementById(domId);
-    if(!el)return;
-    el.setAttribute('data-photo-ed',photoMap[domId]);
-    // Remove existing click listener by cloning
-    var clone=el.cloneNode(true);
-    el.parentNode.replaceChild(clone,el);
-    clone.addEventListener('click',function(e){
-      e.preventDefault();e.stopPropagation();
-      openPhotoPicker(domId,photoMap[domId]);
-    });
-  });
-
-  // Adjust iframe height to full content
   iframe.style.height=Math.max(800,doc.documentElement.scrollHeight)+'px';
 }
 
-function showSzBar(el,skey,iframe,doc){
-  hideSzBar(doc);
-  var sizes=['0.6rem','0.75rem','0.88rem','1rem','1.2rem','1.5rem','1.8rem','2rem','2.5rem','3rem'];
-  var labels=['XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL'];
-  var curSize=el.style.fontSize||shopSettings[skey+'_size']||'';
-  var bar=doc.createElement('div');
-  bar.id='_ed_szbar';
-  bar.className='ed-sz-bar';
-  bar.innerHTML='<span style="font-size:10px;opacity:.65;margin-right:2px;">Taille :</span>'+
-    sizes.map(function(s,i){
-      return '<button class="ed-sz-b'+(s===curSize?' on':'')+'" data-sz="'+s+'">'+labels[i]+'</button>';
-    }).join('');
-  bar.querySelectorAll('.ed-sz-b').forEach(function(btn){
-    btn.addEventListener('mousedown',function(e){
-      e.preventDefault();
-      var val=btn.getAttribute('data-sz');
-      bar.querySelectorAll('.ed-sz-b').forEach(function(b){b.classList.remove('on');});
-      btn.classList.add('on');
-      el.style.fontSize=val;
-      shopSettings[skey+'_size']=val;
-    });
-  });
-  doc.body.appendChild(bar);
+function selectSection(key){
+  _selectedSecKey=key;
+  var cfg=ED_SECTIONS_CFG.find(function(s){return s.key===key;});
+  if(!cfg)return;
+  renderSecPanel(cfg);
+  document.getElementById('sec-panel').classList.add('open');
 }
-function hideSzBar(doc){
-  var old=doc.getElementById('_ed_szbar');
-  if(old)old.remove();
+
+function renderSecPanel(cfg){
+  var iframe=document.getElementById('ed-iframe');
+  var doc=iframe?iframe.contentDocument:null;
+  document.getElementById('sec-panel-title').textContent=cfg.emoji+' '+cfg.label;
+
+  var isHidden=pageLayout.hidden.indexOf(cfg.key)>-1;
+  var visBtn=document.getElementById('sec-panel-vis');
+  visBtn.textContent=isHidden?'👁 Afficher':'🚫 Masquer';
+  visBtn.className='spa-btn'+(isHidden?' sec-masked':'');
+
+  var html='';
+  cfg.fields.forEach(function(f,i){
+    if(f.type==='text'){
+      var el=doc&&doc.getElementById(f.id);
+      var val=el?(el.textContent||el.innerText||'').trim():'';
+      html+='<div style="margin-bottom:11px;">'+
+        '<label class="bs-label">'+f.label+'</label>'+
+        '<input class="bs-input" style="margin:0;" value="'+escHtml(val)+'" data-dom-id="'+f.id+'" oninput="applySecTextField(this)"/>'+
+      '</div>';
+    }else if(f.type==='photo'){
+      var imgEl=doc&&doc.getElementById(f.id);
+      var src=imgEl?imgEl.getAttribute('src'):'';
+      html+='<div style="margin-bottom:11px;">'+
+        '<label class="bs-label">'+f.label+'</label>'+
+        '<div style="display:flex;gap:8px;align-items:center;">'+
+          '<img id="spth-'+i+'" src="'+(src||'')+'" style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1.5px solid var(--bordure);flex-shrink:0;background:var(--fond2);"/>'+
+          '<button onclick="openPhotoPicker(\''+f.id+'\',\''+(f.key||f.id)+'\',\'spth-'+i+'\')" style="flex:1;padding:9px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:9px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:\'Lato\',sans-serif;">📸 Changer</button>'+
+        '</div>'+
+      '</div>';
+    }
+  });
+  if(!cfg.fields.length){
+    html='<div style="text-align:center;padding:18px 0;color:var(--doux);font-size:.8rem;line-height:1.7;">Cette section n\'a pas de contenu modifiable.<br/>Tu peux l\'afficher, la masquer ou la déplacer.</div>';
+  }
+  document.getElementById('sec-panel-fields').innerHTML=html;
+}
+
+function applySecTextField(input){
+  var domId=input.getAttribute('data-dom-id');
+  if(!domId)return;
+  var iframe=document.getElementById('ed-iframe');
+  var doc=iframe&&iframe.contentDocument;
+  var el=doc&&doc.getElementById(domId);
+  if(el)el.textContent=input.value;
+}
+
+function closeSecPanel(){
+  _selectedSecKey=null;
+  var panel=document.getElementById('sec-panel');
+  if(panel)panel.classList.remove('open');
+  var iframe=document.getElementById('ed-iframe');
+  var doc=iframe&&iframe.contentDocument;
+  if(doc)doc.querySelectorAll('.ed-sec-ov').forEach(function(o){o.classList.remove('sel');});
+}
+
+function toggleSecVis(){
+  if(!_selectedSecKey)return;
+  var key=_selectedSecKey;
+  var hi=pageLayout.hidden.indexOf(key);
+  if(hi>-1)pageLayout.hidden.splice(hi,1);
+  else pageLayout.hidden.push(key);
+  var iframe=document.getElementById('ed-iframe');
+  var doc=iframe&&iframe.contentDocument;
+  var cfg=ED_SECTIONS_CFG.find(function(s){return s.key===key;});
+  if(cfg&&doc){
+    var el=doc.getElementById(cfg.domId);
+    if(el)el.style.display=pageLayout.hidden.indexOf(key)>-1?'none':'';
+  }
+  if(cfg)renderSecPanel(cfg);
+}
+
+function moveSecUp(){
+  if(!_selectedSecKey)return;
+  var key=_selectedSecKey;
+  var i=pageLayout.order.indexOf(key);
+  if(i<=0)return;
+  var t=pageLayout.order[i];pageLayout.order[i]=pageLayout.order[i-1];pageLayout.order[i-1]=t;
+  var iframe=document.getElementById('ed-iframe');
+  var doc=iframe&&iframe.contentDocument;
+  var cfg=ED_SECTIONS_CFG.find(function(s){return s.key===key;});
+  if(!cfg||!doc)return;
+  var container=doc.getElementById('page-sections');
+  var el=doc.getElementById(cfg.domId);
+  if(el&&el.previousElementSibling&&container)container.insertBefore(el,el.previousElementSibling);
+}
+
+function moveSecDown(){
+  if(!_selectedSecKey)return;
+  var key=_selectedSecKey;
+  var i=pageLayout.order.indexOf(key);
+  if(i<0||i>=pageLayout.order.length-1)return;
+  var t=pageLayout.order[i];pageLayout.order[i]=pageLayout.order[i+1];pageLayout.order[i+1]=t;
+  var iframe=document.getElementById('ed-iframe');
+  var doc=iframe&&iframe.contentDocument;
+  var cfg=ED_SECTIONS_CFG.find(function(s){return s.key===key;});
+  if(!cfg||!doc)return;
+  var container=doc.getElementById('page-sections');
+  var el=doc.getElementById(cfg.domId);
+  if(el&&el.nextElementSibling&&container)container.insertBefore(el.nextElementSibling,el);
 }
 
 function setEdDevice(dev){
@@ -3293,9 +3406,10 @@ function setEdDevice(dev){
   });
 }
 
-function openPhotoPicker(domId,skey){
+function openPhotoPicker(domId,skey,thumbId){
   _edPickerDomId=domId;
   _edPickerSkey=skey;
+  _edPickerThumbId=thumbId||null;
   var overlay=document.getElementById('ed-picker-overlay');
   overlay.style.display='flex';
   var PHOTOS=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
@@ -3308,7 +3422,7 @@ function openPhotoPicker(domId,skey){
 }
 function closePhotoPicker(){
   document.getElementById('ed-picker-overlay').style.display='none';
-  _edPickerDomId=null;_edPickerSkey=null;
+  _edPickerDomId=null;_edPickerSkey=null;_edPickerThumbId=null;
 }
 function useExternalPhoto(){
   var url=document.getElementById('ed-picker-url').value.trim();
@@ -3319,22 +3433,21 @@ function selectPhoto(path){applyPhoto(path);}
 function applyPhoto(src){
   if(!_edPickerDomId)return;
   var iframe=document.getElementById('ed-iframe');
-  if(!iframe)return;
-  var doc=iframe.contentDocument;
-  var el=doc.getElementById(_edPickerDomId);
+  var doc=iframe&&iframe.contentDocument;
+  var el=doc&&doc.getElementById(_edPickerDomId);
   if(el){
     if(el.tagName==='IMG')el.src=src;
     else el.style.backgroundImage='url('+src+')';
   }
-  if(_edPickerSkey&&_edPickerSkey.startsWith('mosaic_photo_')){
-    var idx=parseInt(_edPickerSkey.replace('mosaic_photo_',''),10);
-    if(!isNaN(idx)){
-      while(mosaicPhotos.length<=idx)mosaicPhotos.push('');
-      mosaicPhotos[idx]=src;
-    }
-  }else if(_edPickerSkey){
-    shopSettings[_edPickerSkey]=src;
+  if(_edPickerThumbId){
+    var thumb=document.getElementById(_edPickerThumbId);
+    if(thumb)thumb.src=src;
   }
+  var skey=_edPickerSkey;
+  if(skey&&skey.startsWith('mosaic_photo_')){
+    var idx=parseInt(skey.replace('mosaic_photo_',''),10);
+    if(!isNaN(idx)){while(mosaicPhotos.length<=idx)mosaicPhotos.push('');mosaicPhotos[idx]=src;}
+  }else if(skey){shopSettings[skey]=src;}
   closePhotoPicker();
 }
 
@@ -3345,71 +3458,50 @@ async function saveEditorChanges(){
   if(!doc){showNotif('Page non chargée');return;}
   var pairs=[];
 
-  // Collect text values
-  var textMap={
-    'site-hero-title':'hero_title',
-    'site-hero-sub':'hero_subtitle',
-    'site-hero-btn':'hero_btn',
-    'site-spec1-name':'spec1_name',
-    'site-spec2-name':'spec2_name',
-    'site-spec3-name':'spec3_name',
-    'site-banner-title':'banner_title',
-    'site-banner-text':'banner_text',
-    'site-banner-btn':'banner_btn',
-    'site-pq1-title':'pq1_title',
-    'site-pq1-text':'pq1_text',
-    'site-pq2-title':'pq2_title',
-    'site-pq2-text':'pq2_text',
-    'site-pq3-title':'pq3_title',
-    'site-pq3-text':'pq3_text',
-    'site-cta-title':'cta_title',
-    'site-cta-sub':'cta_sub'
+  var textIds={
+    'site-hero-title':'hero_title','site-hero-sub':'hero_subtitle','site-hero-btn':'hero_btn',
+    'site-spec1-name':'spec1_name','site-spec2-name':'spec2_name','site-spec3-name':'spec3_name',
+    'site-banner-title':'banner_title','site-banner-text':'banner_text','site-banner-btn':'banner_btn',
+    'site-pq1-title':'pq1_title','site-pq1-text':'pq1_text',
+    'site-pq2-title':'pq2_title','site-pq2-text':'pq2_text',
+    'site-pq3-title':'pq3_title','site-pq3-text':'pq3_text',
+    'site-cta-title':'cta_title','site-cta-sub':'cta_sub'
   };
-  Object.keys(textMap).forEach(function(domId){
+  Object.keys(textIds).forEach(function(domId){
     var el=doc.getElementById(domId);
     if(!el)return;
-    pairs.push({key:textMap[domId],value:(el.textContent||el.innerText||'').trim()});
+    pairs.push({key:textIds[domId],value:(el.textContent||el.innerText||'').trim()});
   });
 
-  // Photo values from shopSettings
-  ['spec1_photo','spec2_photo','spec3_photo','banner_photo','pourquoi_photo'].forEach(function(k){
-    if(shopSettings[k]!==undefined)pairs.push({key:k,value:shopSettings[k]});
-  });
-
-  // Photo values from iframe directly (in case not yet in shopSettings)
-  var photoMap={'site-spec1-img':'spec1_photo','site-spec2-img':'spec2_photo','site-spec3-img':'spec3_photo','site-banner-img':'banner_photo','site-pourquoi-img':'pourquoi_photo'};
-  Object.keys(photoMap).forEach(function(domId){
+  var photoIds={
+    'site-spec1-img':'spec1_photo','site-spec2-img':'spec2_photo','site-spec3-img':'spec3_photo',
+    'site-banner-img':'banner_photo','site-pourquoi-img':'pourquoi_photo',
+    'site-mosaic1':'mosaic_photo_0','site-mosaic2':'mosaic_photo_1','site-mosaic3':'mosaic_photo_2'
+  };
+  Object.keys(photoIds).forEach(function(domId){
     var el=doc.getElementById(domId);
-    if(el&&el.tagName==='IMG'&&el.src){
+    if(el&&el.tagName==='IMG'){
       var src=el.getAttribute('src')||'';
-      if(src&&!src.startsWith('data:'))pairs.push({key:photoMap[domId],value:src});
+      if(src&&!src.startsWith('data:'))pairs.push({key:photoIds[domId],value:src});
     }
   });
 
-  // Size settings
-  Object.keys(shopSettings).forEach(function(k){
-    if(k.endsWith('_size')&&shopSettings[k])pairs.push({key:k,value:shopSettings[k]});
-  });
-
-  // Layout & mosaic
   pairs.push({key:'page_layout',value:JSON.stringify(pageLayout)});
   pairs.push({key:'mosaic_photos',value:JSON.stringify(mosaicPhotos)});
 
-  // Deduplicate (last value wins)
   var seen={};
-  pairs=pairs.filter(function(p){if(seen[p.key])return false;seen[p.key]=true;return p.value!==undefined&&p.value!==null;});
+  pairs=pairs.filter(function(p){if(seen[p.key])return false;seen[p.key]=true;return p.value!==undefined&&p.value!==null&&p.value!=='';});
 
   try{
     var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
     if(error)throw error;
     pairs.forEach(function(p){shopSettings[p.key]=p.value;});
     showNotif('✅ Site sauvegardé !');
-    // Reload iframe to reflect saved state
     setTimeout(function(){initWysiwygEditor();},600);
   }catch(e){showNotif('Erreur : '+e.message);}
 }
 
-/* ====== TIROIR DE RÉGLAGES ====== */
+/* ====== TIROIR RÉGLAGES (Couleurs / Infos / Email) ====== */
 function openSettingsDrawer(){
   document.getElementById('ed-settings-overlay').style.display='flex';
   showSDTab(_activeSDTab);
@@ -3419,33 +3511,13 @@ function closeSettingsDrawer(){
 }
 function showSDTab(tab){
   _activeSDTab=tab;
-  ['layout','mosaic','colors','infos','email'].forEach(function(t){
+  ['colors','infos','email'].forEach(function(t){
     var btn=document.getElementById('sdt-'+t);
     if(btn)btn.classList.toggle('active',t===tab);
   });
   var c=document.getElementById('ed-sd-content');
   if(!c)return;
   switch(tab){
-    case 'layout':
-      c.innerHTML='<div style="font-size:.76rem;font-weight:700;color:var(--brun);margin-bottom:11px;">👁 Afficher/masquer les sections · ↑↓ Réorganiser</div>'+
-        '<div class="section-mgr" id="sd-sec-list"></div>'+
-        '<button class="bs-btn-primary" style="margin-top:12px;" onclick="sdSaveLayout()">💾 Sauvegarder la mise en page</button>';
-      sdRenderSections();
-      break;
-    case 'mosaic':
-      c.innerHTML='<div style="font-size:.74rem;color:var(--doux);margin-bottom:10px;">Ajoute ou retire des photos.</div>'+
-        '<div class="mosaic-ed" id="sd-mosaic-grid"></div>'+
-        '<div style="display:flex;gap:7px;margin-bottom:10px;align-items:center;">'+
-          '<input class="bs-input" id="sd-mosaic-url" placeholder="URL ou photos/nom.jpg" style="margin:0;flex:1;"/>'+
-          '<button onclick="sdAddMosaicPhoto()" style="padding:9px 12px;background:var(--brun);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:\'Lato\',sans-serif;">+ Ajouter</button>'+
-        '</div>'+
-        '<div style="background:var(--fond);border-radius:10px;padding:10px;margin-bottom:12px;">'+
-          '<div style="font-size:.72rem;font-weight:700;color:var(--brun);margin-bottom:7px;">Choisir depuis la bibliothèque</div>'+
-          '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;" id="sd-mosaic-picker"></div>'+
-        '</div>'+
-        '<button class="bs-btn-primary" onclick="sdSaveMosaic()">💾 Sauvegarder la mosaïque</button>';
-      sdRenderMosaicGrid();sdSetupMosaicPicker();
-      break;
     case 'colors':
       c.innerHTML='<div class="fgr" style="margin-bottom:12px;">'+
         '<div><label class="bs-label">Couleur principale (brun)</label>'+
@@ -3485,78 +3557,6 @@ function showSDTab(tab){
         '<button class="bs-btn-primary" onclick="sdSaveEmail()">💾 Sauvegarder</button>';
       break;
   }
-}
-
-function sdRenderSections(){
-  var el=document.getElementById('sd-sec-list');
-  if(!el)return;
-  el.innerHTML=pageLayout.order.map(function(id,i){
-    var sec=SECTIONS.find(function(s){return s.id===id;});
-    if(!sec)return'';
-    var hidden=pageLayout.hidden.indexOf(id)>-1;
-    return'<div class="sm-card'+(hidden?' sec-hidden':'')+'">'+
-      '<span class="sm-handle">☰</span>'+
-      '<button class="sm-vis '+(hidden?'off':'on')+'" onclick="sdToggleVis(\''+id+'\',this)"></button>'+
-      '<span class="sm-label">'+sec.emoji+' '+sec.label+'</span>'+
-      '<div class="sm-updn">'+
-        '<button class="sm-btn" onclick="sdMoveSection(\''+id+'\',-1)"'+(i===0?' disabled style="opacity:.3;cursor:default;"':'')+'>↑</button>'+
-        '<button class="sm-btn" onclick="sdMoveSection(\''+id+'\',1)"'+(i===pageLayout.order.length-1?' disabled style="opacity:.3;cursor:default;"':'')+'>↓</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-}
-function sdToggleVis(id,btn){
-  var hi=pageLayout.hidden.indexOf(id);
-  if(hi>-1){pageLayout.hidden.splice(hi,1);btn.classList.remove('off');btn.classList.add('on');btn.closest('.sm-card').classList.remove('sec-hidden');}
-  else{pageLayout.hidden.push(id);btn.classList.remove('on');btn.classList.add('off');btn.closest('.sm-card').classList.add('sec-hidden');}
-}
-function sdMoveSection(id,dir){
-  var i=pageLayout.order.indexOf(id);
-  if(i<0)return;
-  var ni=i+dir;
-  if(ni<0||ni>=pageLayout.order.length)return;
-  var t=pageLayout.order[i];pageLayout.order[i]=pageLayout.order[ni];pageLayout.order[ni]=t;
-  sdRenderSections();
-}
-async function sdSaveLayout(){
-  var pairs=[{key:'page_layout',value:JSON.stringify(pageLayout)}];
-  var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
-  if(error){showNotif('Erreur : '+error.message);return;}
-  showNotif('✅ Mise en page sauvegardée !');
-  setTimeout(function(){initWysiwygEditor();},400);
-  closeSettingsDrawer();
-}
-
-function sdRenderMosaicGrid(){
-  var grid=document.getElementById('sd-mosaic-grid');
-  if(!grid)return;
-  grid.innerHTML=mosaicPhotos.map(function(url,j){
-    return'<div class="mosaic-ed-item">'+
-      '<img src="'+escHtml(url)+'" onerror="this.style.opacity=\'.3\'"/>'+
-      '<button class="mosaic-ed-del" onclick="sdRemoveMosaicPhoto('+j+')">×</button>'+
-    '</div>';
-  }).join('');
-}
-function sdSetupMosaicPicker(){
-  var grid=document.getElementById('sd-mosaic-picker');
-  if(!grid)return;
-  var PHOTOS=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
-  grid.innerHTML=PHOTOS.map(function(p){var path='photos/'+p+'.jpg';
-    return'<img src="'+path+'" onclick="sdAddMosaicFromPicker(\''+path+'\')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;" onmouseover="this.style.borderColor=\'var(--caramel)\'" onmouseout="this.style.borderColor=\'transparent\'"/>';
-  }).join('');
-}
-function sdRemoveMosaicPhoto(i){mosaicPhotos.splice(i,1);sdRenderMosaicGrid();}
-function sdAddMosaicPhoto(){
-  var input=document.getElementById('sd-mosaic-url');
-  if(!input||!input.value.trim()){showNotif('Entre un chemin ou URL');return;}
-  mosaicPhotos.push(input.value.trim());input.value='';sdRenderMosaicGrid();
-}
-function sdAddMosaicFromPicker(path){mosaicPhotos.push(path);sdRenderMosaicGrid();}
-async function sdSaveMosaic(){
-  var {error}=await sb.from('settings').upsert([{key:'mosaic_photos',value:JSON.stringify(mosaicPhotos)}],{onConflict:'key'});
-  if(error){showNotif('Erreur : '+error.message);return;}
-  shopSettings.mosaic_photos=JSON.stringify(mosaicPhotos);
-  showNotif('✅ Mosaïque sauvegardée !');
 }
 async function sdSaveColors(){
   var p=document.getElementById('sdc_primary');
@@ -3601,53 +3601,18 @@ async function sdSaveEmail(){
   pairs.forEach(function(p){shopSettings[p.key]=p.value;});
   showNotif('✅ Email sauvegardé !');
 }
-async function saveAllSiteSettings(){
-  var staticIds={
-    shop_name:'set_shop_name',shop_tagline:'set_shop_tagline',shop_phone:'set_shop_phone',shop_address:'set_shop_address',
-    social_instagram:'ed_instagram',social_facebook:'ed_facebook',social_whatsapp:'ed_whatsapp',social_snapchat:'ed_snapchat',
-    color_primary:'set_color_primary',color_secondary:'set_color_secondary',
-    notif_email:'set_notif_email',emailjs_service:'set_emailjs_service',emailjs_template:'set_emailjs_template',emailjs_pubkey:'set_emailjs_pubkey'
-  };
-  var upserts=[];
-  Object.keys(staticIds).forEach(function(key){
-    var el=document.getElementById(staticIds[key]);
-    if(el&&el.value)upserts.push({key:key,value:el.value});
-  });
-  if(!upserts.length){showNotif('Rien à sauvegarder');return;}
-  try{
-    var {error}=await sb.from('settings').upsert(upserts,{onConflict:'key'});
-    if(error)throw error;
-    upserts.forEach(function(u){shopSettings[u.key]=u.value;});
-    applySettingsColors();
-    showNotif('✅ Paramètres sauvegardés !');
-  }catch(e){showNotif('Erreur : '+e.message);}
-}
 async function loadAllSiteSettings(){
   try{
     var {data}=await sb.from('settings').select('key,value');
     var s={};(data||[]).forEach(function(r){s[r.key]=r.value;});
     Object.keys(s).forEach(function(k){shopSettings[k]=s[k];});
-    // Charger la mise en page
     if(s.page_layout){try{var pl=JSON.parse(s.page_layout);if(pl.order)pageLayout.order=pl.order;if(pl.hidden)pageLayout.hidden=pl.hidden;}catch(e){}}
-    // Charger les photos de la mosaïque
     if(s.mosaic_photos){try{var mp=JSON.parse(s.mosaic_photos);if(Array.isArray(mp)&&mp.length)mosaicPhotos=mp;}catch(e){}}
   }catch(e){}
 }
 
 /* ====== SECTIONS STATE ====== */
-var SECTIONS=[
-  {id:'hero',emoji:'🦸',label:'Bandeau principal (Hero)'},
-  {id:'specs',emoji:'🎂',label:'Nos Spécialités (3 cartes)'},
-  {id:'banner',emoji:'🖼️',label:'Grande bannière photo'},
-  {id:'pdlsem',emoji:'⭐',label:'Produit de la semaine'},
-  {id:'how',emoji:'📋',label:'Comment commander'},
-  {id:'pourquoi',emoji:'💕',label:'Pourquoi Cicine ?'},
-  {id:'social',emoji:'📱',label:'Réseaux sociaux'},
-  {id:'avis',emoji:'💬',label:'Avis clients'},
-  {id:'mosaic',emoji:'📸',label:'Mosaïque photos'},
-  {id:'cta',emoji:'🌟',label:'CTA Final'},
-];
-var pageLayout={order:SECTIONS.map(function(s){return s.id;}),hidden:[]};
+var pageLayout={order:['hero','specs','banner','pdlsem','how','pourquoi','social','avis','mosaic','cta','quick'],hidden:[]};
 var mosaicPhotos=['photos/gateau-rouge-dollars.jpg','photos/cupcakes-valentin.jpg','photos/gateau-chiffre.jpg'];
 function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 
@@ -3701,14 +3666,20 @@ function renderClientAccounts(){
   }).join('');
 }
 function openAddClientAccount(){
+  var joursOpts='<option value="">-- Jour --</option>'+Array.from({length:31},function(_,i){return'<option value="'+(i+1)+'">'+(i+1)+'</option>';}).join('');
+  var moisOpts='<option value="">-- Mois --</option>'+['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'].map(function(m,i){return'<option value="'+(i+1)+'">'+m+'</option>';}).join('');
   openModal(
     '<div class="bs-title">👤 Ajouter un compte client</div>'+
     '<label class="bs-label">Prénom *</label>'+
     '<input class="bs-input" id="nca_prenom" placeholder="Ex : Marie"/>'+
     '<label class="bs-label">Numéro de téléphone *</label>'+
     '<input class="bs-input" id="nca_phone" type="tel" placeholder="Ex : 0696 12 34 56"/>'+
-    '<label class="bs-label">Email (optionnel)</label>'+
-    '<input class="bs-input" id="nca_email" type="email" placeholder="marie@email.com"/>'+
+    '<label class="bs-label">Code postal *</label>'+
+    '<input class="bs-input" id="nca_cp" placeholder="Ex : 97232" inputmode="numeric"/>'+
+    '<label class="bs-label">Jour de naissance *</label>'+
+    '<select class="bs-input" id="nca_jour" style="margin-bottom:0;">'+joursOpts+'</select>'+
+    '<label class="bs-label">Mois de naissance *</label>'+
+    '<select class="bs-input" id="nca_mois">'+moisOpts+'</select>'+
     '<button class="bs-btn-primary" onclick="saveClientAccount()">✅ Créer le compte</button>'+
     '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
   );
@@ -3716,10 +3687,11 @@ function openAddClientAccount(){
 async function saveClientAccount(){
   var prenom=(document.getElementById('nca_prenom').value||'').trim();
   var phone=(document.getElementById('nca_phone').value||'').trim().replace(/[\s\.\-]/g,'');
-  var email=(document.getElementById('nca_email').value||'').trim();
-  if(!prenom||!phone){showNotif('Prénom et téléphone obligatoires');return;}
-  var row={prenom:prenom,phone:phone};
-  if(email)row.email=email;
+  var cp=(document.getElementById('nca_cp').value||'').trim();
+  var jour=parseInt(document.getElementById('nca_jour').value)||0;
+  var mois=parseInt(document.getElementById('nca_mois').value)||0;
+  if(!prenom||!phone||!cp||!jour||!mois){showNotif('Tous les champs sont obligatoires');return;}
+  var row={prenom:prenom,phone:phone,code_postal:cp,jour_naissance:jour,mois_naissance:mois};
   var {error}=await sb.from('client_accounts').insert(row);
   if(error){showNotif('Erreur : '+(error.message.includes('unique')?'Ce numéro existe déjà.':error.message));return;}
   showNotif('✅ Compte créé !');closeModal();loadClientAccounts();

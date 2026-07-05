@@ -97,8 +97,22 @@ input:focus{border-color:var(--caramel);}
     <label>Ton numéro de téléphone *</label>
     <input type="tel" id="reg_phone" placeholder="Ex : 0696 12 34 56" autocomplete="tel"/>
 
-    <label>Ton email (optionnel)</label>
-    <input type="email" id="reg_email" placeholder="marie@email.com" autocomplete="email"/>
+    <label>Ton code postal *</label>
+    <input type="text" id="reg_cp" placeholder="Ex : 97232" inputmode="numeric" maxlength="10"/>
+
+    <label>Jour de naissance *</label>
+    <select id="reg_jour" style="width:100%;padding:13px 14px;border:1.5px solid var(--bordure);border-radius:12px;font-size:.95rem;font-family:'Lato',sans-serif;background:var(--fond);color:var(--texte);outline:none;margin-bottom:4px;">
+      <option value="">-- Jour --</option>
+    </select>
+
+    <label>Mois de naissance *</label>
+    <select id="reg_mois" style="width:100%;padding:13px 14px;border:1.5px solid var(--bordure);border-radius:12px;font-size:.95rem;font-family:'Lato',sans-serif;background:var(--fond);color:var(--texte);outline:none;">
+      <option value="">-- Mois --</option>
+      <option value="1">Janvier</option><option value="2">Février</option><option value="3">Mars</option>
+      <option value="4">Avril</option><option value="5">Mai</option><option value="6">Juin</option>
+      <option value="7">Juillet</option><option value="8">Août</option><option value="9">Septembre</option>
+      <option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+    </select>
 
     <p class="err" id="regErr">Ce numéro de téléphone est déjà utilisé. Connecte-toi à la place.</p>
 
@@ -188,6 +202,7 @@ async function seConnecter(){
       return;
     }
     ouvrirSession(data);
+    setTimeout(function(){window.location.href="index.html";},800);
   }catch(e){
     document.getElementById("loginErr").style.display="block";
     document.getElementById("loginErr").textContent="Erreur de connexion. Réessaie.";
@@ -198,25 +213,27 @@ async function seConnecter(){
 async function sInscrire(){
   var prenom=(document.getElementById("reg_prenom").value||"").trim();
   var phone=normalizePhone(document.getElementById("reg_phone").value);
-  var email=(document.getElementById("reg_email").value||"").trim();
+  var cp=(document.getElementById("reg_cp").value||"").trim();
+  var jour=parseInt(document.getElementById("reg_jour").value)||0;
+  var mois=parseInt(document.getElementById("reg_mois").value)||0;
   document.getElementById("regErr").style.display="none";
-  if(!prenom||!phone){
+  if(!prenom||!phone||!cp||!jour||!mois){
     document.getElementById("regErr").style.display="block";
-    document.getElementById("regErr").textContent="Merci de remplir ton prénom et ton numéro.";
+    document.getElementById("regErr").textContent="Merci de remplir tous les champs obligatoires.";
     return;
   }
   try{
-    // Vérifier si le numéro existe déjà
     var {data:existing}=await SB.from("client_accounts").select("id").eq("phone",phone).maybeSingle();
     if(existing){
       document.getElementById("regErr").style.display="block";
+      document.getElementById("regErr").textContent="Ce numéro est déjà utilisé. Connecte-toi à la place.";
       return;
     }
-    var row={prenom:prenom,phone:phone};
-    if(email)row.email=email;
+    var row={prenom:prenom,phone:phone,code_postal:cp,jour_naissance:jour,mois_naissance:mois};
     var {data,error}=await SB.from("client_accounts").insert(row).select().single();
     if(error)throw error;
     ouvrirSession(data);
+    setTimeout(function(){window.location.href="index.html";},800);
   }catch(e){
     document.getElementById("regErr").style.display="block";
     document.getElementById("regErr").textContent="Erreur : "+e.message;
@@ -284,6 +301,10 @@ async function chargerCommandes(client){
 
 /* ====== INIT ====== */
 window.addEventListener("load",function(){
+  // Remplir le select des jours
+  var jourSel=document.getElementById("reg_jour");
+  if(jourSel){for(var d=1;d<=31;d++){var o=document.createElement("option");o.value=d;o.textContent=d;jourSel.appendChild(o);}}
+
   var saved=localStorage.getItem(SESSION_KEY);
   if(saved){
     try{
