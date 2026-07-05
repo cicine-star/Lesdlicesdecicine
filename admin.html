@@ -583,7 +583,8 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <!-- Bonjour -->
     <div style="margin-bottom:18px;">
       <div style="font-family:'Dancing Script',cursive;font-size:1.7rem;color:var(--brun);" id="dash-greeting">Bonjour Cicine 💕 👋</div>
-      <div style="font-size:1rem;font-weight:700;color:var(--doux);" id="dash-date"></div>
+      <div style="font-size:1rem;font-weight:700;color:var(--doux);margin-bottom:10px;" id="dash-date"></div>
+      <div id="dash-citation" style="font-size:.82rem;color:var(--caramel);font-style:italic;background:var(--fond2);border-left:3px solid var(--caramel);border-radius:0 8px 8px 0;padding:8px 12px;line-height:1.5;"></div>
     </div>
 
     <!-- 3 cartes clés -->
@@ -2944,9 +2945,46 @@ async function loadAccueil(){
   var jours=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
   var mois=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
   var h=now.getHours();
-  var salut=h>=18?"Bonsoir":h>=5?"Bonjour":"Bonsoir";
+  var salut=(h>=3&&h<16)?"Bonjour":"Bonsoir";
   document.getElementById("dash-greeting").textContent=salut+" Cicine 💕 👋";
   document.getElementById("dash-date").textContent=jours[now.getDay()]+" "+now.getDate()+" "+mois[now.getMonth()]+" "+now.getFullYear();
+  // Citation du jour (change chaque jour)
+  var citations=[
+    "Chaque gâteau vendu est un pas de plus vers tes rêves. 🎂",
+    "La passion dans tes mains se transforme en or dans ta caisse. 💰",
+    "Une cliente satisfaite vaut mieux que dix publicités. 🌟",
+    "Ton talent est unique — fais-le payer à sa juste valeur. 💎",
+    "Les petites boutiques font les grands succès. 🧁",
+    "Chaque commande est une nouvelle chance de briller. ✨",
+    "Le succès, c'est la somme de petits efforts répétés chaque jour. 💪",
+    "Investis dans ton art et l'argent suivra. 🍰",
+    "Tes créations méritent d'être connues de tout le monde. 🌍",
+    "Une entreprise qui grandit commence toujours par une seule vente. 🚀",
+    "Travaille avec amour et la prospérité viendra naturellement. 💕",
+    "Chaque client heureux est ta meilleure publicité. 😊",
+    "Les rêves se réalisent une pâtisserie à la fois. 🌸",
+    "Ton ambition est ta recette secrète du succès. 🏆",
+    "L'argent aime la vitesse — n'attends pas, crée aujourd'hui. ⚡",
+    "Qualité + régularité = clients fidèles pour la vie. 🤝",
+    "Chaque effort d'aujourd'hui construit la réussite de demain. 🌅",
+    "Ta petite entreprise a un grand avenir. 📈",
+    "Être à son compte, c'est la liberté de créer sa propre chance. 🗝️",
+    "Le vrai luxe, c'est d'être payée pour ce qu'on aime faire. 💫",
+    "Une bonne réputation se construit un sourire à la fois. 🌷",
+    "Fixe ton prix avec confiance — ton travail a de la valeur. 💰",
+    "Les meilleures affaires naissent d'une vraie passion. ❤️",
+    "Aujourd'hui est une nouvelle opportunité de faire du chiffre. 📊",
+    "La constance est le secret des entrepreneurs qui réussissent. 🔑",
+    "Chaque centime réinvesti est une graine pour demain. 🌱",
+    "Les clients reviennent là où on les traite avec soin. 🩷",
+    "Ton four, c'est ta banque — chauffe-le fort ! 🔥",
+    "Une entreprise prospère, c'est d'abord une femme qui croit en elle. 👑",
+    "Mets autant d'amour dans tes prix que dans tes gâteaux. 🎯",
+  ];
+  var jourAnnee=Math.floor((now-new Date(now.getFullYear(),0,0))/(1000*60*60*24));
+  var citation=citations[jourAnnee%citations.length];
+  var citEl=document.getElementById("dash-citation");
+  if(citEl)citEl.textContent=citation;
 
   // Commandes en attente
   var pending=(allOrders||[]).filter(function(o){return o.status==="pending";});
