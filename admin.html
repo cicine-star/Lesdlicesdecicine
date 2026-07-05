@@ -37,6 +37,11 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .ip-title{font-size:.67rem;font-weight:700;color:var(--doux);padding:8px 16px 5px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--bordure);margin-bottom:3px;}
 .ip-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:.85rem;font-weight:700;color:var(--texte);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Lato',sans-serif;transition:background .15s;}
 .ip-item:hover{background:var(--fond2);color:var(--brun);}
+/* DASH BUTTONS */
+.dash-btn{background:#fff;border:2px solid;border-radius:14px;padding:14px 10px;cursor:pointer;font-family:'Lato',sans-serif;display:flex;flex-direction:column;align-items:center;gap:5px;transition:background .15s;width:100%;}
+.dash-btn:hover{background:var(--fond2);}
+.dash-btn-n{font-size:2rem;font-weight:900;line-height:1;}
+.dash-btn-l{font-size:.72rem;font-weight:700;color:var(--brun);text-align:center;line-height:1.3;}
 /* NAV */
 .admin-nav{position:sticky;top:0;z-index:100;background:var(--brun);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:11px 16px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
 .admin-nav-logo{font-family:"Dancing Script",cursive;font-size:1.25rem;color:#f0e0d6;display:flex;align-items:center;gap:8px;}
@@ -603,43 +608,40 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <span id="dash-shop-badge" style="display:none;background:#dc2626;color:#fff;border-radius:20px;padding:2px 9px;font-size:.72rem;font-weight:700;"></span>
     </button>
 
-    <!-- Boutons d'action rapide -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;">
-      <button onclick="setMainTab('commandes')" style="background:#fff;border:2px solid var(--caramel);border-radius:16px;padding:18px 12px;cursor:pointer;font-family:'Lato',sans-serif;display:flex;flex-direction:column;align-items:center;gap:6px;transition:background .15s;" onmouseover="this.style.background='var(--fond2)'" onmouseout="this.style.background='#fff'">
-        <span id="dash-btn-orders-count" style="font-size:2.2rem;font-weight:900;color:var(--caramel);line-height:1;">—</span>
-        <span style="font-size:.75rem;font-weight:700;color:var(--brun);text-align:center;line-height:1.3;">⏳ Commandes<br/>à traiter</span>
+    <!-- Boutons d'action rapide — ligne 1 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <button onclick="setMainTab('commandes')" class="dash-btn" style="border-color:var(--caramel);">
+        <span id="dash-btn-orders-count" class="dash-btn-n" style="color:var(--caramel);">—</span>
+        <span class="dash-btn-l">⏳ À traiter</span>
       </button>
-      <button onclick="setMainTab('clients')" style="background:#fff;border:2px solid var(--brun);border-radius:16px;padding:18px 12px;cursor:pointer;font-family:'Lato',sans-serif;display:flex;flex-direction:column;align-items:center;gap:6px;transition:background .15s;" onmouseover="this.style.background='var(--fond2)'" onmouseout="this.style.background='#fff'">
-        <span id="dash-btn-clients-count" style="font-size:2.2rem;font-weight:900;color:var(--brun);line-height:1;">—</span>
-        <span style="font-size:.75rem;font-weight:700;color:var(--brun);text-align:center;line-height:1.3;">👤 Nouveaux<br/>clients (7j)</span>
+      <button onclick="setMainTab('clients')" class="dash-btn" style="border-color:var(--brun);">
+        <span id="dash-btn-clients-count" class="dash-btn-n" style="color:var(--brun);">—</span>
+        <span class="dash-btn-l">👤 Nouveaux clients</span>
       </button>
     </div>
 
-    <!-- Commandes du jour & demain -->
-    <div style="margin-bottom:22px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div style="font-weight:700;color:var(--brun);font-size:.88rem;">📅 Aujourd'hui & demain</div>
-        <button onclick="setMainTab('commandes')" style="background:none;border:none;color:var(--caramel);font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Voir tout →</button>
-      </div>
-      <div id="dash-today-orders"></div>
+    <!-- Boutons d'action rapide — ligne 2 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <button onclick="setMainTab('commandes')" class="dash-btn" style="border-color:#16a34a;">
+        <span id="dash-btn-today-count" class="dash-btn-n" style="color:#16a34a;">—</span>
+        <span class="dash-btn-l">📅 Aujourd'hui</span>
+      </button>
+      <button onclick="setMainTab('commandes')" class="dash-btn" style="border-color:#7c3aed;">
+        <span id="dash-btn-tom-count" class="dash-btn-n" style="color:#7c3aed;">—</span>
+        <span class="dash-btn-l">📅 Demain</span>
+      </button>
     </div>
 
-    <!-- Stocks en alerte -->
-    <div id="dash-stocks-wrap" style="margin-bottom:22px;display:none;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div style="font-weight:700;color:#dc2626;font-size:.88rem;">⚠️ Stocks en alerte</div>
-        <button onclick="setMainTab('stocks')" style="background:none;border:none;color:var(--caramel);font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Gérer →</button>
-      </div>
-      <div id="dash-stocks-alert"></div>
-    </div>
-
-    <!-- Avis en attente -->
-    <div id="dash-avis-wrap" style="margin-bottom:22px;display:none;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div style="font-weight:700;color:var(--brun);font-size:.88rem;">💬 Avis à valider</div>
-        <button onclick="setMainTab('avis')" style="background:none;border:none;color:var(--caramel);font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Voir tout →</button>
-      </div>
-      <div id="dash-avis-list"></div>
+    <!-- Boutons d'action rapide — ligne 3 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+      <button onclick="setMainTab('stocks')" class="dash-btn" style="border-color:#dc2626;">
+        <span id="dash-btn-stock-count" class="dash-btn-n" style="color:#dc2626;">—</span>
+        <span class="dash-btn-l">⚠️ En rupture</span>
+      </button>
+      <button onclick="setMainTab('avis')" class="dash-btn" style="border-color:var(--rose);">
+        <span id="dash-btn-avis-count" class="dash-btn-n" style="color:var(--rose);">—</span>
+        <span class="dash-btn-l">💬 Avis à valider</span>
+      </button>
     </div>
 
   </div>
@@ -2979,71 +2981,25 @@ async function loadAccueil(){
     document.getElementById("dash-btn-clients-count").textContent=(newCli||[]).length;
   }catch(e){document.getElementById("dash-btn-clients-count").textContent="?";}
 
-  // ── Commandes du jour & demain ──
+  // ── Commandes aujourd'hui & demain ──
   var todayStr=now.toISOString().slice(0,10);
   var tom=new Date(now);tom.setDate(tom.getDate()+1);
   var tomStr=tom.toISOString().slice(0,10);
-  var todayOrders=(allOrders||[]).filter(function(o){
-    return (o.delivery_date===todayStr||o.delivery_date===tomStr)&&o.status!=="cancelled"&&o.status!=="done";
-  }).sort(function(a,b){return(a.delivery_date||"")>(b.delivery_date||"")?1:-1;});
-  var todayHtml="";
-  if(!todayOrders.length){
-    todayHtml='<div style="text-align:center;padding:16px;color:var(--doux);font-size:.82rem;background:#fff;border:1.5px solid var(--bordure);border-radius:12px;">✅ Aucune commande prévue</div>';
-  }else{
-    todayOrders.forEach(function(o){
-      var isToday=o.delivery_date===todayStr;
-      var tag=isToday?'<span style="background:var(--caramel);color:#fff;border-radius:20px;padding:2px 8px;font-size:.65rem;font-weight:700;">Aujourd\'hui</span>':'<span style="background:var(--brun);color:#fff;border-radius:20px;padding:2px 8px;font-size:.65rem;font-weight:700;">Demain</span>';
-      var typeBadge=o.delivery_type==="livraison"?'🚚':'🏠';
-      var statusColor=o.status==="confirmed"?"#16a34a":o.status==="ready"?"#7c3aed":"var(--caramel)";
-      var statusLabel=o.status==="confirmed"?"✅ Confirmée":o.status==="ready"?"🎂 Prête":"⏳ En attente";
-      todayHtml+='<div style="background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:11px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="setMainTab(\'commandes\')">';
-      todayHtml+='<div style="flex:1;min-width:0;">';
-      todayHtml+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">'+tag+'<span style="font-size:.7rem;">'+typeBadge+'</span></div>';
-      todayHtml+='<div style="font-weight:700;font-size:.87rem;color:var(--texte);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(o.client_name||"Client")+'</div>';
-      todayHtml+='<div style="font-size:.72rem;color:var(--doux);">'+euro(o.total||0)+'</div>';
-      todayHtml+='</div>';
-      todayHtml+='<span style="font-size:.7rem;font-weight:700;color:'+statusColor+';text-align:right;flex-shrink:0;">'+statusLabel+'</span>';
-      todayHtml+='</div>';
-    });
-  }
-  document.getElementById("dash-today-orders").innerHTML=todayHtml;
+  var todayCount=(allOrders||[]).filter(function(o){return o.delivery_date===todayStr&&o.status!=="cancelled";}).length;
+  var tomCount=(allOrders||[]).filter(function(o){return o.delivery_date===tomStr&&o.status!=="cancelled";}).length;
+  document.getElementById("dash-btn-today-count").textContent=todayCount;
+  document.getElementById("dash-btn-tom-count").textContent=tomCount;
 
-  // ── Stocks en alerte ──
+  // ── Stocks en rupture ──
   try{
-    var {data:sData}=await sb.from("stock_items").select("name,current_qty,min_qty,unit");
-    var lowItems=(sData||[]).filter(function(i){return parseFloat(i.current_qty||0)<=parseFloat(i.min_qty||0);});
-    var wrap=document.getElementById("dash-stocks-wrap");
-    if(lowItems.length){
-      wrap.style.display="block";
-      var sHtml=lowItems.slice(0,5).map(function(i){
-        return '<div style="background:#fff;border:1.5px solid #fca5a5;border-radius:10px;padding:9px 14px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;">'
-          +'<span style="font-weight:700;font-size:.83rem;color:var(--texte);">'+i.name+'</span>'
-          +'<span style="font-size:.72rem;font-weight:700;color:#dc2626;background:#fee2e2;border-radius:20px;padding:2px 8px;">'+parseFloat(i.current_qty||0)+' '+i.unit+' / min '+parseFloat(i.min_qty||0)+'</span>'
-          +'</div>';
-      }).join('');
-      if(lowItems.length>5)sHtml+='<p style="font-size:.74rem;color:var(--doux);text-align:center;">+'+(lowItems.length-5)+' autres articles</p>';
-      document.getElementById("dash-stocks-alert").innerHTML=sHtml;
-    }else{wrap.style.display="none";}
-  }catch(e){}
+    var {data:sData}=await sb.from("stock_items").select("current_qty,min_qty");
+    var lowCount=(sData||[]).filter(function(i){return parseFloat(i.current_qty||0)<=parseFloat(i.min_qty||0);}).length;
+    document.getElementById("dash-btn-stock-count").textContent=lowCount;
+  }catch(e){document.getElementById("dash-btn-stock-count").textContent="?";}
 
-  // ── Avis en attente de validation ──
-  var pendingAvis=(allReviews||[]).filter(function(r){return!r.approved;});
-  var avisWrap=document.getElementById("dash-avis-wrap");
-  if(pendingAvis.length){
-    avisWrap.style.display="block";
-    var aHtml=pendingAvis.slice(0,3).map(function(r){
-      var stars="⭐".repeat(Math.min(r.rating||5,5));
-      return '<div style="background:#fff;border:1.5px solid var(--bordure);border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;" onclick="setMainTab(\'avis\')">'
-        +'<div style="flex:1;min-width:0;">'
-        +'<div style="font-weight:700;font-size:.83rem;color:var(--texte);">'+(r.author||"Anonyme")+'&nbsp;<span style="font-size:.75rem;">'+stars+'</span></div>'
-        +'<div style="font-size:.75rem;color:var(--doux);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(r.comment||"")+'</div>'
-        +'</div>'
-        +'<span style="font-size:.7rem;font-weight:700;color:var(--caramel);flex-shrink:0;">À valider</span>'
-        +'</div>';
-    }).join('');
-    if(pendingAvis.length>3)aHtml+='<p style="font-size:.74rem;color:var(--doux);text-align:center;">+'+(pendingAvis.length-3)+' autres avis</p>';
-    document.getElementById("dash-avis-list").innerHTML=aHtml;
-  }else{avisWrap.style.display="none";}
+  // ── Avis à valider ──
+  var avisCount=(allReviews||[]).filter(function(r){return!r.approved;}).length;
+  document.getElementById("dash-btn-avis-count").textContent=avisCount;
 
 }
 
