@@ -794,6 +794,10 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <button class="sort-btn" id="sortBday" onclick="setCliSort('bday')">🎂 Anniversaire</button>
       <button class="sort-btn" id="sortCmd" onclick="setCliSort('cmd')">Nb commandes</button>
     </div>
+    <div id="bday-alert-panel" style="display:none;background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #f59e0b;border-radius:12px;padding:12px 14px;margin-bottom:14px;">
+      <div style="font-weight:700;font-size:.87rem;color:#78350f;margin-bottom:8px;">🎂 Anniversaires dans les 14 prochains jours</div>
+      <div id="bday-alert-list"></div>
+    </div>
     <div id="clientsList"></div>
   </div>
 
@@ -1112,6 +1116,8 @@ function showDashboard(){
   loadOrders();
   loadBlocked();
   subscribeRealtime();
+  if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
+  if("Notification"in window&&Notification.permission==="default")Notification.requestPermission();
   loadReviews();
   var now=new Date();
   calYear=now.getFullYear();
@@ -1520,6 +1526,11 @@ function subscribeRealtime(){
     allOrders.sort(function(a,b){return(a.delivery_date||"")>(b.delivery_date||"")?1:-1;});
     renderOrders();updateStats();
     showNotif("🔔 Nouvelle commande de "+(o.client_name||"?")+" !");
+    if(Notification.permission==="granted"){
+      var opts={body:"👤 "+(o.client_name||"?")+" · "+(parseFloat(o.total)||0).toFixed(2)+"€ · "+fmtDate(o.delivery_date||""),icon:"icon.svg",tag:"order-"+o.id,data:{url:"admin.html"}};
+      if("serviceWorker"in navigator){navigator.serviceWorker.ready.then(function(reg){reg.showNotification("🧁 Nouvelle commande !",opts);}).catch(function(){try{new Notification("🧁 Nouvelle commande !",opts);}catch(er){}});}
+      else{try{new Notification("🧁 Nouvelle commande !",opts);}catch(er){}}
+    }
   }).subscribe();
 }
 /* Calendar */
@@ -1976,6 +1987,7 @@ async function loadClients(){
     if(error)throw error;
     allClients=data||[];
     renderClients();
+    renderBdayAlerts();
     updateCliStats();
   }catch(e){showNotif("Erreur clients : "+e.message);}
 }
@@ -2037,10 +2049,11 @@ function renderClients(){
       var label=days===0?"🎂 Aujourd'hui !":days<=7?"🎂 Dans "+days+"j":"🎂 "+c.birthday.split("-").slice(1).join("/");
       bdayTag='<span class="client-tag tag-bday">'+label+'</span>';
     }
+    var discBadge=c.discount_active?'<span style="margin-left:5px;background:#dcfce7;color:#16a34a;border:1px solid #86efac;padding:1px 6px;border-radius:8px;font-size:.65rem;font-weight:700;">🎁 -5%</span>':'';
     return'<div class="client-card" onclick="openClientDetail(\''+c.id+'\')">'+
       '<div class="client-avatar">'+initials+'</div>'+
       '<div class="client-info">'+
-      '<div class="client-name">'+c.name+'</div>'+
+      '<div class="client-name">'+c.name+discBadge+'</div>'+
       '<div class="client-phone">📱 '+c.phone+'</div>'+
       '<div class="client-tags">'+typTag+postalTag+bdayTag+'</div>'+
       '</div>'+
@@ -2059,6 +2072,9 @@ function openClientDetail(id){
   var phone=(c.phone+"").replace(/\D/g,"");
   if(phone.startsWith("0"))phone="596"+phone.substring(1);
   var bdayHtml=c.birthday?'<div style="font-size:.78rem;color:var(--doux);margin-top:4px;">🎂 '+c.birthday.split("-").slice(1).reverse().join("/")+" (dans "+nextBdayDays(c.birthday)+"j)</div>":'';
+  var discHtml='';
+  if(c.discount_active)discHtml='<div style="margin-top:6px;background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:7px 10px;font-size:.74rem;font-weight:700;color:#16a34a;">🎁 Réduction anniversaire -5% active — pas encore utilisée</div>';
+  else if(c.discount_used_at)discHtml='<div style="margin-top:6px;background:var(--fond2);border-radius:8px;padding:7px 10px;font-size:.74rem;color:var(--doux);">✓ Réduction -5% utilisée le '+(c.discount_used_at||"").slice(0,10)+'</div>';
   var histHtml=stats.orders.length===0?'<p style="font-size:.8rem;color:var(--doux);font-style:italic;">Aucune commande</p>':
     stats.orders.slice().sort(function(a,b){return(b.delivery_date||"").localeCompare(a.delivery_date||"");}).slice(0,10).map(function(o){
       var items=(o.items||[]).map(function(it){return it.qty+"× "+it.name;}).join(", ");
@@ -2074,7 +2090,7 @@ function openClientDetail(id){
     (c.postal_code?'<span class="client-tag tag-postal">📍 '+c.postal_code+'</span>':'')+
     '</div>'+
     '<div style="font-size:.82rem;color:var(--doux);margin-bottom:4px;">📱 '+c.phone+'</div>'+
-    bdayHtml+
+    bdayHtml+discHtml+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:13px 0 11px;">'+
     '<div style="background:var(--fond2);border-radius:10px;padding:11px;text-align:center;"><div style="font-size:1.4rem;font-weight:700;color:var(--brun);">'+stats.count+'</div><div style="font-size:.65rem;color:var(--doux);">commande'+(stats.count!==1?"s":"")+'</div></div>'+
     '<div style="background:var(--fond2);border-radius:10px;padding:11px;text-align:center;"><div style="font-size:1.2rem;font-weight:700;color:var(--caramel);">'+(stats.total>0?parseFloat(stats.total).toFixed(2).replace(".",",")+"€":"—")+'</div><div style="font-size:.65rem;color:var(--doux);">total dépensé</div></div>'+
@@ -2084,6 +2100,41 @@ function openClientDetail(id){
     '<a href="https://wa.me/'+phone+'" target="_blank" class="bs-btn-green" style="display:block;text-align:center;text-decoration:none;margin-top:10px;">💬 Contacter sur WhatsApp</a>'+
     '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>'
   );
+}
+
+/* ====== ANNIVERSAIRES & REDUCTIONS ====== */
+function renderBdayAlerts(){
+  var panel=document.getElementById("bday-alert-panel");
+  if(!panel)return;
+  var alerts=allClients.filter(function(c){
+    if(!c.birthday)return false;
+    var d=nextBdayDays(c.birthday);
+    return d>=0&&d<=14;
+  }).sort(function(a,b){return nextBdayDays(a.birthday)-nextBdayDays(b.birthday);});
+  if(!alerts.length){panel.style.display="none";return;}
+  panel.style.display="block";
+  document.getElementById("bday-alert-list").innerHTML=alerts.map(function(c){
+    var days=nextBdayDays(c.birthday);
+    var phone=(c.phone+"").replace(/\D/g,"");
+    if(phone.startsWith("0"))phone="596"+phone.substring(1);
+    var prenom=(c.name||"").split(" ")[0];
+    var msg="Bonjour "+prenom+" c'est bientôt ton anniversaire 💕🥳 et pour cette occasion je t'offre une réduction de 5% peut importe le montant de ta commande🫶🏽\nBisous de Cicine passe une bonne journée 🫂\n« Réduction valable sur une commande durant tout le mois d'anniversaire »";
+    var waUrl="https://wa.me/"+phone+"?text="+encodeURIComponent(msg);
+    var sent=c.discount_active;
+    return'<div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:8px;padding:8px 10px;margin-bottom:6px;">'+
+      '<div><div style="font-weight:700;font-size:.84rem;">'+c.name+(sent?' <span style="background:#16a34a;color:#fff;padding:1px 6px;border-radius:8px;font-size:.66rem;">✓ Envoyé</span>':'')+'</div>'+
+      '<div style="font-size:.71rem;color:#92400e;">🎂 Dans '+days+' jour'+(days>1?'s':'')+'</div></div>'+
+      '<button onclick="sendBdayMsg(\''+c.id+'\',\''+waUrl.replace(/'/g,"\\'")+'\',event)" style="background:'+(sent?'#15803d':'#78350f')+';color:#fff;border:none;padding:7px 11px;border-radius:8px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit;">'+(sent?'↺ Renvoyé':'💬 Envoyer -5%')+'</button>'+
+      '</div>';
+  }).join("");
+}
+async function sendBdayMsg(clientId,waUrl,e){
+  if(e)e.stopPropagation();
+  try{await sb.from("clients").update({discount_active:true,discount_sent_at:new Date().toISOString()}).eq("id",clientId);}catch(er){}
+  var c=allClients.find(function(x){return x.id===clientId;});
+  if(c){c.discount_active=true;}
+  renderBdayAlerts();renderClients();
+  window.open(waUrl,"_blank");
 }
 
 /* ====== RECETTES & LISTE DE COURSES ====== */

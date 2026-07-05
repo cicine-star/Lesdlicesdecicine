@@ -1,0 +1,13 @@
+{
+  "name": "Les Douceurs de Cicine — Admin",
+  "short_name": "Cicine Admin",
+  "description": "Espace administration",
+  "start_url": "admin.html",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#FBE9E7",
+  "theme_color": "#5C2E0E",
+  "icons": [
+    {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}
