@@ -430,11 +430,11 @@ function renderPayModal(){
     <div class="pay-split">
       <div class="pay-field">
         <label>💳 Total par carte (€)</label>
-        <input class="pay-inp" id="inpCarte" type="number" step="0.01" min="0" max="${total.toFixed(2)}" value="0" inputmode="decimal" oninput="syncPay(${total.toFixed(4)},'carte')"/>
+        <input class="pay-inp" id="inpCarte" type="number" step="0.01" min="0" value="0" inputmode="decimal" oninput="syncPay(${total.toFixed(4)},'carte')"/>
       </div>
       <div class="pay-field">
         <label>💵 Total par espèces (€)</label>
-        <input class="pay-inp" id="inpEsp" type="number" step="0.01" min="0" max="${total.toFixed(2)}" value="${total.toFixed(2)}" inputmode="decimal" oninput="syncPay(${total.toFixed(4)},'esp')"/>
+        <input class="pay-inp" id="inpEsp" type="number" step="0.01" min="0" value="0" inputmode="decimal" oninput="syncPay(${total.toFixed(4)},'esp')"/>
       </div>
     </div>
     <div class="recu-row show" id="recuRow">
@@ -456,12 +456,10 @@ function syncPay(total, which){
   var espEl=document.getElementById("inpEsp");
   if(!carteEl||!espEl)return;
   if(which==="carte"){
-    var c=Math.min(parseFloat(carteEl.value)||0, total);
-    carteEl.value=c.toFixed(2);
+    var c=Math.max(0,parseFloat(carteEl.value)||0);
     espEl.value=Math.max(0,total-c).toFixed(2);
   } else {
-    var e=Math.min(parseFloat(espEl.value)||0, total);
-    espEl.value=e.toFixed(2);
+    var e=Math.max(0,parseFloat(espEl.value)||0);
     carteEl.value=Math.max(0,total-e).toFixed(2);
   }
   var esp=parseFloat(espEl.value)||0;
