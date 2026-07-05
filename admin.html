@@ -584,6 +584,12 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <div style="font-family:'Dancing Script',cursive;font-size:1.7rem;color:var(--brun);" id="dash-greeting">Bonjour Cicine 💕 👋</div>
       <div style="font-size:1rem;font-weight:700;color:var(--doux);margin-bottom:10px;" id="dash-date"></div>
       <div id="dash-citation" style="font-family:'Dancing Script',cursive;font-size:1.35rem;color:var(--caramel);background:var(--fond2);border-left:3px solid var(--caramel);border-radius:0 8px 8px 0;padding:8px 12px;line-height:1.5;"></div>
+      <div id="notif-status-bar" style="margin-top:10px;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--bordure);border-radius:10px;padding:9px 12px;">
+        <span id="notif-dot" style="width:10px;height:10px;border-radius:50%;background:#d1d5db;flex-shrink:0;"></span>
+        <span id="notif-label" style="font-size:.76rem;color:var(--doux);flex:1;">Vérification des notifications…</span>
+        <button id="notif-test-btn" onclick="testNotif()" style="display:none;background:var(--brun);color:#fff;border:none;padding:5px 11px;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Tester</button>
+        <button id="notif-enable-btn" onclick="enableNotif()" style="display:none;background:var(--caramel);color:#fff;border:none;padding:5px 11px;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Activer</button>
+      </div>
     </div>
 
     <!-- 3 cartes clés -->
@@ -1116,8 +1122,8 @@ function showDashboard(){
   loadOrders();
   loadBlocked();
   subscribeRealtime();
-  if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
-  if("Notification"in window&&Notification.permission==="default")Notification.requestPermission();
+  if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").then(function(){checkNotifStatus();}).catch(function(){checkNotifStatus();});
+  if("Notification"in window&&Notification.permission==="default"){Notification.requestPermission().then(function(){checkNotifStatus();});}else{setTimeout(checkNotifStatus,500);}
   loadReviews();
   var now=new Date();
   calYear=now.getFullYear();
@@ -2100,6 +2106,51 @@ function openClientDetail(id){
     '<a href="https://wa.me/'+phone+'" target="_blank" class="bs-btn-green" style="display:block;text-align:center;text-decoration:none;margin-top:10px;">💬 Contacter sur WhatsApp</a>'+
     '<button class="bs-btn-secondary" onclick="closeModal()">Fermer</button>'
   );
+}
+
+/* ====== NOTIFICATIONS ====== */
+function checkNotifStatus(){
+  var dot=document.getElementById("notif-dot");
+  var label=document.getElementById("notif-label");
+  var testBtn=document.getElementById("notif-test-btn");
+  var enableBtn=document.getElementById("notif-enable-btn");
+  if(!dot)return;
+  if(!("Notification" in window)){
+    dot.style.background="#dc2626";
+    label.textContent="Notifications non supportées sur ce navigateur.";
+    return;
+  }
+  if(Notification.permission==="granted"){
+    dot.style.background="#16a34a";
+    label.textContent="Notifications activées ✓";
+    testBtn.style.display="block";
+    enableBtn.style.display="none";
+  } else if(Notification.permission==="denied"){
+    dot.style.background="#dc2626";
+    label.textContent="Notifications bloquées — vérifie les réglages Safari.";
+    enableBtn.style.display="none";
+    testBtn.style.display="none";
+  } else {
+    dot.style.background="#f59e0b";
+    label.textContent="Notifications non activées";
+    enableBtn.style.display="block";
+    testBtn.style.display="none";
+  }
+}
+function enableNotif(){
+  Notification.requestPermission().then(function(){checkNotifStatus();});
+}
+function testNotif(){
+  var opts={body:"Si tu vois ça, les notifications fonctionnent ! 🎉",icon:"icon.svg",tag:"test-notif"};
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.ready.then(function(reg){
+      reg.showNotification("🧁 Test — Les Douceurs de Cicine",opts);
+    }).catch(function(){
+      try{new Notification("🧁 Test — Les Douceurs de Cicine",opts);}catch(e){alert("Erreur notification : "+e.message);}
+    });
+  } else {
+    try{new Notification("🧁 Test — Les Douceurs de Cicine",opts);}catch(e){alert("Erreur notification : "+e.message);}
+  }
 }
 
 /* ====== ANNIVERSAIRES & REDUCTIONS ====== */
