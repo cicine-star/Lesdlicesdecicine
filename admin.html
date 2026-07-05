@@ -2943,6 +2943,9 @@ async function loadAccueil(){
   var now=new Date();
   var jours=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
   var mois=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  var h=now.getHours();
+  var salut=h>=18?"Bonsoir":h>=5?"Bonjour":"Bonsoir";
+  document.getElementById("dash-greeting").textContent=salut+" Cicine 💕 👋";
   document.getElementById("dash-date").textContent=jours[now.getDay()]+" "+now.getDate()+" "+mois[now.getMonth()]+" "+now.getFullYear();
 
   // Commandes en attente
