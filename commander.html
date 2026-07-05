@@ -150,7 +150,18 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
       </div>
       <div class="fgr">
         <div class="fg"><label>Code postal</label><input type="text" id="cPostal" placeholder="97232" maxlength="10" inputmode="numeric"/></div>
-        <div class="fg"><label>Date d'anniversaire 🎂</label><input type="date" id="cBirthday"/></div>
+        <div class="fg"><label>Anniversaire 🎂 (jour/mois)</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <select id="cBdayJour" style="padding:10px 8px;border:1.5px solid var(--bordure);border-radius:9px;font-family:'Lato',sans-serif;font-size:.84rem;background:var(--fond);">
+              <option value="">Jour</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option>
+            </select>
+            <select id="cBdayMois" style="padding:10px 8px;border:1.5px solid var(--bordure);border-radius:9px;font-family:'Lato',sans-serif;font-size:.84rem;background:var(--fond);">
+              <option value="">Mois</option>
+              <option value="1">Janvier</option><option value="2">Février</option><option value="3">Mars</option><option value="4">Avril</option><option value="5">Mai</option><option value="6">Juin</option><option value="7">Juillet</option><option value="8">Août</option><option value="9">Septembre</option><option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -596,7 +607,9 @@ async function envoyerCommande(){
   try{
     var telNorm=(tel+"").replace(/\D/g,"");
     var postal=(document.getElementById("cPostal").value||"").trim()||null;
-    var bday=(document.getElementById("cBirthday").value||"")||null;
+    var bdJour=document.getElementById("cBdayJour").value;
+    var bdMois=document.getElementById("cBdayMois").value;
+    var bday=(bdJour&&bdMois)?("2000-"+String(bdMois).padStart(2,"0")+"-"+String(bdJour).padStart(2,"0")):null;
     await sb.from("clients").upsert({
       phone:telNorm,name:nom,type:clientType,
       postal_code:postal,birthday:bday,
@@ -643,10 +656,12 @@ document.getElementById("productSection").addEventListener("change",function(e){
     if(telEl&&!telEl.value&&c.phone)telEl.value=c.phone;
     var banner=document.getElementById("client-banner");
     if(banner){banner.style.display="flex";document.getElementById("client-banner-name").textContent="Bonjour "+c.prenom+" !";}
-    // Auto-remplissage anniversaire
+    // Auto-remplissage anniversaire (jour et mois)
     if(c.jour_naissance&&c.mois_naissance){
-      var bdEl=document.getElementById("cBirthday");
-      if(bdEl&&!bdEl.value)bdEl.value="2000-"+String(c.mois_naissance).padStart(2,"0")+"-"+String(c.jour_naissance).padStart(2,"0");
+      var jourEl=document.getElementById("cBdayJour");
+      var moisEl=document.getElementById("cBdayMois");
+      if(jourEl&&!jourEl.value)jourEl.value=c.jour_naissance;
+      if(moisEl&&!moisEl.value)moisEl.value=c.mois_naissance;
     }
     // Vérifier si réduction anniversaire active
     if(c.phone){
