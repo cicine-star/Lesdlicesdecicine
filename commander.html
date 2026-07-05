@@ -122,6 +122,13 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
   <p class="sub">Choisissez votre date, sélectionnez vos produits et envoyez votre commande</p>
 
   <div id="orderForm">
+    <div id="client-banner" style="display:none;background:linear-gradient(135deg,var(--brun),#7A3B1E);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:none;align-items:center;gap:10px;">
+      <span style="font-size:1.4rem;">👋</span>
+      <div>
+        <div style="font-family:'Dancing Script',cursive;font-size:1.05rem;color:#f0e0d6;" id="client-banner-name">Bonjour !</div>
+        <div style="font-size:.72rem;color:#c4a898;">Tes informations ont été remplies automatiquement · <a href="espace-client.html" style="color:#f0e0d6;">Mon compte</a></div>
+      </div>
+    </div>
     <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;padding:16px;margin-bottom:14px;">
       <p style="font-family:'Dancing Script',cursive;font-size:1.2rem;color:var(--brun);margin-bottom:10px;">👤 Pour qui est cette commande ?</p>
       <div class="fnote">💡 Vous pouvez ajouter plusieurs commandes avec des noms et dates différents — idéal pour les groupes !</div>
@@ -581,6 +588,22 @@ document.getElementById("productSection").addEventListener("change",function(e){
     if(ir)showFlavorPanel(e.target,ir);
   }
 });
+
+// Auto-remplissage si client connecté
+(function(){
+  try{
+    var saved=localStorage.getItem("cicine_client");
+    if(!saved)return;
+    var c=JSON.parse(saved);
+    if(!c||!c.prenom)return;
+    var nomEl=document.getElementById("cNom");
+    var telEl=document.getElementById("cTel");
+    if(nomEl&&!nomEl.value)nomEl.value=c.prenom;
+    if(telEl&&!telEl.value&&c.phone)telEl.value=c.phone;
+    var banner=document.getElementById("client-banner");
+    if(banner){banner.style.display="flex";document.getElementById("client-banner-name").textContent="Bonjour "+c.prenom+" !";}
+  }catch(e){}
+})();
 
 loadBlockedDates();
 renderCal();
