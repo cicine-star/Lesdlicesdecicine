@@ -25,7 +25,18 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .login-card button{width:100%;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:40px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
 .login-card button:hover{background:var(--c2);}
 .login-err{color:#dc2626;font-size:.8rem;margin-top:8px;display:none;}
-#dashboard{display:none;}
+#dashboard{display:none;margin-left:52px;}
+/* ICON RAIL */
+#icon-rail{position:fixed;left:0;top:0;height:100%;width:52px;background:var(--brun);z-index:189;display:none;flex-direction:column;align-items:center;padding:8px 0 20px;gap:2px;box-shadow:2px 0 10px rgba(0,0,0,.2);}
+#icon-rail.visible{display:flex;}
+.ir-btn{background:none;border:none;font-size:1.3rem;cursor:pointer;border-radius:10px;transition:background .15s;width:42px;height:42px;display:flex;align-items:center;justify-content:center;line-height:1;}
+.ir-btn:hover,.ir-btn.ir-active{background:rgba(255,255,255,.22);}
+.ir-sep{width:28px;height:1px;background:rgba(255,255,255,.25);margin:3px 0;}
+/* ICON POPUP */
+#icon-popup{position:fixed;left:52px;background:#fff;border:1.5px solid var(--bordure);border-radius:0 12px 12px 0;box-shadow:6px 0 22px rgba(0,0,0,.14);z-index:195;min-width:196px;padding:6px 0;display:none;}
+.ip-title{font-size:.67rem;font-weight:700;color:var(--doux);padding:8px 16px 5px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--bordure);margin-bottom:3px;}
+.ip-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:.85rem;font-weight:700;color:var(--texte);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Lato',sans-serif;transition:background .15s;}
+.ip-item:hover{background:var(--fond2);color:var(--brun);}
 /* NAV */
 .admin-nav{position:sticky;top:0;z-index:100;background:var(--brun);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:11px 16px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
 .admin-nav-logo{font-family:"Dancing Script",cursive;font-size:1.25rem;color:#f0e0d6;display:flex;align-items:center;gap:8px;}
@@ -439,6 +450,24 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 </div>
 
 <div id="dashboard">
+
+  <!-- RAIL D'ICÔNES FIXE -->
+  <div id="icon-rail">
+    <button class="ir-btn" onclick="openSidebar()" title="Menu complet">🧁</button>
+    <div class="ir-sep"></div>
+    <button class="ir-btn" onclick="iconNav('accueil',this)" title="Accueil">🏠</button>
+    <button class="ir-btn" onclick="iconNav('stock',this)" title="Stock & Produits">📦</button>
+    <button class="ir-btn" onclick="iconNav('cmd',this)" title="Commandes & Planning">📋</button>
+    <button class="ir-btn" onclick="iconNav('finance',this)" title="Finance">💰</button>
+    <button class="ir-btn" onclick="iconNav('contenu',this)" title="Contenu">📝</button>
+    <div class="ir-sep"></div>
+    <button class="ir-btn" onclick="iconNav('parametres',this)" title="Paramètres">⚙️</button>
+    <button class="ir-btn" onclick="iconNav('clients',this)" title="Clients">👥</button>
+  </div>
+
+  <!-- POPUP CONTEXTUEL -->
+  <div id="icon-popup"></div>
+
   <!-- MENU LATÉRAL -->
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
   <div class="sidebar" id="sidebar">
@@ -1048,6 +1077,7 @@ function showDashboard(){
   localStorage.setItem("cicine_admin","1");
   document.getElementById("login-screen").style.display="none";
   document.getElementById("dashboard").style.display="block";
+  document.getElementById("icon-rail").classList.add("visible");
   loadRecipes();
   loadSettings();
   loadOrders();
@@ -3737,6 +3767,62 @@ async function deleteClientAccount(id){
   allClientAccounts=allClientAccounts.filter(function(c){return c.id!==id;});
   renderClientAccounts();
 }
+
+/* ====== ICON RAIL ====== */
+var ICON_GROUPS={
+  stock:{label:'📦 Stock & Produits',items:[
+    {emoji:'📦',label:'Stocks',action:"setMainTab('stocks')"},
+    {emoji:'🛍️',label:'Produits',action:"setMainTab('produits')"},
+    {emoji:'🎨',label:'Saveurs',action:"setMainTab('saveurs')"},
+    {emoji:'🛒',label:'Courses',action:"openShoppingList()"},
+  ]},
+  cmd:{label:'📋 Commandes & Planning',items:[
+    {emoji:'📋',label:'Commandes',action:"setMainTab('commandes')"},
+    {emoji:'📅',label:'Planning',action:"setMainTab('planning')"},
+    {emoji:'✅',label:'Tâches',action:"setMainTab('taches')"},
+  ]},
+  finance:{label:'💰 Finance',items:[
+    {emoji:'💰',label:'Trésorerie',action:"setMainTab('tresorerie')"},
+    {emoji:'📊',label:'Statistiques',action:"setMainTab('stats')"},
+    {emoji:'🏧',label:'Caisse',action:"window.location.href='caisse.html'"},
+  ]},
+  contenu:{label:'📝 Contenu',items:[
+    {emoji:'⭐',label:'Produit semaine',action:"setMainTab('pdlsem')"},
+    {emoji:'📝',label:'Blog',action:"setMainTab('blog')"},
+    {emoji:'💬',label:'Avis',action:"setMainTab('avis')"},
+  ]},
+};
+var _iconPopupGroup=null;
+function iconNav(group,btn){
+  var solo={accueil:'accueil',parametres:'parametres',clients:'clients'};
+  if(solo[group]){setMainTab(solo[group]);closeIconPopup();return;}
+  var popup=document.getElementById('icon-popup');
+  if(_iconPopupGroup===group&&popup.style.display!=='none'){closeIconPopup();return;}
+  var cfg=ICON_GROUPS[group];if(!cfg)return;
+  _iconPopupGroup=group;
+  var rect=btn.getBoundingClientRect();
+  var popH=cfg.items.length*44+52;
+  var top=Math.max(8,Math.min(rect.top,window.innerHeight-popH-8));
+  popup.style.top=top+'px';
+  popup.innerHTML='<div class="ip-title">'+cfg.label+'</div>'+
+    cfg.items.map(function(it){
+      return '<button class="ip-item" onclick="'+it.action+';closeIconPopup()"><span style="font-size:1.05rem;width:20px;text-align:center;display:inline-block;">'+it.emoji+'</span>'+it.label+'</button>';
+    }).join('');
+  popup.style.display='block';
+  document.querySelectorAll('.ir-btn').forEach(function(b){b.classList.remove('ir-active');});
+  btn.classList.add('ir-active');
+}
+function closeIconPopup(){
+  _iconPopupGroup=null;
+  var p=document.getElementById('icon-popup');if(p)p.style.display='none';
+  document.querySelectorAll('.ir-btn').forEach(function(b){b.classList.remove('ir-active');});
+}
+document.addEventListener('click',function(e){
+  var popup=document.getElementById('icon-popup');
+  if(!popup||popup.style.display==='none')return;
+  if(popup.contains(e.target)||e.target.closest('#icon-rail'))return;
+  closeIconPopup();
+});
 
 /* ====== INIT ====== */
 window.addEventListener("load",async function(){
