@@ -769,7 +769,14 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <input id="ps-prix" placeholder="Prix (ex: 25)" style="padding:10px;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Lato',sans-serif;font-size:.85rem;outline:none;"/>
       </div>
       <textarea id="ps-desc" placeholder="Description du produit…" rows="2" style="width:100%;padding:10px;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Lato',sans-serif;font-size:.85rem;outline:none;resize:none;margin-bottom:10px;"></textarea>
-      <input id="ps-image" placeholder="URL photo (optionnel)" style="width:100%;padding:10px;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Lato',sans-serif;font-size:.85rem;outline:none;margin-bottom:10px;"/>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:64px;height:64px;border-radius:10px;background:var(--fond2);border:1.5px solid var(--bordure);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.8rem;">
+          <img id="ps-img-preview" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:8px;"/>
+          <span id="ps-img-emoji">🧁</span>
+        </div>
+        <button type="button" onclick="openPsPhotoPicker()" style="flex:1;padding:10px;background:var(--fond2);color:var(--brun);border:1.5px solid var(--bordure);border-radius:9px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">📸 Choisir une photo</button>
+        <button type="button" id="ps-img-clear" onclick="clearPsPhoto()" style="display:none;padding:10px;background:#fee2e2;color:#991b1b;border:1.5px solid #fca5a5;border-radius:9px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">✕</button>
+      </div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <div style="flex:1;min-width:160px;">
           <label style="font-size:.72rem;color:var(--doux);display:block;margin-bottom:4px;">Date de publication</label>
@@ -2540,11 +2547,11 @@ async function addProduitSemaine(){
   var nom=document.getElementById("ps-nom").value.trim();
   var date=document.getElementById("ps-date").value;
   if(!nom||!date){showNotif("Nom et date obligatoires","error");return;}
-  var obj={nom,description:document.getElementById("ps-desc").value.trim(),emoji:document.getElementById("ps-emoji").value.trim()||"🧁",prix:document.getElementById("ps-prix").value.trim(),image_url:document.getElementById("ps-image").value.trim(),date_publication:date};
+  var obj={nom,description:document.getElementById("ps-desc").value.trim(),emoji:document.getElementById("ps-emoji").value.trim()||"🧁",prix:document.getElementById("ps-prix").value.trim(),image_url:window._psPhotoUrl||"",date_publication:date};
   var {error}=await SB.from("produit_semaine").insert([obj]);
   if(error){showNotif("Erreur : "+error.message,"error");return;}
   showNotif("Produit programmé !");
-  document.getElementById("ps-nom").value="";document.getElementById("ps-desc").value="";document.getElementById("ps-emoji").value="";document.getElementById("ps-prix").value="";document.getElementById("ps-image").value="";
+  document.getElementById("ps-nom").value="";document.getElementById("ps-desc").value="";document.getElementById("ps-emoji").value="";document.getElementById("ps-prix").value="";clearPsPhoto();
   await loadProduitSemaine();
 }
 
@@ -2558,7 +2565,7 @@ function republierProduitSemaine(p){
   document.getElementById("ps-desc").value=p.description||"";
   document.getElementById("ps-emoji").value=p.emoji||"🧁";
   document.getElementById("ps-prix").value=p.prix||"";
-  document.getElementById("ps-image").value=p.image_url||"";
+  if(p.image_url){setPsPhoto(p.image_url);}else{clearPsPhoto();}
   document.getElementById("ps-date").value=new Date().toISOString().slice(0,10);
   document.getElementById("ps-nom").scrollIntoView({behavior:"smooth"});
   showNotif("Données pré-remplies — clique sur Publier maintenant pour confirmer","info");
@@ -3406,6 +3413,39 @@ function setEdDevice(dev){
   });
 }
 
+var _psPhotoUrl='';
+function openPsPhotoPicker(){
+  _edPickerDomId='__ps_form__';
+  _edPickerSkey=null;
+  _edPickerThumbId=null;
+  var overlay=document.getElementById('ed-picker-overlay');
+  overlay.style.display='flex';
+  var PHOTOS=['gateau-tropical','gateau-rouge-roses','gateau-rouge-dollars','delibox','delibox-aperitif','cupcakes-valentin','gateau-babyshower','gateau-communion','gateau-chiffre','viennoiseries'];
+  var grid=document.getElementById('ed-picker-grid');
+  grid.innerHTML=PHOTOS.map(function(p){
+    var path='photos/'+p+'.jpg';
+    return '<img src="'+path+'" onclick="selectPhoto(\''+path+'\')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:9px;cursor:pointer;border:2px solid transparent;" onmouseover="this.style.borderColor=\'var(--caramel)\'" onmouseout="this.style.borderColor=\'transparent\'"/>';
+  }).join('');
+  document.getElementById('ed-picker-url').value='';
+}
+function setPsPhoto(src){
+  window._psPhotoUrl=src;
+  var prev=document.getElementById('ps-img-preview');
+  var emoji=document.getElementById('ps-img-emoji');
+  var clearBtn=document.getElementById('ps-img-clear');
+  if(prev){prev.src=src;prev.style.display='block';}
+  if(emoji)emoji.style.display='none';
+  if(clearBtn)clearBtn.style.display='';
+}
+function clearPsPhoto(){
+  window._psPhotoUrl='';
+  var prev=document.getElementById('ps-img-preview');
+  var emoji=document.getElementById('ps-img-emoji');
+  var clearBtn=document.getElementById('ps-img-clear');
+  if(prev){prev.src='';prev.style.display='none';}
+  if(emoji)emoji.style.display='';
+  if(clearBtn)clearBtn.style.display='none';
+}
 function openPhotoPicker(domId,skey,thumbId){
   _edPickerDomId=domId;
   _edPickerSkey=skey;
@@ -3432,6 +3472,7 @@ function useExternalPhoto(){
 function selectPhoto(path){applyPhoto(path);}
 function applyPhoto(src){
   if(!_edPickerDomId)return;
+  if(_edPickerDomId==='__ps_form__'){setPsPhoto(src);closePhotoPicker();return;}
   var iframe=document.getElementById('ed-iframe');
   var doc=iframe&&iframe.contentDocument;
   var el=doc&&doc.getElementById(_edPickerDomId);
