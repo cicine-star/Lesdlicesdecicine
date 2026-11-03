@@ -587,6 +587,10 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       <div style="font-family:'Dancing Script',cursive;font-size:1.7rem;color:var(--brun);" id="dash-greeting">Bonjour Cicine 💕 👋</div>
       <div style="font-size:1rem;font-weight:700;color:var(--doux);margin-bottom:10px;" id="dash-date"></div>
       <div id="dash-citation" style="font-family:'Dancing Script',cursive;font-size:1.35rem;color:var(--caramel);background:var(--fond2);border-left:3px solid var(--caramel);border-radius:0 8px 8px 0;padding:8px 12px;line-height:1.5;"></div>
+      <div style="margin-top:10px;background:linear-gradient(135deg,#f3e8ff,#ede9fe);border-left:3px solid #8b5cf6;border-radius:0 8px 8px 0;padding:8px 12px;">
+        <div style="font-size:.68rem;font-weight:700;color:#7c3aed;letter-spacing:.05em;margin-bottom:3px;">♊ GÉMEAUX · HOROSCOPE DU JOUR</div>
+        <div id="dash-horoscope" style="font-family:'Dancing Script',cursive;font-size:1.2rem;color:#6d28d9;line-height:1.5;"></div>
+      </div>
       <div id="notif-status-bar" style="margin-top:10px;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--bordure);border-radius:10px;padding:9px 12px;">
         <span id="notif-dot" style="width:10px;height:10px;border-radius:50%;background:#d1d5db;flex-shrink:0;"></span>
         <span id="notif-label" style="font-size:.76rem;color:var(--doux);flex:1;">Vérification des notifications…</span>
@@ -3089,6 +3093,44 @@ async function loadAccueil(){
   var citation=citations[jourAnnee%citations.length];
   var citEl=document.getElementById("dash-citation");
   if(citEl)citEl.textContent=citation;
+
+  // Horoscope Gémeaux du jour
+  var horoscopes=[
+    "Ta dualité est ta force aujourd'hui — laisse les deux facettes de ta personnalité s'exprimer pleinement. ♊",
+    "Les échanges du jour seront riches : une conversation inattendue pourrait t'ouvrir de belles portes. 💬",
+    "Ta curiosité naturelle t'amènera vers une nouvelle idée brillante. Fais-lui confiance. ✨",
+    "Journée idéale pour communiquer et partager tes projets avec ceux qui t'entourent. 🗣️",
+    "Ton adaptabilité est ton plus grand atout — reste flexible face aux imprévus du jour. 🌀",
+    "Les astres favorisent tes échanges et tes nouvelles rencontres. Souris au monde ! 🌟",
+    "Ta vivacité d'esprit te permettra de trouver des solutions créatives là où les autres voient des obstacles. 💡",
+    "Une journée sous le signe de la légèreté — prends du recul et savoure chaque instant. 🦋",
+    "Mercure, ta planète, t'envoie de l'énergie pour exprimer tes idées avec clarté et conviction. 🪐",
+    "Ta nature sociale brille aujourd'hui : entoure-toi des bonnes personnes et l'énergie décuplera. 👥",
+    "Un équilibre parfait entre intuition et raison t'attend ce jour — fais confiance aux deux. ⚖️",
+    "Les Gémeaux sont nés pour briller en société, et aujourd'hui les astres le confirment. 👑",
+    "Une surprise agréable pourrait arriver de là où tu l'attends le moins. Reste ouverte. 🎁",
+    "Ton énergie communicative est à son pic — profites-en pour développer tes projets. 🚀",
+    "La chance sourit aux audacieux, et ce soir tu seras contente d'avoir osé. 🍀",
+    "Tes idées fusent, ton esprit s'envole — note tout, car l'inspiration d'aujourd'hui est précieuse. 📝",
+    "Une journée pour les connexions : chaque personne que tu croises a quelque chose à t'apporter. 🤝",
+    "Ton sens de l'humour et ta légèreté naturelle feront des merveilles aujourd'hui. 😄",
+    "Les astres t'invitent à lâcher prise sur ce qui ne dépend pas de toi. Respire. 🌸",
+    "Ta polyvalence te rendra indispensable aujourd'hui. Tu es à ta place. 💎",
+    "Une énergie nouvelle t'attend ce matin — laisse-toi porter par elle sans résister. 🌅",
+    "Ton charme naturel fera son effet : une relation professionnelle pourrait devenir précieuse. 🌷",
+    "Les Gémeaux ont le don de transformer chaque défi en opportunité. Aujourd'hui en est la preuve. 🏆",
+    "Tes décisions intuitives d'aujourd'hui seront meilleures que tes analyses trop longues. Fonce. ⚡",
+    "Une journée pour apprendre quelque chose de nouveau — ton esprit est avide de savoir. 📚",
+    "La bienveillance que tu offres aujourd'hui te reviendra multipliée. 💕",
+    "Ton énergie mentale est au sommet — les grandes décisions peuvent se prendre maintenant. 🧠",
+    "Un moment de calme et de réflexion ce matin te donnera de la clarté pour toute la journée. ☕",
+    "Les étoiles alignent les bonnes personnes sur ton chemin — garde les yeux ouverts. 🌙",
+    "Aujourd'hui est fait pour célébrer ce que tu as accompli. Tu avances, même les jours difficiles. 🎉",
+    "Ta sagesse innée t'aide à voir au-delà des apparences — fais confiance à ce que tu ressens. 🔮",
+  ];
+  var horoscope=horoscopes[jourAnnee%horoscopes.length];
+  var hEl=document.getElementById("dash-horoscope");
+  if(hEl)hEl.textContent=horoscope;
 
   // Commandes en attente
   var pending=(allOrders||[]).filter(function(o){return o.status==="pending";});
