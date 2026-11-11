@@ -36,7 +36,7 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .sb-soc{font-size:1.3rem;text-decoration:none;opacity:.75;}
 
 /* HERO */
-.hero{background:linear-gradient(135deg,#5C2E0E 0%,#A0522D 50%,#e8a07a 100%);padding:0;position:relative;overflow:hidden;}
+.hero{background:linear-gradient(135deg,rgba(92,46,14,.88) 0%,rgba(160,82,45,.75) 55%,rgba(232,160,122,.55) 100%),url('photos/gateau-rouge-roses.jpg') center/cover no-repeat;padding:0;position:relative;overflow:hidden;}
 .hero-inner{display:flex;align-items:center;min-height:200px;padding:20px 16px 0;}
 .hero-left{flex:1;z-index:1;}
 .hero-badge{display:inline-block;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:4px 12px;font-size:.63rem;font-weight:700;color:rgba(255,255,255,.9);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
@@ -142,8 +142,37 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
   .split-title{font-size:1.2rem;}
   .split-list li{font-size:.72rem;}
 }
+/* PROMO BANNER */
+.promo-banner{background:linear-gradient(90deg,var(--fuchsia),#b91c68);color:#fff;padding:9px 14px;display:flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;line-height:1.4;}
+.promo-banner-txt{flex:1;}
+.promo-close{background:none;border:none;color:rgba(255,255,255,.75);font-size:1.1rem;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;}
+
+/* BADGE ÉTOILES HERO */
+.hero-rating{display:none;align-items:center;gap:5px;margin-top:10px;}
+.hero-rating-stars{color:#fbbf24;font-size:.9rem;letter-spacing:.5px;}
+.hero-rating-txt{font-size:.7rem;color:rgba(255,255,255,.8);}
+
+/* QUI SUIS-JE */
+.about-cicine{padding:20px 14px;background:#fff;border-top:1.5px solid var(--bordure);display:flex;gap:14px;align-items:center;}
+.about-cicine-img{width:82px;height:82px;border-radius:50%;object-fit:cover;border:3px solid var(--caramel);flex-shrink:0;box-shadow:0 4px 14px rgba(92,46,14,.18);}
+.about-cicine-name{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--brun);margin-bottom:5px;}
+.about-cicine-bio{font-size:.73rem;color:var(--doux);line-height:1.65;}
+
+/* GALERIE SCROLL */
+.gallery-scroll-wrap{background:var(--fond);padding:14px 0 14px 14px;border-top:1.5px solid var(--bordure);}
+.gallery-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-right:14px;}
+.gallery-scroll::-webkit-scrollbar{display:none;}
+.gallery-img{flex:0 0 auto;width:148px;height:148px;border-radius:14px;object-fit:cover;display:block;box-shadow:0 3px 10px rgba(92,46,14,.13);}
+
+/* STICKY COMMANDER */
+.sticky-cmd{position:fixed;bottom:0;left:0;right:0;z-index:8900;background:#fff;border-top:1.5px solid var(--bordure);padding:10px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 -4px 18px rgba(92,46,14,.13);}
+.sticky-cmd-info{flex:1;}
+.sticky-cmd-info strong{display:block;font-size:.8rem;color:var(--brun);}
+.sticky-cmd-info span{font-size:.65rem;color:var(--doux);}
+.sticky-cmd-btn{background:var(--brun);color:#fff;border:none;border-radius:40px;padding:12px 20px;font-weight:700;font-size:.82rem;white-space:nowrap;text-decoration:none;font-family:"Lato",sans-serif;cursor:pointer;}
+
 /* FOOTER */
-footer{background:var(--brun);color:#e8d5c8;padding:24px 14px 16px;text-align:center;}
+footer{background:var(--brun);color:#e8d5c8;padding:24px 14px 90px;text-align:center;}
 .flogo{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:7px;}
 footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 .flinks{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:8px 0;}
@@ -180,6 +209,12 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
   </div>
 </div>
 
+<!-- PROMO BANNER -->
+<div class="promo-banner" id="promoBanner">
+  <div class="promo-banner-txt" id="promoBannerTxt">🎄 Les fêtes approchent — commandez vos créations dès maintenant pour être sûre d'avoir votre date !</div>
+  <button class="promo-close" onclick="this.parentElement.style.display='none'" aria-label="Fermer">✕</button>
+</div>
+
 <!-- NAV -->
 <nav>
   <div class="nav-left">
@@ -203,6 +238,10 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
       <h1 id="site-hero-title">Les Douceurs<br/>de Cicine</h1>
       <div class="hero-sub" id="site-hero-sub">Le bonheur à chaque bouchée<br/>📍 Le Vauclin, Martinique</div>
       <a href="commander.html" class="hero-btn" id="site-hero-btn">🧁 Commander</a>
+      <div class="hero-rating" id="heroRating">
+        <span class="hero-rating-stars" id="heroStars">★★★★★</span>
+        <span class="hero-rating-txt" id="heroRatingTxt"></span>
+      </div>
     </div>
     <div class="hero-img">
       <img src="mascotte.png" class="hero-mascotte" alt="Cicine"/>
@@ -230,6 +269,15 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
       <img src="photos/delibox.jpg" alt="Délibox" id="site-spec3-img"/>
       <div class="spec-overlay"><div class="spec-name" id="site-spec3-name">Délibox</div></div>
     </a>
+  </div>
+</div>
+
+<!-- QUI SUIS-JE -->
+<div class="about-cicine" id="section-about">
+  <img src="photos/gateau-babyshower.jpg" class="about-cicine-img" alt="Cicine"/>
+  <div>
+    <div class="about-cicine-name">Bonjour, c'est Cicine ! 🩷</div>
+    <div class="about-cicine-bio">Pâtissière passionnée basée au Vauclin, en Martinique. Je prépare chaque création à la main, avec amour et les meilleurs ingrédients — pour que chaque bouchée soit un moment de bonheur. Commandez sur mesure, je m'occupe du reste 🧁</div>
   </div>
 </div>
 
@@ -319,11 +367,22 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
   <a href="avis.html" class="avis-lien">Laisser un avis →</a>
 </div>
 
-<!-- PETITE MOSAÏQUE PHOTO -->
-<div class="mosaic-strip" id="section-mosaic">
-  <img src="photos/gateau-rouge-dollars.jpg" alt="Création" id="site-mosaic1"/>
-  <img src="photos/cupcakes-valentin.jpg" alt="Cupcakes" id="site-mosaic2"/>
-  <img src="photos/gateau-chiffre.jpg" alt="Gâteau chiffre" id="site-mosaic3"/>
+<!-- GALERIE PHOTOS -->
+<div class="gallery-scroll-wrap" id="section-mosaic">
+  <div class="section-title" style="padding:0 0 4px 0;font-size:1.3rem;">Mes créations 📸</div>
+  <div class="section-sub" style="text-align:left;margin-bottom:10px;">Glisse pour voir plus →</div>
+  <div class="gallery-scroll" id="galleryScroll">
+    <img src="photos/gateau-rouge-roses.jpg" class="gallery-img" alt="Création"/>
+    <img src="photos/gateau-tropical.jpg" class="gallery-img" alt="Création"/>
+    <img src="photos/gateau-babyshower.jpg" class="gallery-img" alt="Création"/>
+    <img src="photos/gateau-rouge-dollars.jpg" class="gallery-img" alt="Création"/>
+    <img src="photos/cupcakes-valentin.jpg" class="gallery-img" alt="Création"/>
+    <img src="photos/gateau-chiffre.jpg" class="gallery-img" alt="Création"/>
+    <img src="photos/gateau-communion.jpg" class="gallery-img" alt="Création"/>
+    <img src="photos/delibox.jpg" class="gallery-img" alt="Création"/>
+    <img src="photos/viennoiseries.jpg" class="gallery-img" alt="Création"/>
+  </div>
+  <a href="realisations.html" style="display:block;text-align:center;color:var(--caramel);font-size:.73rem;font-weight:700;text-decoration:none;margin-top:10px;padding-right:14px;">Voir toutes mes réalisations →</a>
 </div>
 
 <!-- LIENS RAPIDES -->
@@ -362,8 +421,17 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
   <p>© 2026 Les Douceurs de Cicine — Fait avec ❤️</p>
 </footer>
 
+<!-- STICKY COMMANDER -->
+<div class="sticky-cmd">
+  <div class="sticky-cmd-info">
+    <strong>🧁 Les Douceurs de Cicine</strong>
+    <span id="stickyDelay">Commandez en ligne, prêt en 3-5 jours</span>
+  </div>
+  <a href="commander.html" class="sticky-cmd-btn">Commander</a>
+</div>
+
 <!-- WhatsApp flottant -->
-<a href="https://wa.me/596696111440" target="_blank" rel="noopener" style="position:fixed;bottom:22px;right:18px;z-index:9999;background:#25D366;color:#fff;border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 18px rgba(37,211,102,.55);text-decoration:none;animation:wapulse 2s ease-in-out infinite;">💬</a>
+<a href="https://wa.me/596696111440" target="_blank" rel="noopener" style="position:fixed;bottom:76px;right:18px;z-index:9999;background:#25D366;color:#fff;border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 18px rgba(37,211,102,.55);text-decoration:none;animation:wapulse 2s ease-in-out infinite;">💬</a>
 <style>@keyframes wapulse{0%,100%{box-shadow:0 4px 18px rgba(37,211,102,.55)}50%{box-shadow:0 4px 28px rgba(37,211,102,.85)}}</style>
 
 <!-- Araignée admin -->
@@ -373,6 +441,22 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 <script>
 function openSidebar(){document.getElementById("sbPanel").classList.add("open");document.getElementById("sbOverlay").classList.add("open");document.body.style.overflow="hidden";}
 function closeSidebar(){document.getElementById("sbPanel").classList.remove("open");document.getElementById("sbOverlay").classList.remove("open");document.body.style.overflow="";}
+
+// Bannière saisonnière dynamique
+(function(){
+  var now=new Date();
+  var m=now.getMonth()+1,d=now.getDate();
+  var msg="";
+  if((m===11)||(m===12&&d<=20)) msg="🎄 Noël approche — commandez vos créations dès maintenant pour être sûre d'avoir votre date !";
+  else if(m===12||m===1) msg="🎉 Bonne année ! Commandez votre gâteau de fête avec Cicine 🧁";
+  else if(m===2) msg="💝 Saint-Valentin — offrez une création sucrée faite avec amour !";
+  else if(m===3||m===4) msg="🌸 Pâques arrive — passez commande à l'avance, les places sont limitées !";
+  else if(m===5) msg="🌺 Fête des Mères bientôt — surprenez maman avec une création unique 🩷";
+  else if(m===6) msg="☀️ Saison des communions & fêtes — commandez à l'avance pour votre événement !";
+  else msg="⏰ Pensez à commander 3 à 5 jours à l'avance pour votre événement 🧁";
+  var el=document.getElementById("promoBannerTxt");
+  if(el)el.textContent=msg;
+})();
 
 var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm");
 
@@ -453,6 +537,20 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
       document.getElementById("psCard").style.position="relative";
       document.getElementById("psEmoji").style.display="none";
       document.getElementById("psCard").prepend(img);
+    }
+  }catch(e){}
+})();
+
+(async function(){
+  try{
+    var {data:allRatings}=await SB.from("reviews").select("rating").eq("approved",true);
+    if(allRatings&&allRatings.length){
+      var avg=allRatings.reduce(function(s,r){return s+(r.rating||5);},0)/allRatings.length;
+      var stars="★".repeat(Math.round(avg))+"☆".repeat(5-Math.round(avg));
+      var rEl=document.getElementById("heroRating");
+      var sEl=document.getElementById("heroStars");
+      var tEl=document.getElementById("heroRatingTxt");
+      if(rEl&&sEl&&tEl){sEl.textContent=stars;tEl.textContent=avg.toFixed(1)+" / 5 · "+allRatings.length+" avis";rEl.style.display="flex";}
     }
   }catch(e){}
 })();
