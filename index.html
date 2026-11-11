@@ -501,9 +501,9 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
     // Mosaïque dynamique
     if(s.mosaic_photos){try{
       var mp=JSON.parse(s.mosaic_photos);
-      var mosaic=document.getElementById("section-mosaic");
-      if(mosaic&&Array.isArray(mp)&&mp.length){
-        mosaic.innerHTML=mp.map(function(url,i){return '<img src="'+url+'" alt="Création" id="site-mosaic'+(i+1)+'"/>';}).join('');
+      var gallery=document.getElementById("galleryScroll");
+      if(gallery&&Array.isArray(mp)&&mp.length){
+        gallery.innerHTML=mp.map(function(url){return '<img src="'+url+'" class="gallery-img" alt="Création"/>';}).join('');
       }
     }catch(e){}}
     // CTA
