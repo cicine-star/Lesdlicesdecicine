@@ -2930,7 +2930,7 @@ async function saveEditProduct(id){
   var name=(document.getElementById("epName").value||"").trim();
   if(!name){showNotif("Nom obligatoire");return;}
   try{
-    var {error}=await sb.from("products").update({
+    var {data:updated,error}=await sb.from("products").update({
       name:name,
       price:parseFloat(document.getElementById("epPrice").value)||0,
       category:document.getElementById("epCat").value,
@@ -2938,8 +2938,9 @@ async function saveEditProduct(id){
       description:(document.getElementById("epDesc").value||"").trim()||null,
       available:document.getElementById("epAvail").checked,
       sort_order:parseInt(document.getElementById("epOrder").value)||0
-    }).eq("id",id);
+    }).eq("id",id).select();
     if(error)throw error;
+    if(!updated||updated.length===0)throw new Error("Aucune ligne modifiée — vérifie les politiques RLS dans Supabase (UPDATE authenticated).");
     showNotif("Produit modifié !");closeModal();await loadAdminProducts();
   }catch(e){showNotif("Erreur : "+e.message);}
 }
