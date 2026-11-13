@@ -10,10 +10,10 @@
 <link rel="manifest" href="manifest.json"/>
 <link rel="apple-touch-icon" href="icon.png"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-title" content="Les Douceurs de Cicine"/>
+<meta name="apple-mobile-web-app-title" content="Les Délices de Cicine"/>
 <meta name="theme-color" content="#5C2E0E"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
-<title>Admin — Les Douceurs de Cicine</title>
+<title>Admin — Les Délices de Cicine</title>
 <style>
 :root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;--vert:#16a34a;--rouge:#dc2626;--orange:#ea580c;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -448,7 +448,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 
 <div id="login-screen">
   <div class="login-card">
-    <h1>🧁 Les Douceurs de Cicine</h1>
+    <h1>🧁 Les Délices de Cicine</h1>
     <p>Espace administration — accès réservé</p>
     <input type="email" id="loginEmail" placeholder="Email" autocomplete="email"/>
     <input type="password" id="pwInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()"/>
@@ -480,7 +480,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
   <div class="sidebar" id="sidebar">
     <div class="sidebar-head">
-      <div class="sidebar-head-logo">🧁 Les Douceurs de Cicine</div>
+      <div class="sidebar-head-logo">🧁 Les Délices de Cicine</div>
       <button class="sidebar-close" onclick="closeSidebar()">✕</button>
     </div>
     <div class="sidebar-body">
@@ -548,7 +548,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   <nav class="admin-nav">
     <div style="display:flex;align-items:center;gap:10px;">
       <div class="admin-nav-logo">
-        Les Douceurs de Cicine
+        Les Délices de Cicine
         <span class="badge-pending" id="navBadge" style="display:none"></span>
       </div>
     </div>
@@ -1320,7 +1320,7 @@ function renderOrders(){
     if(o.client_phone){
       var phone=(o.client_phone+"").replace(/\s/g,"");
       if(phone.startsWith("0"))phone="596"+phone.substring(1);
-      var waMsg=encodeURIComponent("Bonjour "+o.client_name+" ! Votre commande du "+fmtDate(o.delivery_date)+" est bien enregistrée. Merci de votre confiance — Les Douceurs de Cicine 🧁");
+      var waMsg=encodeURIComponent("Bonjour "+o.client_name+" ! Votre commande du "+fmtDate(o.delivery_date)+" est bien enregistrée. Merci de votre confiance — Les Délices de Cicine 🧁");
       waHtml='<button class="act-btn act-wa" onclick="window.open(\'https://wa.me/'+phone+'?text='+waMsg+'\',\'_blank\')">💬 WhatsApp</button>';
     }
     var id=o.id;
@@ -1360,7 +1360,7 @@ async function updateStatus(id,status){
   renderOrders();updateStats();
   if(status==="ready"&&order&&order.client_phone){
     var phone=toWAPhone(order.client_phone);
-    var msg="Bonjour "+order.client_name+" ! 🎂✨\n\nVotre commande du "+fmtDate(order.delivery_date)+" est prête !\n\nVous pouvez venir la récupérer ou nous vous contacterons pour la livraison.\n\nMerci et à bientôt ! 💕\nLes Douceurs de Cicine";
+    var msg="Bonjour "+order.client_name+" ! 🎂✨\n\nVotre commande du "+fmtDate(order.delivery_date)+" est prête !\n\nVous pouvez venir la récupérer ou nous vous contacterons pour la livraison.\n\nMerci et à bientôt ! 💕\nLes Délices de Cicine";
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
   }
 }
@@ -1387,7 +1387,7 @@ async function doCancelOrder(id,sendWA){
   renderOrders();updateStats();
   if(sendWA&&order&&order.client_phone){
     var phone=toWAPhone(order.client_phone);
-    var msg="Bonjour "+order.client_name+",\n\nNous sommes désolées, mais nous ne pouvons malheureusement pas traiter votre commande du "+fmtDate(order.delivery_date)+".\n\nN'hésitez pas à nous recontacter pour reprogrammer. 💕\nLes Douceurs de Cicine";
+    var msg="Bonjour "+order.client_name+",\n\nNous sommes désolées, mais nous ne pouvons malheureusement pas traiter votre commande du "+fmtDate(order.delivery_date)+".\n\nN'hésitez pas à nous recontacter pour reprogrammer. 💕\nLes Délices de Cicine";
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
   }
 }
@@ -1511,7 +1511,7 @@ async function doConfirm(id,acompteNum,name,date,sendWA){
     var acompte=(parseFloat(acompteNum)).toFixed(2).replace(".",",");
     var msg="Bonjour "+name+" ! 🎂✨\n\nVotre commande est confirmée !\n📅 Date : "+date+"\n💰 Total : "+total+"€\n💳 Acompte à régler : "+acompte+"€\n";
     if(link)msg+="\n👉 Lien de paiement SumUp :\n"+link+"\n";
-    msg+="\nMerci pour votre confiance et à bientôt ! 💕\nLes Douceurs de Cicine";
+    msg+="\nMerci pour votre confiance et à bientôt ! 💕\nLes Délices de Cicine";
     window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
   }
 }
@@ -2151,12 +2151,12 @@ function testNotif(){
   var opts={body:"Si tu vois ça, les notifications fonctionnent ! 🎉",icon:"icon.svg",tag:"test-notif"};
   if("serviceWorker" in navigator){
     navigator.serviceWorker.ready.then(function(reg){
-      reg.showNotification("🧁 Test — Les Douceurs de Cicine",opts);
+      reg.showNotification("🧁 Test — Les Délices de Cicine",opts);
     }).catch(function(){
-      try{new Notification("🧁 Test — Les Douceurs de Cicine",opts);}catch(e){alert("Erreur notification : "+e.message);}
+      try{new Notification("🧁 Test — Les Délices de Cicine",opts);}catch(e){alert("Erreur notification : "+e.message);}
     });
   } else {
-    try{new Notification("🧁 Test — Les Douceurs de Cicine",opts);}catch(e){alert("Erreur notification : "+e.message);}
+    try{new Notification("🧁 Test — Les Délices de Cicine",opts);}catch(e){alert("Erreur notification : "+e.message);}
   }
 }
 
@@ -2635,7 +2635,7 @@ function renderReminders(){
     var total=euro(parseFloat(o.total||0));
     var waHtml="";
     if(phone){
-      var msg="Bonjour "+o.client_name+" ! 🧁\n\nPetit rappel : votre commande est prévue demain "+fmtDate(o.delivery_date)+".\n"+type+"\n\nN'hésitez pas si vous avez des questions ! 💕\nLes Douceurs de Cicine";
+      var msg="Bonjour "+o.client_name+" ! 🧁\n\nPetit rappel : votre commande est prévue demain "+fmtDate(o.delivery_date)+".\n"+type+"\n\nN'hésitez pas si vous avez des questions ! 💕\nLes Délices de Cicine";
       waHtml='<button class="act-btn act-wa" style="margin-left:auto;" onclick="window.open(\'https://wa.me/'+phone+'?text='+encodeURIComponent(msg)+'\',\'_blank\')">💬 Rappel WA</button>';
     }
     return'<div class="order-card" style="margin-bottom:8px;"><div class="oc-head"><span class="oc-client">'+o.client_name+'</span><span style="font-size:.72rem;color:var(--doux);">'+type+'</span><span style="font-size:.8rem;font-weight:700;color:var(--brun);">'+total+'</span></div>'+
@@ -3829,7 +3829,7 @@ function showSDTab(tab){
     case 'infos':
       c.innerHTML='<div class="ed-card">'+
         '<div class="ed-card-title">🏪 Infos de la boutique</div>'+
-        '<label class="bs-label">Nom</label><input class="bs-input" id="sdi_name" value="'+escHtml(shopSettings.shop_name||'')+'" placeholder="Les Douceurs de Cicine"/>'+
+        '<label class="bs-label">Nom</label><input class="bs-input" id="sdi_name" value="'+escHtml(shopSettings.shop_name||'')+'" placeholder="Les Délices de Cicine"/>'+
         '<label class="bs-label">Slogan</label><input class="bs-input" id="sdi_tagline" value="'+escHtml(shopSettings.shop_tagline||'')+'" placeholder="Pâtisserie artisanale..."/>'+
         '<label class="bs-label">Téléphone</label><input class="bs-input" id="sdi_phone" type="tel" value="'+escHtml(shopSettings.shop_phone||'')+'"/>'+
         '<label class="bs-label">Adresse</label><input class="bs-input" id="sdi_addr" value="'+escHtml(shopSettings.shop_address||'')+'"/>'+

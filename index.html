@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
-<title>Les Douceurs de Cicine — Pâtisserie artisanale · Le Vauclin</title>
+<title>Les Délices de Cicine — Pâtisserie artisanale · Le Vauclin</title>
 <style>
 :root{--fond:#FBE9E7;--fond2:#F5DCDA;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--texte:#2A1A14;--doux:#6B4C42;--rose:#F7C5C0;--fuchsia:#E8407A;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -185,7 +185,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 <div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
 <div class="sb-panel" id="sbPanel">
   <div class="sb-head">
-    <span class="sb-brand">Les Douceurs de Cicine</span>
+    <span class="sb-brand">Les Délices de Cicine</span>
     <button class="sb-close" onclick="closeSidebar()">✕</button>
   </div>
   <div class="sb-body">
@@ -219,7 +219,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 <nav>
   <div class="nav-left">
     <button class="nav-cake" onclick="openSidebar()" title="Menu">🎂</button>
-    <a class="nav-logo" href="index.html">Les Douceurs de Cicine</a>
+    <a class="nav-logo" href="index.html">Les Délices de Cicine</a>
   </div>
   <div class="nav-right">
     <a href="espace-client.html" style="color:var(--doux);font-size:.78rem;font-weight:700;text-decoration:none;padding:7px 11px;border:1.5px solid var(--bordure);border-radius:20px;">👤 Mon compte</a>
@@ -311,7 +311,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 
 <!-- COMMENT COMMANDER -->
 <div class="how" id="section-how">
-  <div class="section-title">Comment me passer commande ?</div>
+  <div class="section-title">Comment passer commande ?</div>
   <div class="section-sub">C'est très simple, je vous explique !</div>
   <div class="steps-row">
     <div class="step-box">
@@ -413,7 +413,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 
 <!-- FOOTER -->
 <footer>
-  <div class="flogo">Les Douceurs de Cicine</div>
+  <div class="flogo">Les Délices de Cicine</div>
   <div class="flinks">
     <a href="https://www.instagram.com/lesdelices_de_cicine?igsh=MXEzYXJjYmozcjhsbQ%3D%3D&utm_source=qr" class="flink" target="_blank" rel="noopener">📸 Instagram</a>
     <a href="https://www.facebook.com/profile.php?id=61586132193455" class="flink" target="_blank" rel="noopener">👍 Facebook</a>
@@ -422,14 +422,14 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
   </div>
   <p>📍 Le Vauclin, Martinique · 0696 11 14 40</p>
   <p><a href="cgv.html" style="color:#c4a898;font-size:.7rem;">Conditions Générales de Vente</a></p>
-  <p>© 2026 Les Douceurs de Cicine — Fait avec ❤️</p>
+  <p>© 2026 Les Délices de Cicine — Fait avec ❤️</p>
 </footer>
 
 <!-- STICKY COMMANDER -->
 <div class="sticky-cmd">
   <div class="sticky-cmd-info">
-    <strong>🧁 Les Douceurs de Cicine</strong>
-    <span id="stickyDelay">Commandez en ligne, prêt en 3-5 jours</span>
+    <strong>🧁 Les Délices de Cicine</strong>
+    <span id="stickyDelay">Commandez en ligne</span>
   </div>
   <a href="commander.html" class="sticky-cmd-btn">Commander</a>
 </div>
@@ -562,7 +562,7 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
 (async function(){
   try{
     var {data}=await SB.from("reviews").select("author,rating,comment").eq("approved",true).order("created_at",{ascending:false}).limit(5);
-    if(!data||!data.length){document.getElementById("homeReviews").innerHTML='<p style="color:var(--doux);font-size:.75rem;padding:12px;">Soyez la première à laisser un avis !</p>';return;}
+    if(!data||!data.length){document.getElementById("homeReviews").innerHTML='<p style="color:var(--doux);font-size:.75rem;padding:12px;"></p>';return;}
     document.getElementById("homeReviews").innerHTML=data.map(r=>{
       var s="★".repeat(Math.min(5,r.rating||5))+"☆".repeat(5-Math.min(5,r.rating||5));
       return`<div class="review-card"><div class="review-stars">${s}</div>${r.comment?`<div class="review-text">"${r.comment}"</div>`:""}<div class="review-author">— ${r.author||"Client"}</div></div>`;

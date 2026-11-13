@@ -7,10 +7,10 @@
 <link rel="manifest" href="manifest.json"/>
 <link rel="apple-touch-icon" href="icon.png"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-title" content="Les Douceurs de Cicine"/>
+<meta name="apple-mobile-web-app-title" content="Les Délices de Cicine"/>
 <meta name="theme-color" content="#5C2E0E"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
-<title>Caisse — Les Douceurs de Cicine</title>
+<title>Caisse — Les Délices de Cicine</title>
 <style>
 :root{--fond:#FBE9E7;--fond2:#F5DCDA;--carte:#FEF1EF;--blanc:#FFFFFF;--bordure:#EDD5D2;--brun:#5C2E0E;--caramel:#A0522D;--c2:#7A3B1E;--texte:#2A1A14;--doux:#6B4C42;--fuchsia:#E8407A;--vert:#16a34a;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -163,7 +163,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 
 <div id="login-screen">
   <div class="login-card">
-    <h1>🧁 Les Douceurs de Cicine</h1>
+    <h1>🧁 Les Délices de Cicine</h1>
     <p>Caisse enregistreuse — accès réservé</p>
     <input type="password" id="pwInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()"/>
     <button onclick="doLogin()">Se connecter</button>
@@ -539,7 +539,7 @@ function buildTicket(s){
   else if(s.carte>0)paiement=`💳 Carte bancaire`;
   else paiement=`💵 Espèces`;
   var monnaie=s.cash>0&&s.change>0?`\nMonnaie rendue : ${euro(s.change)}`:"";
-  return`🧁 Les Douceurs de Cicine\n📍 Le Vauclin, Martinique\n📅 ${s.date} à ${s.time}\n\n${lignes}\n\n💰 TOTAL : ${euro(s.total)}\n${paiement}${monnaie}\n\nMerci pour votre confiance ! 💛`;
+  return`🧁 Les Délices de Cicine\n📍 Le Vauclin, Martinique\n📅 ${s.date} à ${s.time}\n\n${lignes}\n\n💰 TOTAL : ${euro(s.total)}\n${paiement}${monnaie}\n\nMerci pour votre confiance ! 💛`;
 }
 function partagerTicket(text){window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");}
 function nouvellVente(){closePayModal();}
