@@ -180,6 +180,44 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
     </div>
   </div>
 
+  <!-- Horaires -->
+  <h3 class="sec-title">Horaires d'ouverture</h3>
+  <div class="hdiv"><hr/><span>♡</span><hr/></div>
+  <div id="statutOuverture" style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:14px;font-weight:700;font-size:.88rem;"></div>
+  <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:14px;overflow:hidden;margin-bottom:20px;">
+    <div class="horaire-row" data-jour="1"><span>Lundi</span><span class="hfermé">Fermé</span></div>
+    <div class="horaire-row" data-jour="2"><span>Mardi</span><span>07:30 – 18:00</span></div>
+    <div class="horaire-row" data-jour="3"><span>Mercredi</span><span>07:30 – 18:00</span></div>
+    <div class="horaire-row" data-jour="4"><span>Jeudi</span><span>07:30 – 18:00</span></div>
+    <div class="horaire-row" data-jour="5"><span>Vendredi</span><span>07:30 – 18:00</span></div>
+    <div class="horaire-row" data-jour="6"><span>Samedi</span><span>07:30 – 17:00</span></div>
+    <div class="horaire-row" data-jour="0"><span>Dimanche</span><span>08:30 – 16:30</span></div>
+  </div>
+  <style>
+  .horaire-row{display:flex;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--bordure);font-size:.85rem;color:var(--texte);}
+  .horaire-row:last-child{border-bottom:none;}
+  .horaire-row.today{background:var(--fond2);font-weight:700;color:var(--brun);}
+  .hfermé{color:#b91c1c;}
+  </style>
+  <script>
+  (function(){
+    var now=new Date();
+    var day=now.getDay();
+    var h=now.getHours()*60+now.getMinutes();
+    var schedule={0:[510,990],1:null,2:[450,1080],3:[450,1080],4:[450,1080],5:[450,1080],6:[450,1020]};
+    var rows=document.querySelectorAll(".horaire-row");
+    rows.forEach(function(r){if(parseInt(r.dataset.jour)===day)r.classList.add("today");});
+    var open=false;
+    if(schedule[day]){var s=schedule[day];open=h>=s[0]&&h<s[1];}
+    var el=document.getElementById("statutOuverture");
+    if(el){
+      el.innerHTML=open
+        ?'<span style="width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block;"></span><span style="color:#16a34a;">Ouvert actuellement</span>'
+        :'<span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block;"></span><span style="color:#b91c1c;">Fermé actuellement</span>';
+    }
+  })();
+  </script>
+
   <!-- Social links -->
   <h3 class="sec-title">Retrouvez-moi</h3>
   <div class="hdiv"><hr/><span>♡</span><hr/></div>
