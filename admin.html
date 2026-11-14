@@ -2678,7 +2678,7 @@ async function loadProduitSemaine(){
   document.getElementById("ps-date").value=today;
   // Produit actuel
   try{
-    var {data:cur}=await SB.from("produit_semaine").select("*").lte("date_publication",today).order("date_publication",{ascending:false}).limit(1);
+    var {data:cur}=await sb.from("produit_semaine").select("*").lte("date_publication",today).order("date_publication",{ascending:false}).limit(1);
     var p=cur&&cur[0];
     var curDiv=document.getElementById("ps-current");
     if(!p){curDiv.innerHTML='<em>Aucun produit publié pour le moment.</em>';return;}
@@ -2696,7 +2696,7 @@ async function loadProduitSemaine(){
   // Historique 3 mois
   try{
     var d3m=new Date();d3m.setMonth(d3m.getMonth()-3);
-    var {data:hist}=await SB.from("produit_semaine").select("*").gte("date_publication",d3m.toISOString().slice(0,10)).order("date_publication",{ascending:false});
+    var {data:hist}=await sb.from("produit_semaine").select("*").gte("date_publication",d3m.toISOString().slice(0,10)).order("date_publication",{ascending:false});
     var hDiv=document.getElementById("ps-history");
     if(!hist||!hist.length){hDiv.innerHTML='<em style="font-size:.8rem;color:var(--doux);">Aucun historique sur les 3 derniers mois.</em>';return;}
     hDiv.innerHTML=hist.map(p=>`
@@ -2721,7 +2721,7 @@ async function addProduitSemaine(){
   var date=document.getElementById("ps-date").value;
   if(!nom||!date){showNotif("Nom et date obligatoires","error");return;}
   var obj={nom,description:document.getElementById("ps-desc").value.trim(),emoji:document.getElementById("ps-emoji").value.trim()||"🧁",prix:document.getElementById("ps-prix").value.trim(),image_url:window._psPhotoUrl||"",date_publication:date};
-  var {error}=await SB.from("produit_semaine").insert([obj]);
+  var {error}=await sb.from("produit_semaine").insert([obj]);
   if(error){showNotif("Erreur : "+error.message,"error");return;}
   showNotif("Produit programmé !");
   document.getElementById("ps-nom").value="";document.getElementById("ps-desc").value="";document.getElementById("ps-emoji").value="";document.getElementById("ps-prix").value="";clearPsPhoto();
@@ -2746,7 +2746,7 @@ function republierProduitSemaine(p){
 
 async function deleteProduitSemaine(id){
   if(!confirm("Supprimer ce produit de l'historique ?"))return;
-  await SB.from("produit_semaine").delete().eq("id",id);
+  await sb.from("produit_semaine").delete().eq("id",id);
   showNotif("Supprimé");await loadProduitSemaine();
 }
 
