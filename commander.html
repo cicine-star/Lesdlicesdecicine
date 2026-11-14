@@ -124,7 +124,7 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
   <div id="orderForm">
     <!-- Bannière produit de la semaine -->
     <div id="pds-banner" style="display:none;background:linear-gradient(135deg,#FBE9E7,#f7dde0);border:2px solid var(--fuchsia);border-radius:14px;padding:14px 16px;margin-bottom:14px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
         <span id="pds-emoji" style="font-size:2.2rem;">🧁</span>
         <div style="flex:1;">
           <div style="font-size:.65rem;font-weight:700;color:var(--fuchsia);letter-spacing:.06em;margin-bottom:2px;">⭐ PRODUIT DE LA SEMAINE</div>
@@ -132,7 +132,15 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
           <div id="pds-prix" style="font-size:.8rem;color:var(--caramel);font-weight:700;margin-top:2px;"></div>
         </div>
       </div>
-      <a href="commander.html" style="display:block;text-align:center;padding:10px;border:2px solid var(--brun);border-radius:30px;color:var(--brun);font-weight:700;font-size:.82rem;text-decoration:none;">🛍️ Commander un autre délice</a>
+      <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid var(--bordure);border-radius:10px;padding:10px 14px;margin-bottom:10px;">
+        <span style="font-size:.83rem;font-weight:700;color:var(--texte);">Quantité</span>
+        <div style="display:flex;align-items:center;gap:0;">
+          <button onclick="pdsQty(-1)" style="width:34px;height:34px;border-radius:50%;border:1.5px solid var(--bordure);background:var(--fond);cursor:pointer;font-size:1.1rem;font-weight:700;color:var(--brun);">−</button>
+          <span id="pds-qty-display" style="min-width:36px;text-align:center;font-size:1rem;font-weight:700;color:var(--brun);">1</span>
+          <button onclick="pdsQty(1)" style="width:34px;height:34px;border-radius:50%;border:1.5px solid var(--bordure);background:var(--fond);cursor:pointer;font-size:1.1rem;font-weight:700;color:var(--brun);">+</button>
+        </div>
+      </div>
+      <button onclick="document.getElementById('productSection').scrollIntoView({behavior:'smooth'});return false;" style="display:block;width:100%;text-align:center;padding:10px;border:2px solid var(--brun);border-radius:30px;color:var(--brun);font-weight:700;font-size:.82rem;background:transparent;cursor:pointer;font-family:'Lato',sans-serif;">🛍️ Commander un autre délice</button>
     </div>
 
     <div id="client-banner" style="display:none;background:linear-gradient(135deg,var(--brun),#7A3B1E);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:none;align-items:center;gap:10px;">
@@ -373,14 +381,25 @@ var sb=supabase.createClient(SB_URL,SB_KEY);
   if(firstCat){
     var row=document.createElement("div");
     row.className="ir";
+    row.id="pds-item-row";
     row.setAttribute("data-n",produit);
     row.setAttribute("data-p",prix.toString());
     row.style.cssText="border:2px solid var(--fuchsia);background:#fdf0f4;margin-bottom:8px;";
-    row.innerHTML='<div class="il"><input type="checkbox" checked onchange="maj()"/><div><div class="in">'+produit+' <span style="font-size:.65rem;background:var(--fuchsia);color:#fff;padding:2px 7px;border-radius:10px;font-weight:700;vertical-align:middle;">⭐ Semaine</span></div><div class="ip">'+(prix?prix.toFixed(2).replace(".",",")+"€/pièce":"Sur devis")+'</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>';
+    row.innerHTML='<div class="il"><input type="checkbox" checked onchange="maj()"/><div><div class="in">'+produit+' <span style="font-size:.65rem;background:var(--fuchsia);color:#fff;padding:2px 7px;border-radius:10px;font-weight:700;vertical-align:middle;">⭐ Semaine</span></div><div class="ip">'+(prix?prix.toFixed(2).replace(".",",")+"€/pièce":"Sur devis")+'</div></div></div><input type="number" class="qi" id="pds-item-qty" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>';
     firstCat.parentNode.insertBefore(row,firstCat);
     setTimeout(maj,50);
   }
 })();
+
+function pdsQty(delta){
+  var display=document.getElementById("pds-qty-display");
+  var input=document.getElementById("pds-item-qty");
+  if(!display||!input)return;
+  var v=Math.max(1,Math.min(999,(parseInt(display.textContent)||1)+delta));
+  display.textContent=v;
+  input.value=v;
+  maj();
+}
 
 var selectedDate="";
 var deliveryType="recuperation";
