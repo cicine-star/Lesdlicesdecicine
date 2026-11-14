@@ -122,6 +122,19 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
   <p class="sub">Choisissez votre date, sélectionnez vos produits et envoyez votre commande</p>
 
   <div id="orderForm">
+    <!-- Bannière produit de la semaine -->
+    <div id="pds-banner" style="display:none;background:linear-gradient(135deg,#FBE9E7,#f7dde0);border:2px solid var(--fuchsia);border-radius:14px;padding:14px 16px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <span id="pds-emoji" style="font-size:2.2rem;">🧁</span>
+        <div style="flex:1;">
+          <div style="font-size:.65rem;font-weight:700;color:var(--fuchsia);letter-spacing:.06em;margin-bottom:2px;">⭐ PRODUIT DE LA SEMAINE</div>
+          <div id="pds-nom" style="font-family:'Dancing Script',cursive;font-size:1.3rem;color:var(--brun);line-height:1.2;"></div>
+          <div id="pds-prix" style="font-size:.8rem;color:var(--caramel);font-weight:700;margin-top:2px;"></div>
+        </div>
+      </div>
+      <a href="commander.html" style="display:block;text-align:center;padding:10px;border:2px solid var(--brun);border-radius:30px;color:var(--brun);font-weight:700;font-size:.82rem;text-decoration:none;">🛍️ Commander un autre délice</a>
+    </div>
+
     <div id="client-banner" style="display:none;background:linear-gradient(135deg,var(--brun),#7A3B1E);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:none;align-items:center;gap:10px;">
       <span style="font-size:1.4rem;">👋</span>
       <div>
@@ -339,6 +352,36 @@ function closeSidebar(){document.getElementById("sbPanel").classList.remove("ope
 var SB_URL="https://uousxxvrgcyvyaahdtda.supabase.co";
 var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
 var sb=supabase.createClient(SB_URL,SB_KEY);
+
+// Pré-sélection produit de la semaine via URL params
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  var produit=params.get("produit");
+  if(!produit)return;
+  var prix=parseFloat(params.get("prix"))||0;
+  var emoji=params.get("emoji")||"🧁";
+  // Remplir la bannière
+  var banner=document.getElementById("pds-banner");
+  if(banner){
+    document.getElementById("pds-emoji").textContent=emoji;
+    document.getElementById("pds-nom").textContent=produit;
+    if(prix)document.getElementById("pds-prix").textContent=prix.toFixed(2).replace(".",",")+"€";
+    banner.style.display="block";
+  }
+  // Injecter le produit pré-coché en tête de liste
+  var firstCat=document.querySelector(".cat-header");
+  if(firstCat){
+    var row=document.createElement("div");
+    row.className="ir";
+    row.setAttribute("data-n",produit);
+    row.setAttribute("data-p",prix.toString());
+    row.style.cssText="border:2px solid var(--fuchsia);background:#fdf0f4;margin-bottom:8px;";
+    row.innerHTML='<div class="il"><input type="checkbox" checked onchange="maj()"/><div><div class="in">'+produit+' <span style="font-size:.65rem;background:var(--fuchsia);color:#fff;padding:2px 7px;border-radius:10px;font-weight:700;vertical-align:middle;">⭐ Semaine</span></div><div class="ip">'+(prix?prix.toFixed(2).replace(".",",")+"€/pièce":"Sur devis")+'</div></div></div><input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>';
+    firstCat.parentNode.insertBefore(row,firstCat);
+    setTimeout(maj,50);
+  }
+})();
+
 var selectedDate="";
 var deliveryType="recuperation";
 var clientType="particulier";
