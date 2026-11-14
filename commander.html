@@ -364,12 +364,14 @@ var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
 var sb=supabase.createClient(SB_URL,SB_KEY);
 
 // Pré-sélection produit de la semaine via URL params
+var _pdsInfo=null;
 (function(){
   var params=new URLSearchParams(window.location.search);
   var produit=params.get("produit");
   if(!produit)return;
   var prix=parseFloat(params.get("prix"))||0;
   var emoji=params.get("emoji")||"🧁";
+  _pdsInfo={nom:produit,prix:prix,emoji:emoji};
   // Remplir la bannière
   var banner=document.getElementById("pds-banner");
   if(banner){
@@ -378,28 +380,35 @@ var sb=supabase.createClient(SB_URL,SB_KEY);
     if(prix)document.getElementById("pds-prix").textContent=prix.toFixed(2).replace(".",",")+"€";
     banner.style.display="block";
   }
-  // Injecter le produit pré-coché en tête de liste
-  var firstCat=document.querySelector(".cat-header");
-  if(firstCat){
-    var row=document.createElement("div");
-    row.className="ir";
-    row.id="pds-item-row";
-    row.setAttribute("data-n",produit);
-    row.setAttribute("data-p",prix.toString());
-    row.style.cssText="border:2px solid var(--fuchsia);background:#fdf0f4;margin-bottom:8px;";
-    row.innerHTML='<div class="il"><input type="checkbox" checked onchange="maj()"/><div><div class="in">'+produit+' <span style="font-size:.65rem;background:var(--fuchsia);color:#fff;padding:2px 7px;border-radius:10px;font-weight:700;vertical-align:middle;">⭐ Semaine</span></div><div class="ip">'+(prix?prix.toFixed(2).replace(".",",")+"€/pièce":"Sur devis")+'</div></div></div><input type="number" class="qi" id="pds-item-qty" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>';
-    firstCat.parentNode.insertBefore(row,firstCat);
-    setTimeout(maj,50);
-  }
+  injectPdsRow();
 })();
+
+function injectPdsRow(){
+  if(!_pdsInfo)return;
+  // Supprimer l'ancien si présent
+  var old=document.getElementById("pds-item-row");
+  if(old)old.parentNode.removeChild(old);
+  var firstCat=document.querySelector(".cat-header");
+  if(!firstCat)return;
+  var qty=parseInt((document.getElementById("pds-qty-display")||{}).textContent)||1;
+  var row=document.createElement("div");
+  row.className="ir";
+  row.id="pds-item-row";
+  row.setAttribute("data-n",_pdsInfo.nom);
+  row.setAttribute("data-p",_pdsInfo.prix.toString());
+  row.style.cssText="border:2px solid var(--fuchsia);background:#fdf0f4;margin-bottom:8px;";
+  row.innerHTML='<div class="il"><input type="checkbox" checked onchange="maj()"/><div><div class="in">'+_pdsInfo.nom+' <span style="font-size:.65rem;background:var(--fuchsia);color:#fff;padding:2px 7px;border-radius:10px;font-weight:700;vertical-align:middle;">⭐ Semaine</span></div><div class="ip">'+(_pdsInfo.prix?_pdsInfo.prix.toFixed(2).replace(".",",")+"€/pièce":"Sur devis")+'</div></div></div><input type="number" class="qi" id="pds-item-qty" value="'+qty+'" min="1" max="999" oninput="maj()" inputmode="numeric"/>';
+  firstCat.parentNode.insertBefore(row,firstCat);
+  setTimeout(maj,50);
+}
 
 function pdsQty(delta){
   var display=document.getElementById("pds-qty-display");
-  var input=document.getElementById("pds-item-qty");
-  if(!display||!input)return;
-  var v=Math.max(1,Math.min(999,(parseInt(display.textContent)||1)+delta));
+  if(!display)return;
+  var v=Math.max(1,Math.min(999,(parseInt((display.textContent||"1").trim())||1)+delta));
   display.textContent=v;
-  input.value=v;
+  var input=document.getElementById("pds-item-qty");
+  if(input){input.value=v;}
   maj();
 }
 
@@ -756,7 +765,7 @@ async function loadProductsFromDB(){
     var seen={};
     data=data.filter(function(p){if(seen[p.name])return false;seen[p.name]=true;return true;});
     var sec=document.getElementById("productSection");
-    if(sec)sec.innerHTML=renderProductsHTML(data);
+    if(sec){sec.innerHTML=renderProductsHTML(data);injectPdsRow();}
   }catch(e){console.error("Produits:",e);}
 }
 
