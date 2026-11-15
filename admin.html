@@ -535,6 +535,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <button class="sidebar-item" id="si-pdlsem" onclick="setMainTab('pdlsem');closeSidebar()"><span class="si-emoji">⭐</span>Produit semaine</button>
         <button class="sidebar-item" id="si-blog" onclick="setMainTab('blog');closeSidebar()"><span class="si-emoji">📝</span>Blog</button>
         <button class="sidebar-item" id="si-avis" onclick="setMainTab('avis');closeSidebar()"><span class="si-emoji">💬</span>Avis</button>
+        <button class="sidebar-item" id="si-promos" onclick="setMainTab('promos');closeSidebar()"><span class="si-emoji">🏷️</span>Codes promo</button>
       </div>
       <div class="sidebar-sep"></div>
 
@@ -596,7 +597,9 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <span id="notif-label" style="font-size:.76rem;color:var(--doux);flex:1;">Vérification des notifications…</span>
         <button id="notif-test-btn" onclick="testNotif()" style="display:none;background:var(--brun);color:#fff;border:none;padding:5px 11px;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Tester</button>
         <button id="notif-enable-btn" onclick="enableNotif()" style="display:none;background:var(--caramel);color:#fff;border:none;padding:5px 11px;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">Activer</button>
+        <button id="push-btn" onclick="subscribePush()" style="display:none;background:var(--fuchsia);color:#fff;border:none;padding:5px 11px;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">🔔 Push</button>
       </div>
+      <div id="push-status" style="font-size:.72rem;color:var(--doux);margin-top:4px;display:none;"></div>
     </div>
 
     <!-- 3 cartes clés -->
@@ -884,6 +887,15 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
   <div id="tab-avis" class="wrap" style="display:none;">
     <div class="section-title">⭐ Avis clients</div>
     <div id="adminAvisList"></div>
+  </div>
+
+  <!-- ===== TAB PROMOS ===== -->
+  <div id="tab-promos" class="wrap" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div class="section-title" style="margin-bottom:0;">🏷️ Codes promo</div>
+      <button class="s-add-btn" onclick="openAddPromo()">➕ Ajouter un code</button>
+    </div>
+    <div id="promoList"><div class="loading">Chargement...</div></div>
   </div>
 
   <!-- ===== TAB PRODUITS ===== -->
@@ -1176,7 +1188,7 @@ function updateSidebarCourseBadge(){
 /* ====== TAB SWITCHING ====== */
 function setMainTab(tab){
   activeMainTab=tab;
-  var tabs=["accueil","commandes","stocks","planning","taches","stats","clients","produits","saveurs","tresorerie","pdlsem","avis","blog","parametres"];
+  var tabs=["accueil","commandes","stocks","planning","taches","stats","clients","produits","saveurs","tresorerie","pdlsem","avis","promos","blog","parametres"];
   tabs.forEach(function(t){
     var el=document.getElementById("tab-"+t);
     if(t===tab){
@@ -1210,6 +1222,7 @@ function setMainTab(tab){
   if(tab==="saveurs"){loadSaveursTab();}
   if(tab==="tresorerie"){loadTresorerie();}
   if(tab==="pdlsem"){loadProduitSemaine();}
+  if(tab==="promos"){loadPromos();}
   if(tab==="blog"){loadBlog();}
   if(tab==="parametres"){loadAllSiteSettings();initWysiwygEditor();}
 }
@@ -2880,6 +2893,7 @@ function openAddProduct(){
     '<label for="pAvail" style="font-size:.84rem;font-weight:700;color:var(--texte);cursor:pointer;">Disponible</label>'+
     '</div>'+
     '<label class="bs-label">Ordre d\'affichage</label><input class="bs-input" id="pOrder" type="number" min="0" value="0"/>'+
+    '<label class="bs-label">Photo URL (optionnel)</label><input class="bs-input" id="pPhoto" type="text" placeholder="https://... ou photos/nom.jpg"/>'+
     '<button class="bs-btn-primary" onclick="saveNewProduct()">Ajouter le produit</button>'+
     '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
   );
@@ -2895,7 +2909,8 @@ async function saveNewProduct(){
       emoji:(document.getElementById("pEmoji").value||"🧁").trim(),
       description:(document.getElementById("pDesc").value||"").trim()||null,
       available:document.getElementById("pAvail").checked,
-      sort_order:parseInt(document.getElementById("pOrder").value)||0
+      sort_order:parseInt(document.getElementById("pOrder").value)||0,
+      image_url:(document.getElementById("pPhoto").value||"").trim()||null
     });
     if(error)throw error;
     showNotif("Produit ajouté !");closeModal();await loadAdminProducts();
@@ -2921,6 +2936,7 @@ function openEditProduct(id){
     '<label for="epAvail" style="font-size:.84rem;font-weight:700;color:var(--texte);cursor:pointer;">Disponible</label>'+
     '</div>'+
     '<label class="bs-label">Ordre d\'affichage</label><input class="bs-input" id="epOrder" type="number" min="0" value="'+(p.sort_order||0)+'"/>'+
+    '<label class="bs-label">Photo URL (optionnel)</label><input class="bs-input" id="epPhoto" type="text" value="'+(p.image_url||'')+'" placeholder="https://... ou photos/nom.jpg"/>'+
     '<button class="bs-btn-primary" onclick="saveEditProduct(\''+id+'\')">Enregistrer</button>'+
     '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'+
     '<button class="bs-btn-danger" onclick="deleteProduct(\''+id+'\')">🗑️ Supprimer</button>'
@@ -2937,7 +2953,8 @@ async function saveEditProduct(id){
       emoji:(document.getElementById("epEmoji").value||"🧁").trim(),
       description:(document.getElementById("epDesc").value||"").trim()||null,
       available:document.getElementById("epAvail").checked,
-      sort_order:parseInt(document.getElementById("epOrder").value)||0
+      sort_order:parseInt(document.getElementById("epOrder").value)||0,
+      image_url:(document.getElementById("epPhoto").value||"").trim()||null
     }).eq("id",id).select();
     if(error)throw error;
     if(!updated||updated.length===0)throw new Error("Aucune ligne modifiée — vérifie les politiques RLS dans Supabase (UPDATE authenticated).");
@@ -4066,6 +4083,166 @@ window.addEventListener("load",async function(){
   var {data:{session}}=await sb.auth.getSession();
   if(session)showDashboard();
 });
+
+/* ===== CODES PROMO ===== */
+var allPromos=[];
+async function loadPromos(){
+  var el=document.getElementById("promoList");
+  if(!el)return;
+  try{
+    var {data,error}=await sb.from("promo_codes").select("*").order("created_at",{ascending:false});
+    if(error)throw error;
+    allPromos=data||[];
+    if(!allPromos.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--doux);font-size:.85rem;">Aucun code promo. Clique sur ➕ pour en créer un.</div>';return;}
+    el.innerHTML=allPromos.map(function(p){
+      var active=p.active!==false;
+      var used=p.used_count||0;
+      var maxU=p.max_uses?(" / "+p.max_uses):"";
+      var exp=p.expires_at?(" · Exp. "+new Date(p.expires_at).toLocaleDateString("fr-FR")):"";
+      return '<div style="background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;">'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-weight:700;font-size:.95rem;color:var(--brun);font-family:monospace;letter-spacing:.05em;">'+p.code+'</div>'+
+          '<div style="font-size:.78rem;color:var(--doux);margin-top:2px;">'+
+            (p.discount_type==="percent"?(p.discount_value+"% de réduction"):(p.discount_value+"€ de réduction"))+
+            ' · '+used+maxU+' utilisations'+exp+
+          '</div>'+
+          (p.min_order?'<div style="font-size:.72rem;color:var(--doux);">Min. commande : '+p.min_order+'€</div>':'')+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:8px;">'+
+          '<button onclick="togglePromo(\''+p.id+'\','+active+')" style="padding:4px 10px;border-radius:20px;border:1.5px solid '+(active?"#86efac":"#fca5a5")+';background:'+(active?"#f0fdf4":"#fff1f2")+';color:'+(active?"#166534":"#991b1b")+';font-size:.72rem;font-weight:700;cursor:pointer;">'+
+            (active?"✅ Actif":"❌ Inactif")+'</button>'+
+          '<button onclick="openEditPromo(\''+p.id+'\')" style="padding:4px 8px;border-radius:8px;border:1.5px solid var(--bordure);background:var(--fond);color:var(--brun);font-size:.8rem;cursor:pointer;">✏️</button>'+
+          '<button onclick="deletePromo(\''+p.id+'\')" style="padding:4px 8px;border-radius:8px;border:1.5px solid #fca5a5;background:#fff1f2;color:#991b1b;font-size:.8rem;cursor:pointer;">🗑️</button>'+
+        '</div>'+
+      '</div>';
+    }).join("");
+  }catch(e){el.innerHTML='<div style="color:red;padding:12px;font-size:.8rem;">Erreur : '+e.message+'</div>';}
+}
+function promoFormHTML(p){
+  p=p||{};
+  return '<label class="bs-label">Code *</label><input class="bs-input" id="prCode" type="text" placeholder="EX: BIENVENUE10" value="'+(p.code||'')+'" style="font-family:monospace;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()"/>'+
+    '<div class="fgr">'+
+    '<div><label class="bs-label">Type de réduction</label><select class="bs-select" id="prType"><option value="percent"'+(p.discount_type==="percent"?" selected":"")+'>Pourcentage (%)</option><option value="fixed"'+(p.discount_type==="fixed"?" selected":"")+'>Montant fixe (€)</option></select></div>'+
+    '<div><label class="bs-label">Valeur</label><input class="bs-input" id="prValue" type="number" min="0" step="0.01" placeholder="10" value="'+(p.discount_value||"")+'"/></div>'+
+    '</div>'+
+    '<div class="fgr">'+
+    '<div><label class="bs-label">Commande min. (€)</label><input class="bs-input" id="prMin" type="number" min="0" step="0.01" placeholder="0" value="'+(p.min_order||"")+'"/></div>'+
+    '<div><label class="bs-label">Nb. utilisations max</label><input class="bs-input" id="prMax" type="number" min="0" placeholder="illimité" value="'+(p.max_uses||"")+'"/></div>'+
+    '</div>'+
+    '<label class="bs-label">Date d\'expiration (optionnel)</label><input class="bs-input" id="prExp" type="date" value="'+(p.expires_at?p.expires_at.split("T")[0]:"")+'"/>'+
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;"><input type="checkbox" id="prActive"'+(p.active!==false?" checked":"")+' style="width:18px;height:18px;accent-color:var(--caramel);cursor:pointer;"/><label for="prActive" style="font-size:.84rem;font-weight:700;color:var(--texte);cursor:pointer;">Code actif</label></div>';
+}
+function promoFormData(){
+  return {
+    code:(document.getElementById("prCode").value||"").trim().toUpperCase(),
+    discount_type:document.getElementById("prType").value,
+    discount_value:parseFloat(document.getElementById("prValue").value)||0,
+    min_order:parseFloat(document.getElementById("prMin").value)||null,
+    max_uses:parseInt(document.getElementById("prMax").value)||null,
+    expires_at:document.getElementById("prExp").value||null,
+    active:document.getElementById("prActive").checked
+  };
+}
+function openAddPromo(){
+  openModal(
+    '<div class="bs-title">➕ Nouveau code promo</div>'+
+    promoFormHTML()+
+    '<button class="bs-btn-primary" onclick="saveNewPromo()">Créer le code</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
+  );
+}
+async function saveNewPromo(){
+  var d=promoFormData();
+  if(!d.code){showNotif("Code obligatoire");return;}
+  if(!d.discount_value){showNotif("Valeur de réduction obligatoire");return;}
+  try{
+    var {error}=await sb.from("promo_codes").insert(d);
+    if(error)throw error;
+    showNotif("Code promo créé !");closeModal();await loadPromos();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+function openEditPromo(id){
+  var p=allPromos.find(function(x){return x.id===id;});
+  if(!p)return;
+  openModal(
+    '<div class="bs-title">✏️ Modifier le code promo</div>'+
+    promoFormHTML(p)+
+    '<button class="bs-btn-primary" onclick="saveEditPromo(\''+id+'\')">Enregistrer</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'+
+    '<button class="bs-btn-danger" onclick="deletePromo(\''+id+'\')">🗑️ Supprimer</button>'
+  );
+}
+async function saveEditPromo(id){
+  var d=promoFormData();
+  if(!d.code){showNotif("Code obligatoire");return;}
+  try{
+    var {error}=await sb.from("promo_codes").update(d).eq("id",id);
+    if(error)throw error;
+    showNotif("Code promo modifié !");closeModal();await loadPromos();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+async function togglePromo(id,currentActive){
+  try{
+    var {error}=await sb.from("promo_codes").update({active:!currentActive}).eq("id",id);
+    if(error)throw error;
+    await loadPromos();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+async function deletePromo(id){
+  if(!confirm("Supprimer ce code promo ?"))return;
+  try{
+    var {error}=await sb.from("promo_codes").delete().eq("id",id);
+    if(error)throw error;
+    showNotif("Code promo supprimé !");closeModal();await loadPromos();
+  }catch(e){showNotif("Erreur : "+e.message);}
+}
+
+/* ===== PUSH NOTIFICATIONS ===== */
+var VAPID_PUBLIC_KEY="BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjZJkHAAikIm4BqNGfRa8f5HmP3-g";
+function urlBase64ToUint8Array(b64){var pad=b64.length%4,s=b64.replace(/-/g,"+").replace(/_/g,"/");if(pad){s+="====".slice(pad);}var r=atob(s),a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a;}
+async function subscribePush(){
+  var btn=document.getElementById("push-btn");
+  var statusEl=document.getElementById("push-status");
+  if(!("serviceWorker"in navigator)||!("PushManager"in window)){
+    if(statusEl)statusEl.innerHTML='<span style="color:#991b1b;">❌ Notifications non supportées sur ce navigateur.</span>';return;
+  }
+  try{
+    if(btn)btn.disabled=true;
+    var perm=await Notification.requestPermission();
+    if(perm!=="granted"){
+      if(statusEl)statusEl.innerHTML='<span style="color:#991b1b;">❌ Permission refusée.</span>';
+      if(btn){btn.disabled=false;btn.textContent="🔔 Activer les notifications";}
+      return;
+    }
+    var reg=await navigator.serviceWorker.ready;
+    var sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
+    var subJson=sub.toJSON();
+    var {error}=await sb.from("push_subscriptions").upsert({endpoint:subJson.endpoint,p256dh:subJson.keys.p256dh,auth:subJson.keys.auth,device:navigator.userAgent.substring(0,120)},{onConflict:"endpoint"});
+    if(error)throw error;
+    if(statusEl)statusEl.innerHTML='<span style="color:#166534;">✅ Notifications activées sur cet appareil !</span>';
+    if(btn){btn.textContent="✅ Notifications activées";btn.style.background="var(--fond2)";btn.style.color="var(--brun)";}
+  }catch(e){
+    if(statusEl)statusEl.innerHTML='<span style="color:#991b1b;">❌ Erreur : '+e.message+'</span>';
+    if(btn){btn.disabled=false;}
+  }
+}
+(async function checkPushStatus(){
+  if(!("serviceWorker"in navigator)||!("PushManager"in window))return;
+  try{
+    var reg=await navigator.serviceWorker.ready;
+    var sub=await reg.pushManager.getSubscription();
+    var btn=document.getElementById("push-btn");
+    var statusEl=document.getElementById("push-status");
+    if(btn)btn.style.display="inline-block";
+    if(statusEl)statusEl.style.display="block";
+    if(sub){
+      if(statusEl)statusEl.innerHTML='<span style="color:#166534;">✅ Push Supabase activé sur cet appareil.</span>';
+      if(btn){btn.textContent="✅ Push activé";btn.style.background="var(--fond2)";btn.style.color="var(--brun)";}
+    }else{
+      if(statusEl)statusEl.innerHTML='<span style="color:var(--doux);">Push non activé — cliquer 🔔 Push pour sauvegarder dans Supabase.</span>';
+    }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>

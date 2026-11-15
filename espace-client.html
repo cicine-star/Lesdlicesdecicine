@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Votre espace client Les Délices de Cicine : suivez vos commandes et gérez votre compte."/>
+<meta property="og:title" content="Espace client — Les Délices de Cicine"/>
+<meta property="og:url" content="https://cicine-star.github.io/Lesdlicesdecicine/espace-client.html"/>
+<meta property="og:type" content="website"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧁</text></svg>"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
 <title>Mon espace — Les Délices de Cicine</title>
@@ -46,6 +50,7 @@ input:focus{border-color:var(--caramel);}
 .sl-ready{background:#f3e8ff;color:#6b21a8;}
 .sl-done{background:#d1fae5;color:#065f46;}
 .sl-cancelled{background:#fee2e2;color:#991b1b;}
+.sl-prep{background:#fff3cd;color:#856404;border-color:#ffc107;}
 .oc-body{padding:12px 14px;}
 .oc-items{font-size:.8rem;color:var(--doux);margin-bottom:6px;line-height:1.6;}
 .oc-total{font-size:.88rem;font-weight:700;color:var(--brun);}
@@ -170,7 +175,8 @@ function badgeStatut(s){
   var map={
     "en attente":"<span class='badge sl-pending'>⏳ En attente</span>",
     "confirmée":"<span class='badge sl-confirmed'>✅ Confirmée</span>",
-    "prête":"<span class='badge sl-ready'>🎁 Prête</span>",
+    "en préparation":"<span class='badge sl-prep'>👩‍🍳 En préparation</span>",
+    "prête":"<span class='badge sl-ready'>🎁 Prête !</span>",
     "livrée":"<span class='badge sl-done'>🚀 Livrée</span>",
     "récupérée":"<span class='badge sl-done'>✅ Récupérée</span>",
     "annulée":"<span class='badge sl-cancelled'>❌ Annulée</span>"
@@ -290,12 +296,18 @@ async function chargerCommandes(client){
       if(typeof items==="string"){try{items=JSON.parse(items);}catch(e){items=[];}}
       var itemsStr=Array.isArray(items)?items.map(function(it){return (it.qty||it.quantite||1)+"× "+(it.nom||it.name||"");}).join(", "):"";
       var typeBadge=o.type==="livraison"?"<span class='badge badge-livraison'>🛵 Livraison</span>":"<span class='badge badge-recup'>🏪 Retrait</span>";
+      var statut=o.status||o.statut||"en attente";
+      var steps=["en attente","confirmée","en préparation","prête",o.type==="livraison"?"livrée":"récupérée"];
+      var stepIdx=steps.indexOf(statut);
+      var progressPct=statut==="annulée"?0:Math.max(0,Math.round((stepIdx/(steps.length-1))*100));
+      var progressBar=statut==="annulée"?"":'<div style="margin:8px 0 4px;"><div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--doux);margin-bottom:3px;"><span>En attente</span><span>Confirmée</span><span>En prépa.</span><span>Prête</span><span>'+(o.type==="livraison"?"Livrée":"Récupérée")+'</span></div><div style="background:var(--fond2);border-radius:99px;height:6px;overflow:hidden;"><div style="background:var(--caramel);height:100%;border-radius:99px;width:'+progressPct+'%;transition:width .4s;"></div></div></div>';
       return '<div class="order-card">'+
         '<div class="oc-head">'+
           '<span class="oc-date">'+fmtDate(o.delivery_date||o.date||o.created_at)+'</span>'+
           typeBadge+
-          badgeStatut(o.status||o.statut||"en attente")+
+          badgeStatut(statut)+
         '</div>'+
+        progressBar+
         '<div class="oc-body">'+
           (itemsStr?'<div class="oc-items">'+itemsStr+'</div>':'')+
           '<div class="oc-total">Total : '+euro(o.total)+'</div>'+

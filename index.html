@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Pâtisserie artisanale au Vauclin, Martinique. Commandez vos gâteaux, viennoiseries, Délibox et créations sucrées en ligne. Livraison ou retrait sur place."/>
+<meta property="og:title" content="Les Délices de Cicine — Pâtisserie artisanale · Le Vauclin"/>
+<meta property="og:description" content="Pâtisserie artisanale au Vauclin, Martinique. Commandez en ligne vos gâteaux, viennoiseries et Délibox."/>
+<meta property="og:url" content="https://cicine-star.github.io/Lesdlicesdecicine/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://cicine-star.github.io/Lesdlicesdecicine/photos/gateau-rouge-roses.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
 <title>Les Délices de Cicine — Pâtisserie artisanale · Le Vauclin</title>
 <style>
@@ -564,7 +571,7 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
 (async function(){
   try{
     var {data}=await SB.from("reviews").select("author,rating,comment").eq("approved",true).order("created_at",{ascending:false}).limit(5);
-    if(!data||!data.length){document.getElementById("homeReviews").innerHTML='<p style="color:var(--doux);font-size:.75rem;padding:12px;"></p>';return;}
+    if(!data||!data.length){document.getElementById("section-avis").style.display="none";return;}
     document.getElementById("homeReviews").innerHTML=data.map(r=>{
       var s="★".repeat(Math.min(5,r.rating||5))+"☆".repeat(5-Math.min(5,r.rating||5));
       return`<div class="review-card"><div class="review-stars">${s}</div>${r.comment?`<div class="review-text">"${r.comment}"</div>`:""}<div class="review-author">— ${r.author||"Client"}</div></div>`;

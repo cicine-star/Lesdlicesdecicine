@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
+<meta name="description" content="Passez votre commande en ligne chez Les Délices de Cicine. Livraison ou retrait au Vauclin, Martinique."/>
+<meta property="og:title" content="Commander — Les Délices de Cicine"/>
+<meta property="og:description" content="Passez votre commande en ligne chez Les Délices de Cicine. Livraison ou retrait au Vauclin."/>
+<meta property="og:url" content="https://cicine-star.github.io/Lesdlicesdecicine/commander.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://cicine-star.github.io/Lesdlicesdecicine/photos/gateau-rouge-roses.jpg"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧁</text></svg>"/>
 <link rel="manifest" href="manifest.json"/>
 <link rel="apple-touch-icon" href="icon.png"/>
@@ -795,8 +801,10 @@ function renderProductsHTML(data){
       var priceStr=price%1===0?price.toFixed(0):price.toFixed(2);
       priceStr=priceStr.replace(".",",")+"€";
       priceStr=aPartir?'à partir de '+priceStr:priceStr+'/pièce';
+      var photoHtml=p.image_url?'<img src="'+p.image_url+'" style="width:40px;height:40px;object-fit:cover;border-radius:8px;flex-shrink:0;margin-right:8px;" alt="" onerror="this.style.display=\'none\'"/>':'';
       html+='<div class="ir" data-n="'+p.name.replace(/"/g,"&quot;")+'" data-p="'+price+'">'+
         '<div class="il"><input type="checkbox" onchange="maj()"/>'+
+        photoHtml+
         '<div>'+
         '<div class="in">'+p.name+'</div>'+
         '<div class="ip">'+priceStr+'</div>'+
