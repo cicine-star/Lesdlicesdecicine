@@ -1028,15 +1028,21 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       </div>
     </div>
     <!-- Sélecteur de photo (overlay) -->
+    <input type="file" id="picker-file-input" accept="image/*" style="display:none" onchange="handlePickerFileUpload(this)"/>
+    <input type="file" id="product-photo-input" accept="image/*" style="display:none" onchange="handleProductPhotoUpload(this)"/>
     <div id="ed-picker-overlay" onclick="closePhotoPicker()">
       <div id="ed-picker-sheet" onclick="event.stopPropagation()">
         <div style="padding:16px 16px 0;">
           <div style="font-size:1rem;font-weight:700;color:var(--brun);margin-bottom:4px;">📸 Changer la photo</div>
-          <div style="font-size:.73rem;color:var(--doux);margin-bottom:11px;">Colle un lien ou choisis dans la bibliothèque</div>
+          <div style="font-size:.73rem;color:var(--doux);margin-bottom:8px;">Uploader depuis ton appareil ou coller un lien</div>
+          <button onclick="document.getElementById('picker-file-input').click()" style="width:100%;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;">📱 Choisir depuis mon téléphone / galerie</button>
+          <div id="picker-upload-status" style="font-size:.75rem;color:var(--caramel);text-align:center;min-height:18px;margin-bottom:6px;"></div>
+          <div style="font-size:.7rem;color:var(--doux);text-align:center;margin-bottom:8px;">— ou coller un lien —</div>
           <div style="display:flex;gap:7px;align-items:center;margin-bottom:12px;">
             <input id="ed-picker-url" class="bs-input" placeholder="https://... ou photos/nom.jpg" style="margin:0;flex:1;"/>
             <button onclick="useExternalPhoto()" style="padding:9px 14px;background:var(--brun);color:#fff;border:none;border-radius:9px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;">OK</button>
           </div>
+          <div style="font-size:.7rem;color:var(--doux);margin-bottom:6px;">Bibliothèque :</div>
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;" id="ed-picker-grid"></div>
         </div>
         <div style="padding:12px 16px;">
@@ -1050,6 +1056,7 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <div id="ed-sd-tabs">
           <button class="sd-tab active" id="sdt-colors" onclick="showSDTab('colors')">🎨 Couleurs</button>
           <button class="sd-tab" id="sdt-infos" onclick="showSDTab('infos')">ℹ️ Infos</button>
+          <button class="sd-tab" id="sdt-texts" onclick="showSDTab('texts')">📝 Textes</button>
           <button class="sd-tab" id="sdt-email" onclick="showSDTab('email')">📧 Email</button>
         </div>
         <div id="ed-sd-content"></div>
@@ -2893,7 +2900,11 @@ function openAddProduct(){
     '<label for="pAvail" style="font-size:.84rem;font-weight:700;color:var(--texte);cursor:pointer;">Disponible</label>'+
     '</div>'+
     '<label class="bs-label">Ordre d\'affichage</label><input class="bs-input" id="pOrder" type="number" min="0" value="0"/>'+
-    '<label class="bs-label">Photo URL (optionnel)</label><input class="bs-input" id="pPhoto" type="text" placeholder="https://... ou photos/nom.jpg"/>'+
+    '<label class="bs-label">Photo (optionnel)</label>'+
+    '<div style="display:flex;gap:7px;align-items:center;margin-bottom:11px;">'+
+    '<input class="bs-input" id="pPhoto" type="text" placeholder="URL ou uploader ↓" style="margin:0;flex:1;"/>'+
+    '<button type="button" onclick="triggerProductPhotoUpload(\'pPhoto\')" style="padding:9px 12px;background:var(--brun);color:#fff;border:none;border-radius:9px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;">📱 Upload</button>'+
+    '</div>'+
     '<button class="bs-btn-primary" onclick="saveNewProduct()">Ajouter le produit</button>'+
     '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
   );
@@ -2936,7 +2947,11 @@ function openEditProduct(id){
     '<label for="epAvail" style="font-size:.84rem;font-weight:700;color:var(--texte);cursor:pointer;">Disponible</label>'+
     '</div>'+
     '<label class="bs-label">Ordre d\'affichage</label><input class="bs-input" id="epOrder" type="number" min="0" value="'+(p.sort_order||0)+'"/>'+
-    '<label class="bs-label">Photo URL (optionnel)</label><input class="bs-input" id="epPhoto" type="text" value="'+(p.image_url||'')+'" placeholder="https://... ou photos/nom.jpg"/>'+
+    '<label class="bs-label">Photo (optionnel)</label>'+
+    '<div style="display:flex;gap:7px;align-items:center;margin-bottom:11px;">'+
+    '<input class="bs-input" id="epPhoto" type="text" value="'+(p.image_url||'')+'" placeholder="URL ou uploader ↓" style="margin:0;flex:1;"/>'+
+    '<button type="button" onclick="triggerProductPhotoUpload(\'epPhoto\')" style="padding:9px 12px;background:var(--brun);color:#fff;border:none;border-radius:9px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;">📱 Upload</button>'+
+    '</div>'+
     '<button class="bs-btn-primary" onclick="saveEditProduct(\''+id+'\')">Enregistrer</button>'+
     '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'+
     '<button class="bs-btn-danger" onclick="deleteProduct(\''+id+'\')">🗑️ Supprimer</button>'
@@ -3828,7 +3843,7 @@ function closeSettingsDrawer(){
 }
 function showSDTab(tab){
   _activeSDTab=tab;
-  ['colors','infos','email'].forEach(function(t){
+  ['colors','infos','texts','email'].forEach(function(t){
     var btn=document.getElementById('sdt-'+t);
     if(btn)btn.classList.toggle('active',t===tab);
   });
@@ -3860,6 +3875,41 @@ function showSDTab(tab){
         '<label class="bs-label">👻 Snapchat</label><input class="bs-input" id="sdi_sn" value="'+escHtml(shopSettings.social_snapchat||'')+'" placeholder="https://snapchat.com/..."/>'+
         '</div>'+
         '<button class="bs-btn-primary" onclick="sdSaveInfos()">💾 Sauvegarder</button>';
+      break;
+    case 'texts':
+      c.innerHTML='<div class="ed-card">'+
+        '<div class="ed-card-title">🏠 Page d\'accueil — Bandeau</div>'+
+        '<label class="bs-label">Titre principal</label><input class="bs-input" id="sdt_hero_title" value="'+escHtml(shopSettings.hero_title||'')+'"/>'+
+        '<label class="bs-label">Sous-titre</label><input class="bs-input" id="sdt_hero_sub" value="'+escHtml(shopSettings.hero_subtitle||'')+'"/>'+
+        '<label class="bs-label">Bouton commander</label><input class="bs-input" id="sdt_hero_btn" value="'+escHtml(shopSettings.hero_btn||'')+'"/>'+
+        '</div>'+
+        '<div class="ed-card">'+
+        '<div class="ed-card-title">🎂 Nos Spécialités</div>'+
+        '<label class="bs-label">Spécialité 1</label><input class="bs-input" id="sdt_spec1" value="'+escHtml(shopSettings.spec1_name||'')+'"/>'+
+        '<label class="bs-label">Spécialité 2</label><input class="bs-input" id="sdt_spec2" value="'+escHtml(shopSettings.spec2_name||'')+'"/>'+
+        '<label class="bs-label">Spécialité 3</label><input class="bs-input" id="sdt_spec3" value="'+escHtml(shopSettings.spec3_name||'')+'"/>'+
+        '</div>'+
+        '<div class="ed-card">'+
+        '<div class="ed-card-title">🖼️ Grande bannière</div>'+
+        '<label class="bs-label">Titre bannière</label><input class="bs-input" id="sdt_banner_title" value="'+escHtml(shopSettings.banner_title||'')+'"/>'+
+        '<label class="bs-label">Texte bannière</label><input class="bs-input" id="sdt_banner_text" value="'+escHtml(shopSettings.banner_text||'')+'"/>'+
+        '<label class="bs-label">Bouton bannière</label><input class="bs-input" id="sdt_banner_btn" value="'+escHtml(shopSettings.banner_btn||'')+'"/>'+
+        '</div>'+
+        '<div class="ed-card">'+
+        '<div class="ed-card-title">💕 Pourquoi Cicine ?</div>'+
+        '<label class="bs-label">Point 1 — titre</label><input class="bs-input" id="sdt_pq1t" value="'+escHtml(shopSettings.pq1_title||'')+'"/>'+
+        '<label class="bs-label">Point 1 — texte</label><input class="bs-input" id="sdt_pq1x" value="'+escHtml(shopSettings.pq1_text||'')+'"/>'+
+        '<label class="bs-label">Point 2 — titre</label><input class="bs-input" id="sdt_pq2t" value="'+escHtml(shopSettings.pq2_title||'')+'"/>'+
+        '<label class="bs-label">Point 2 — texte</label><input class="bs-input" id="sdt_pq2x" value="'+escHtml(shopSettings.pq2_text||'')+'"/>'+
+        '<label class="bs-label">Point 3 — titre</label><input class="bs-input" id="sdt_pq3t" value="'+escHtml(shopSettings.pq3_title||'')+'"/>'+
+        '<label class="bs-label">Point 3 — texte</label><input class="bs-input" id="sdt_pq3x" value="'+escHtml(shopSettings.pq3_text||'')+'"/>'+
+        '</div>'+
+        '<div class="ed-card">'+
+        '<div class="ed-card-title">🌟 Section finale</div>'+
+        '<label class="bs-label">Titre</label><input class="bs-input" id="sdt_cta_title" value="'+escHtml(shopSettings.cta_title||'')+'"/>'+
+        '<label class="bs-label">Sous-titre</label><input class="bs-input" id="sdt_cta_sub" value="'+escHtml(shopSettings.cta_sub||'')+'"/>'+
+        '</div>'+
+        '<button class="bs-btn-primary" onclick="sdSaveTexts()">💾 Sauvegarder tous les textes</button>';
       break;
     case 'email':
       c.innerHTML='<div class="ed-card">'+
@@ -3906,6 +3956,73 @@ async function sdSaveInfos(){
   showNotif('✅ Infos sauvegardées !');
   closeSettingsDrawer();
 }
+async function sdSaveTexts(){
+  var fields={
+    hero_title:'sdt_hero_title',hero_subtitle:'sdt_hero_sub',hero_btn:'sdt_hero_btn',
+    spec1_name:'sdt_spec1',spec2_name:'sdt_spec2',spec3_name:'sdt_spec3',
+    banner_title:'sdt_banner_title',banner_text:'sdt_banner_text',banner_btn:'sdt_banner_btn',
+    pq1_title:'sdt_pq1t',pq1_text:'sdt_pq1x',pq2_title:'sdt_pq2t',pq2_text:'sdt_pq2x',
+    pq3_title:'sdt_pq3t',pq3_text:'sdt_pq3x',cta_title:'sdt_cta_title',cta_sub:'sdt_cta_sub'
+  };
+  var pairs=Object.keys(fields).map(function(key){
+    var el=document.getElementById(fields[key]);
+    return {key:key,value:el?el.value.trim():''};
+  }).filter(function(p){return p.value;});
+  if(!pairs.length){showNotif("Aucun texte à sauvegarder");return;}
+  var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
+  if(error){showNotif('Erreur : '+error.message);return;}
+  pairs.forEach(function(p){shopSettings[p.key]=p.value;});
+  showNotif('✅ Textes sauvegardés !');
+  setTimeout(function(){initWysiwygEditor();},400);
+}
+
+/* ===== UPLOAD PHOTO DEPUIS L'APPAREIL ===== */
+async function uploadPhotoToStorage(file){
+  var ext=(file.name||'photo.jpg').split('.').pop().toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
+  var fileName='upload-'+Date.now()+'.'+ext;
+  var {data,error}=await sb.storage.from('photos').upload(fileName,file,{upsert:true,contentType:file.type});
+  if(error)throw error;
+  var {data:{publicUrl}}=sb.storage.from('photos').getPublicUrl(fileName);
+  return publicUrl;
+}
+
+async function handlePickerFileUpload(input){
+  var file=input.files&&input.files[0];
+  if(!file)return;
+  var status=document.getElementById('picker-upload-status');
+  if(status)status.textContent='⏳ Upload en cours...';
+  try{
+    var url=await uploadPhotoToStorage(file);
+    if(status)status.textContent='✅ Photo uploadée !';
+    applyPhoto(url);
+    input.value='';
+  }catch(e){
+    if(status)status.textContent='❌ Erreur : '+e.message;
+    input.value='';
+  }
+}
+
+var _productPhotoTargetId=null;
+async function handleProductPhotoUpload(input){
+  var file=input.files&&input.files[0];
+  if(!file||!_productPhotoTargetId)return;
+  showNotif('⏳ Upload en cours...');
+  try{
+    var url=await uploadPhotoToStorage(file);
+    var field=document.getElementById(_productPhotoTargetId);
+    if(field)field.value=url;
+    showNotif('✅ Photo uploadée !');
+    input.value='';
+  }catch(e){
+    showNotif('❌ Erreur upload : '+e.message);
+    input.value='';
+  }
+}
+function triggerProductPhotoUpload(fieldId){
+  _productPhotoTargetId=fieldId;
+  document.getElementById('product-photo-input').click();
+}
+
 async function sdSaveEmail(){
   var pairs=[
     {key:'notif_email',value:document.getElementById('sde_email').value||''},
