@@ -783,15 +783,24 @@ function renderProductsHTML(data){
     if(!catMap[c]){catMap[c]=[];cats.push(c);}
     catMap[c].push(p);
   });
+  // "Nouveau Délice" toujours en premier
+  var nd="Nouveau Délice";
+  if(catMap[nd]){
+    cats=cats.filter(function(c){return c!==nd;});
+    cats.unshift(nd);
+  }
   var aPD=['Gâteaux & Créations','Tartes & Tartelettes salées'];
   var html="";
   cats.forEach(function(cat,idx){
-    var isOpen=false;
+    var isNd=cat===nd;
+    var isOpen=isNd;
     var id="dyn-"+idx;
     var aPartir=aPD.indexOf(cat)>=0;
+    var headerStyle=isNd?'background:var(--fuchsia);':'';
+    var catLabel=isNd?'✨ '+cat:cat;
     html+='<div class="cat-section">'+
-      '<div class="cat-header'+(isOpen?" open":"")+'" id="ch-'+id+'" onclick="toggleCat(\''+id+'\')">'+
-      '<span>'+cat+'</span>'+
+      '<div class="cat-header'+(isOpen?" open":"")+'" id="ch-'+id+'" onclick="toggleCat(\''+id+'\')" style="'+headerStyle+'">'+
+      '<span>'+catLabel+'</span>'+
       '<span class="cat-badge">'+catMap[cat].length+'</span>'+
       '<span class="cat-arrow">&#9658;</span>'+
       '</div>'+
@@ -802,11 +811,12 @@ function renderProductsHTML(data){
       priceStr=priceStr.replace(".",",")+"€";
       priceStr=aPartir?'à partir de '+priceStr:priceStr+'/pièce';
       var photoHtml=p.image_url?'<img src="'+p.image_url+'" style="width:40px;height:40px;object-fit:cover;border-radius:8px;flex-shrink:0;margin-right:8px;" alt="" onerror="this.style.display=\'none\'"/>':'';
-      html+='<div class="ir" data-n="'+p.name.replace(/"/g,"&quot;")+'" data-p="'+price+'">'+
+      var newBadge=isNd?'<span style="background:var(--fuchsia);color:#fff;font-size:.5rem;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:5px;vertical-align:middle;text-transform:uppercase;letter-spacing:.05em;">NOUVEAU</span>':'';
+      html+='<div class="ir" data-n="'+p.name.replace(/"/g,"&quot;")+'" data-p="'+price+'"'+(isNd?' style="border-color:var(--fuchsia);background:#fff5f8;"':'')+'>'+
         '<div class="il"><input type="checkbox" onchange="maj()"/>'+
         photoHtml+
         '<div>'+
-        '<div class="in">'+p.name+'</div>'+
+        '<div class="in">'+p.name+newBadge+'</div>'+
         '<div class="ip">'+priceStr+'</div>'+
         '</div></div>'+
         '<input type="number" class="qi" value="1" min="1" max="999" oninput="maj()" inputmode="numeric"/>'+

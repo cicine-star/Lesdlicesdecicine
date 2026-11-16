@@ -87,6 +87,22 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .pdlsem-card-name{font-family:"Dancing Script",cursive;font-size:.88rem;color:var(--brun);line-height:1.2;margin-bottom:3px;}
 .pdlsem-card-price{font-size:.7rem;font-weight:700;color:var(--fuchsia);}
 
+/* NOUVEAU DÉLICE */
+.nd-section{padding:16px 14px;background:linear-gradient(135deg,#fff5f8,#fff);border-bottom:1.5px solid var(--bordure);}
+.nd-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.nd-label{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--fuchsia);}
+.nd-title{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--brun);}
+.nd-link{font-size:.72rem;font-weight:700;color:var(--caramel);text-decoration:none;white-space:nowrap;}
+.nd-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.nd-scroll::-webkit-scrollbar{display:none;}
+.nd-card{flex-shrink:0;width:130px;background:#fff;border:2px solid var(--fuchsia);border-radius:14px;overflow:hidden;position:relative;}
+.nd-badge{position:absolute;top:6px;left:6px;background:var(--fuchsia);color:#fff;font-size:.52rem;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;}
+.nd-img{width:100%;height:80px;object-fit:cover;display:block;background:var(--fond2);}
+.nd-emoji{width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;background:linear-gradient(135deg,var(--fond2),#fce7f3);}
+.nd-info{padding:7px 8px 9px;}
+.nd-name{font-family:"Dancing Script",cursive;font-size:.88rem;color:var(--brun);line-height:1.2;margin-bottom:3px;}
+.nd-price{font-size:.72rem;font-weight:700;color:var(--fuchsia);}
+
 /* COMMENT COMMANDER */
 .how{padding:18px 14px;background:var(--fond);}
 .steps-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:3px;margin-top:12px;}
@@ -313,6 +329,20 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
       <div class="pdlsem-card-name" id="psCardNom">Bientôt…</div>
       <div class="pdlsem-card-price" id="psPrix"></div>
     </div>
+  </div>
+</div>
+
+<!-- NOUVEAU DÉLICE -->
+<div class="nd-section" id="section-nouveau-delice" style="display:none;">
+  <div class="nd-header">
+    <div>
+      <div class="nd-label">✨ Nouveauté</div>
+      <div class="nd-title">Nouveau Délice</div>
+    </div>
+    <a href="commander.html" class="nd-link">Tout voir →</a>
+  </div>
+  <div class="nd-scroll" id="ndScroll">
+    <div style="font-size:.75rem;color:var(--doux);padding:12px;">Chargement…</div>
   </div>
 </div>
 
@@ -577,6 +607,29 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
       return`<div class="review-card"><div class="review-stars">${s}</div>${r.comment?`<div class="review-text">"${r.comment}"</div>`:""}<div class="review-author">— ${r.author||"Client"}</div></div>`;
     }).join("");
   }catch(e){document.getElementById("homeReviews").innerHTML="";}
+})();
+
+(async function(){
+  try{
+    var {data}=await SB.from("products").select("name,price,emoji,image_url,category").eq("category","Nouveau Délice").eq("available",true).order("sort_order",{ascending:true}).limit(10);
+    if(!data||!data.length){return;}
+    document.getElementById("section-nouveau-delice").style.display="block";
+    document.getElementById("ndScroll").innerHTML=data.map(function(p){
+      var price=parseFloat(p.price||0);
+      var priceStr=(price%1===0?price.toFixed(0):price.toFixed(2)).replace(".",",")+"€";
+      var mediaHtml=p.image_url
+        ?'<img src="'+p.image_url+'" class="nd-img" alt="'+p.name+'" onerror="this.parentNode.innerHTML=\'<div class=nd-emoji>'+( p.emoji||"🧁")+'</div>\'">'
+        :'<div class="nd-emoji">'+(p.emoji||"🧁")+'</div>';
+      return '<a href="commander.html?produit='+encodeURIComponent(p.name)+'&prix='+(price||"")+'&emoji='+encodeURIComponent(p.emoji||"🧁")+'" class="nd-card" style="text-decoration:none;">'+
+        '<div class="nd-badge">NOUVEAU</div>'+
+        mediaHtml+
+        '<div class="nd-info">'+
+          '<div class="nd-name">'+p.name+'</div>'+
+          '<div class="nd-price">'+priceStr+'</div>'+
+        '</div>'+
+      '</a>';
+    }).join("");
+  }catch(e){}
 })();
 </script>
 </body>
