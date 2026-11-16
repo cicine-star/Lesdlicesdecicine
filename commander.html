@@ -380,7 +380,7 @@ var sb=supabase.createClient(SB_URL,SB_KEY);
   if(!isOpen){
     var bar=document.createElement("div");
     bar.style.cssText="background:#fff1f2;border-bottom:1.5px solid #fecdd3;padding:9px 14px;font-size:.77rem;font-weight:600;color:#9f1239;display:flex;align-items:center;justify-content:space-between;gap:10px;";
-    bar.innerHTML='<span>🔴 Boutique actuellement fermée — les commandes sont bien enregistrées !</span><a href="https://wa.me/596696111440" target="_blank" style="color:#9f1239;text-decoration:underline;white-space:nowrap;">💬 Urgence ?</a>';
+    bar.innerHTML='<span>🔴 Je suis actuellement fermée — vos commandes sont bien enregistrées !</span><a href="https://wa.me/596696111440" target="_blank" style="color:#9f1239;text-decoration:underline;white-space:nowrap;">💬 Urgence ?</a>';
     var nav=document.querySelector("nav");
     if(nav&&nav.parentNode)nav.parentNode.insertBefore(bar,nav.nextSibling);
   }

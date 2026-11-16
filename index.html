@@ -497,7 +497,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
   if(!bar)return;
   if(isOpen){
     bar.className="status-bar open";
-    bar.innerHTML='<span>🟢 Bonjour ! Je suis ouverte — commandez en ligne ou passez me voir 🧁</span>';
+    bar.innerHTML='<span>🟢 Bonjour ! Je suis ouverte — commandez en ligne ou venez me voir 🧁</span>';
   }else{
     var dayNames=["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
     var nextDay=null,nextOpen=null;
@@ -506,7 +506,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
     var isNextTomorrow=(nextDay===(day+1)%7);
     var nextLabel=isNextTomorrow?"demain":dayNames[nextDay];
     bar.className="status-bar closed";
-    bar.innerHTML='<span>🔴 Je suis actuellement fermée — on se retrouve '+nextLabel+' à '+nextHour+' 🧁</span><a href="https://wa.me/596696111440" target="_blank" rel="noopener">💬 Urgence ? WhatsApp</a>';
+    bar.innerHTML='<span>🔴 Je suis actuellement fermée — retrouvez-moi '+nextLabel+' à '+nextHour+' 🧁</span><a href="https://wa.me/596696111440" target="_blank" rel="noopener">💬 Urgence ? WhatsApp</a>';
   }
 })();
 function openSidebar(){document.getElementById("sbPanel").classList.add("open");document.getElementById("sbOverlay").classList.add("open");document.body.style.overflow="hidden";}
