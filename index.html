@@ -317,7 +317,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
   <img src="photos/gateau-babyshower.jpg" class="about-cicine-img" alt="Cicine"/>
   <div>
     <div class="about-cicine-name">Bonjour, c'est Cicine ! 🩷</div>
-    <div class="about-cicine-bio">Pâtissière passionnée basée au Vauclin, en Martinique. Je prépare chaque création à la main, avec amour et les meilleurs ingrédients — pour que chaque bouchée soit un moment de bonheur. Je mets tout mon cœur dans chaque création, rien que pour vous. 💕</div>
+    <div class="about-cicine-bio" id="site-about-bio">Pâtissière passionnée basée au Vauclin, en Martinique. Je prépare chaque création à la main, avec amour et les meilleurs ingrédients — pour que chaque bouchée soit un moment de bonheur.</div>
   </div>
 </div>
 
@@ -606,6 +606,8 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
         gallery.innerHTML=mp.map(function(url){return '<img src="'+url+'" class="gallery-img" alt="Création"/>';}).join('');
       }
     }catch(e){}}
+    // À propos
+    setText("site-about-bio",s.about_bio);
     // CTA
     setText("site-cta-title",s.cta_title);setText("site-cta-sub",s.cta_sub);
     setFz("site-cta-title","cta_title_size","1.6rem");setFz("site-cta-sub","cta_sub_size","0.73rem");

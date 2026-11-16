@@ -4070,6 +4070,11 @@ function showSDTab(tab){
       break;
     case 'texts':
       c.innerHTML='<div class="ed-card">'+
+        '<div class="ed-card-title">💕 À propos — Cicine</div>'+
+        '<label class="bs-label">Présentation (texte sous ton nom)</label>'+
+        '<textarea class="bs-input" id="sdt_about_bio" rows="3" style="resize:vertical;">'+escHtml(shopSettings.about_bio||'')+'</textarea>'+
+        '</div>'+
+        '<div class="ed-card">'+
         '<div class="ed-card-title">🏠 Page d\'accueil — Bandeau</div>'+
         '<label class="bs-label">Titre principal</label><input class="bs-input" id="sdt_hero_title" value="'+escHtml(shopSettings.hero_title||'')+'"/>'+
         '<label class="bs-label">Sous-titre</label><input class="bs-input" id="sdt_hero_sub" value="'+escHtml(shopSettings.hero_subtitle||'')+'"/>'+
@@ -4150,6 +4155,7 @@ async function sdSaveInfos(){
 }
 async function sdSaveTexts(){
   var fields={
+    about_bio:'sdt_about_bio',
     hero_title:'sdt_hero_title',hero_subtitle:'sdt_hero_sub',hero_btn:'sdt_hero_btn',
     spec1_name:'sdt_spec1',spec2_name:'sdt_spec2',spec3_name:'sdt_spec3',
     banner_title:'sdt_banner_title',banner_text:'sdt_banner_text',banner_btn:'sdt_banner_btn',
@@ -4168,11 +4174,24 @@ async function sdSaveTexts(){
   setTimeout(function(){initWysiwygEditor();},400);
 }
 
-/* ===== PHOTO DEPUIS L'APPAREIL (FileReader — fonctionne sans Supabase Storage) ===== */
+/* ===== PHOTO DEPUIS L'APPAREIL (FileReader + Canvas pour compression) ===== */
 function readFileAsDataURL(file){
   return new Promise(function(resolve,reject){
     var reader=new FileReader();
-    reader.onload=function(e){resolve(e.target.result);};
+    reader.onload=function(e){
+      var img=new Image();
+      img.onload=function(){
+        var MAX=900;
+        var w=img.width,h=img.height;
+        if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+        var canvas=document.createElement('canvas');
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg',0.75));
+      };
+      img.onerror=function(){reject(new Error('Impossible de charger l\'image'));};
+      img.src=e.target.result;
+    };
     reader.onerror=function(){reject(new Error('Impossible de lire le fichier'));};
     reader.readAsDataURL(file);
   });
