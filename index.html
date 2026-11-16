@@ -200,6 +200,10 @@ footer{background:var(--brun);color:#e8d5c8;padding:24px 14px 90px;text-align:ce
 footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 .flinks{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:8px 0;}
 .flink{color:#e8d5c8;font-size:.68rem;text-decoration:none;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:20px;}
+.status-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;font-size:.78rem;font-weight:600;gap:10px;}
+.status-bar.open{background:#f0fdf4;border-bottom:1.5px solid #bbf7d0;color:#166534;}
+.status-bar.closed{background:#fff1f2;border-bottom:1.5px solid #fecdd3;color:#9f1239;}
+.status-bar a{color:inherit;text-decoration:underline;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -249,6 +253,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
     <a class="nav-panier" href="panier.html" id="navCart">🛒 Panier<span class="cart-badge" id="cartBadge"></span></a>
   </div>
 </nav>
+<div id="statusBar" class="status-bar"></div>
 
 <!-- SECTIONS DU SITE (ordre et visibilité gérés depuis l'admin) -->
 <div id="page-sections">
@@ -480,6 +485,30 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
+(function(){
+  var now=new Date(new Date().toLocaleString("en-US",{timeZone:"America/Martinique"}));
+  var day=now.getDay();
+  var h=now.getHours(),m=now.getMinutes();
+  var mins=h*60+m;
+  var schedule={0:[8*60+30,16*60+30],1:null,2:[7*60+30,18*60],3:[7*60+30,18*60],4:[7*60+30,18*60],5:[7*60+30,18*60],6:[7*60+30,17*60]};
+  var today=schedule[day];
+  var isOpen=today&&mins>=today[0]&&mins<today[1];
+  var bar=document.getElementById("statusBar");
+  if(!bar)return;
+  if(isOpen){
+    bar.className="status-bar open";
+    bar.innerHTML='<span>🟢 Bonjour ! Je suis ouverte — commandez en ligne ou passez me voir 🧁</span>';
+  }else{
+    var dayNames=["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+    var nextDay=null,nextOpen=null;
+    for(var i=1;i<=7;i++){var nd=(day+i)%7;if(schedule[nd]){nextDay=nd;nextOpen=schedule[nd][0];break;}}
+    var nextHour=nextOpen?Math.floor(nextOpen/60)+":"+(nextOpen%60===0?"00":String(nextOpen%60).padStart(2,"0")):"";
+    var isNextTomorrow=(nextDay===(day+1)%7);
+    var nextLabel=isNextTomorrow?"demain":dayNames[nextDay];
+    bar.className="status-bar closed";
+    bar.innerHTML='<span>🔴 Je suis actuellement fermée — on se retrouve '+nextLabel+' à '+nextHour+' 🧁</span><a href="https://wa.me/596696111440" target="_blank" rel="noopener">💬 Urgence ? WhatsApp</a>';
+  }
+})();
 function openSidebar(){document.getElementById("sbPanel").classList.add("open");document.getElementById("sbOverlay").classList.add("open");document.body.style.overflow="hidden";}
 function closeSidebar(){document.getElementById("sbPanel").classList.remove("open");document.getElementById("sbOverlay").classList.remove("open");document.body.style.overflow="";}
 
