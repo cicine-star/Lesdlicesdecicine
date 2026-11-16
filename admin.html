@@ -287,6 +287,9 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .bs-btn-secondary{width:100%;padding:12px;background:#fff;color:var(--brun);border:2px solid var(--bordure);border-radius:40px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;margin-bottom:7px;}
 .bs-btn-danger{width:100%;padding:12px;background:#fee2e2;color:#991b1b;border:2px solid #fca5a5;border-radius:40px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
 .bs-btn-green{width:100%;padding:13px;background:var(--vert);color:#fff;border:none;border-radius:40px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;margin-bottom:7px;}
+.bs-btn-pay{padding:9px 14px;background:#f5f5f0;color:#444;border:1.5px solid #ddd;border-radius:20px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:"Lato",sans-serif;}
+.bs-btn-pay.active{background:var(--caramel);color:#fff;border-color:var(--caramel);}
+.bs-btn-chip{padding:7px 12px;background:#fff;color:var(--brun);border:1.5px solid var(--bordure);border-radius:20px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:"Lato",sans-serif;}
 .mv-type-row{display:flex;gap:7px;margin-bottom:11px;}
 .mv-btn{flex:1;padding:9px 5px;border:2px solid var(--bordure);border-radius:9px;background:#fff;font-size:.72rem;font-weight:700;color:var(--doux);cursor:pointer;text-align:center;}
 .mv-btn.ae{border-color:var(--vert);background:#d1fae5;color:#065f46;}
@@ -1357,7 +1360,7 @@ function renderOrders(){
     }
     var id=o.id;
     var actHtml="";
-    if(o.status!=="confirmed"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-confirm" onclick="openConfirmModal(\''+id+'\')">✅ Confirmer</button>';
+    if(o.status!=="confirmed"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-confirm" onclick="openConfirmModal(\''+id+'\')">💬 Confirmer + Acompte</button>';
     if(o.status!=="ready"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-ready" onclick="updateStatus(\''+id+'\',\'ready\')">🎂 Prête</button>';
     if(o.status!=="done"&&o.status!=="cancelled")actHtml+='<button class="act-btn act-done" onclick="updateStatus(\''+id+'\',\'done\')">✔ Terminée</button>';
     if(o.status!=="cancelled")actHtml+='<button class="act-btn act-cancel" onclick="openCancelModal(\''+id+'\')">✕ Annuler</button>';
@@ -1511,41 +1514,101 @@ async function saveManualOrder(){
   await loadOrders();
   showNotif("Commande enregistrée !");
 }
+var _confirmOrderId=null;
+var _selectedPay=null;
 function openConfirmModal(id){
+  _confirmOrderId=id;
+  _selectedPay=null;
   var order=null;
   for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){order=allOrders[i];break;}}
   if(!order)return;
-  var total=order.total?parseFloat(order.total).toFixed(2).replace(".",","):"0,00";
-  var acompteNum=order.total?(parseFloat(order.total)/2).toFixed(2):"0.00";
-  var acompte=acompteNum.replace(".",",");
+  var totalNum=order.total?parseFloat(order.total):0;
+  var total=totalNum.toFixed(2).replace(".",",");
+  var a30=(Math.round(totalNum*0.3*100)/100).toFixed(2);
+  var a50=(Math.round(totalNum*0.5*100)/100).toFixed(2);
   var name=order.client_name||"";
   var date=fmtDate(order.delivery_date);
   openModal(
-    '<div class="bs-title">✅ Confirmer la commande</div>'+
-    '<p style="font-size:.83rem;color:var(--doux);margin-bottom:14px;">'+name+' · '+date+' · Total : '+total+'€ · Acompte : <strong>'+acompte+'€</strong></p>'+
-    '<label class="bs-label">Lien SumUp pour l\'acompte de '+acompte+'€ (optionnel)</label>'+
-    '<input class="bs-input" id="sumupLink" type="url" placeholder="https://pay.sumup.com/..."/>'+
-    '<button class="bs-btn-green" onclick="doConfirm(\''+id+'\',\''+acompteNum+'\',\''+name.replace(/'/g,"\\'")  +'\',\''+date+'\',true)">✅ Confirmer &amp; envoyer WhatsApp</button>'+
-    '<button class="bs-btn-secondary" onclick="doConfirm(\''+id+'\',\''+acompteNum+'\',\''+name.replace(/'/g,"\\'")+'\',\''+date+'\',false)">Confirmer sans message</button>'+
+    '<div class="bs-title">💬 Confirmer + Acompte</div>'+
+    '<p style="font-size:.83rem;color:var(--doux);margin-bottom:14px;">'+name+' · '+date+' · Total : <strong>'+total+'€</strong></p>'+
+    '<label class="bs-label">Montant de l\'acompte</label>'+
+    '<div style="display:flex;gap:8px;margin-bottom:8px;">'+
+      '<button class="bs-btn-chip" onclick="setAcompteChip(\''+a30+'\')">30 % — '+a30.replace(".",",")+'€</button>'+
+      '<button class="bs-btn-chip" onclick="setAcompteChip(\''+a50+'\')">50 % — '+a50.replace(".",",")+'€</button>'+
+    '</div>'+
+    '<input class="bs-input" id="acompteInput" type="number" min="0" step="0.01" value="'+a30+'" placeholder="Montant (€)"/>'+
+    '<label class="bs-label" style="margin-top:12px;">Moyen de paiement</label>'+
+    '<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;">'+
+      '<button class="bs-btn-pay" id="pay-revolut" onclick="selectPay(\'revolut\')">Revolut</button>'+
+      '<button class="bs-btn-pay" id="pay-sumup" onclick="selectPay(\'sumup\')">SumUp</button>'+
+      '<button class="bs-btn-pay" id="pay-wero" onclick="selectPay(\'wero\')">Wero</button>'+
+      '<button class="bs-btn-pay" id="pay-custom" onclick="selectPay(\'custom\')">Lien perso</button>'+
+    '</div>'+
+    '<input class="bs-input" id="payLink" type="url" placeholder="Lien de paiement (optionnel)"/>'+
+    '<button class="bs-btn-green" style="margin-top:4px;" onclick="doConfirmAcompte()">💬 Confirmer &amp; envoyer WhatsApp</button>'+
+    '<button class="bs-btn-secondary" onclick="doConfirmSilent(\''+id+'\')">✅ Confirmer sans message</button>'+
     '<button class="bs-btn-danger" onclick="closeModal()">Annuler</button>'
   );
 }
-async function doConfirm(id,acompteNum,name,date,sendWA){
+function setAcompteChip(val){
+  var inp=document.getElementById("acompteInput");
+  if(inp)inp.value=val;
+}
+function selectPay(method){
+  _selectedPay=method;
+  ["revolut","sumup","wero","custom"].forEach(function(m){
+    var btn=document.getElementById("pay-"+m);
+    if(btn)btn.classList.toggle("active",m===method);
+  });
+}
+async function doConfirmAcompte(){
+  var id=_confirmOrderId;
+  var order=null;
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){order=allOrders[i];break;}}
+  if(!order)return;
+  var acompteEl=document.getElementById("acompteInput");
+  var linkEl=document.getElementById("payLink");
+  var acompteVal=acompteEl?parseFloat(acompteEl.value)||0:0;
+  var link=linkEl?linkEl.value.trim():"";
   closeModal();
   await sb.from("orders").update({status:"confirmed"}).eq("id",id);
-  var order=null;
-  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].status="confirmed";order=allOrders[i];break;}}
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].status="confirmed";break;}}
   renderOrders();updateStats();
-  if(sendWA&&order&&order.client_phone){
-    var phone=toWAPhone(order.client_phone);
-    var link=document.getElementById("sumupLink")?document.getElementById("sumupLink").value.trim():"";
-    var total=order.total?parseFloat(order.total).toFixed(2).replace(".",","):"0,00";
-    var acompte=(parseFloat(acompteNum)).toFixed(2).replace(".",",");
-    var msg="Bonjour "+name+" ! 🎂✨\n\nVotre commande est confirmée !\n📅 Date : "+date+"\n💰 Total : "+total+"€\n💳 Acompte à régler : "+acompte+"€\n";
-    if(link)msg+="\n👉 Lien de paiement SumUp :\n"+link+"\n";
-    msg+="\nMerci pour votre confiance et à bientôt ! 💕\nLes Délices de Cicine";
-    window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank");
+  if(!order.client_phone)return;
+  var phone=toWAPhone(order.client_phone);
+  var name=order.client_name||"";
+  var totalNum=parseFloat(order.total)||0;
+  var total=totalNum.toFixed(2).replace(".",",");
+  var acompte=acompteVal.toFixed(2).replace(".",",");
+  var items=Array.isArray(order.items)?order.items:[];
+  var payLabel={revolut:"Revolut",sumup:"SumUp",wero:"Wero",custom:"en ligne"}[_selectedPay]||"en ligne";
+  var lines=[];
+  lines.push("Bonjour "+name+" ! 🧁✨");
+  lines.push("");
+  lines.push("✅ Ta commande du "+fmtDate(order.delivery_date)+" est confirmée !");
+  lines.push("");
+  lines.push("🛍️ Récapitulatif :");
+  items.forEach(function(it){
+    lines.push("• "+it.name+" x"+it.qty+" — "+(parseFloat(it.price)*parseInt(it.qty)).toFixed(2).replace(".",",")+"€");
+  });
+  lines.push("");
+  lines.push("💰 Total : "+total+"€");
+  if(acompteVal>0){
+    lines.push("");
+    lines.push("🙏 Je te demande un acompte de "+acompte+"€ via "+payLabel+" pour confirmer ta réservation.");
+    if(link){lines.push("");lines.push("👉 "+link);}
   }
+  lines.push("");
+  lines.push("À très vite ! 💕");
+  lines.push("Cicine 🎂");
+  window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(lines.join("\n")),"_blank");
+}
+async function doConfirmSilent(id){
+  closeModal();
+  await sb.from("orders").update({status:"confirmed"}).eq("id",id);
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].status="confirmed";break;}}
+  renderOrders();updateStats();
+  showNotif("Commande confirmée !");
 }
 async function saveAdminNote(id){
   var el=document.getElementById("anote-"+id);

@@ -354,8 +354,9 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
     <div class="confirm-icon">✅</div>
     <div class="confirm-title">Commande enregistrée !</div>
     <p class="confirm-msg" id="confirmMsg"></p>
-    <button class="btn btn-wa" id="btnWaNotif" style="margin-bottom:8px;font-size:1rem;padding:16px;"></button>
-    <p id="waNotifNote" style="font-size:.72rem;color:var(--doux);text-align:center;margin-bottom:12px;">Si WhatsApp ne s'est pas ouvert automatiquement, appuyez sur le bouton ci-dessus.</p>
+    <div style="background:#fdf4ff;border:1.5px solid #e9d5ff;border-radius:12px;padding:14px 16px;text-align:center;margin-bottom:16px;font-size:.88rem;color:#7e22ce;line-height:1.6;">
+      💕 Je te recontacte bientôt sur WhatsApp pour confirmer ta commande et t'envoyer le lien de paiement.
+    </div>
     <button class="btn btn-o" onclick="location.reload()">🧁 Passer une autre commande</button>
   </div>
 </div>
@@ -718,38 +719,7 @@ async function envoyerCommande(){
   document.getElementById("confirmCard").style.display="block";
   var discMsg=discPct2>0?"<br><br>🎁 Réduction <strong>-"+discPct2+"%</strong> appliquée — vous avez économisé <strong>"+discSaved.toFixed(2).replace(".",",")+"€</strong>.":"";
   document.getElementById("confirmMsg").innerHTML=
-    "Merci <strong>"+nom+"</strong> ! Votre commande du <strong>"+fmtDateLabel(selectedDate)+"</strong> a bien été enregistrée."+discMsg+"<br><br>💕 Cicine a bien reçu votre commande et vous contactera pour confirmation.";
-  // Message WhatsApp formaté
-  var waLines=[];
-  waLines.push("🧁 *Nouvelle commande — Les Délices de Cicine*");
-  waLines.push("");
-  waLines.push("👤 *"+nom+"*");
-  waLines.push("📱 "+tel);
-  waLines.push("📅 "+fmtDateLabel(selectedDate));
-  waLines.push("📦 "+(deliveryType==="livraison"?"Livraison":"Retrait en boutique"));
-  if(adresse)waLines.push("📍 "+adresse);
-  waLines.push("");
-  waLines.push("🛍️ *Commande :*");
-  items.forEach(function(it){
-    var lineTotal=(it.price*it.qty).toFixed(2).replace(".",",");
-    waLines.push("• "+it.name+" x"+it.qty+" — "+lineTotal+"€");
-  });
-  if(discPct2>0){
-    waLines.push("");
-    waLines.push("🎁 Réduction -"+discPct2+"% : -"+discSaved.toFixed(2).replace(".",",")+"€"+(discCode?" (code : "+discCode+")":""));
-  }
-  waLines.push("");
-  waLines.push("💰 *Total : "+total.toFixed(2).replace(".",",")+"€*");
-  if(note){waLines.push("");waLines.push("📝 "+note);}
-  var waMsg=encodeURIComponent(waLines.join("\n"));
-  var waUrl="https://wa.me/596696111440?text="+waMsg;
-  var waBtn=document.getElementById("btnWaNotif");
-  if(waBtn){
-    waBtn.style.display="block";
-    waBtn.textContent="💬 Envoyer ma commande sur WhatsApp";
-    waBtn.onclick=function(){window.open(waUrl,"_blank");};
-  }
-  document.getElementById("waNotifNote").style.display="block";
+    "Merci <strong>"+nom+"</strong> ! Ta commande du <strong>"+fmtDateLabel(selectedDate)+"</strong> est bien enregistrée."+discMsg;
 }
 
 function toggleCat(id){
