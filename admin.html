@@ -1047,14 +1047,14 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
       </div>
     </div>
     <!-- Sélecteur de photo (overlay) -->
-    <input type="file" id="picker-file-input" accept="image/*" style="display:none" onchange="handlePickerFileUpload(this)"/>
     <input type="file" id="product-photo-input" accept="image/*" style="display:none" onchange="handleProductPhotoUpload(this)"/>
     <div id="ed-picker-overlay" onclick="closePhotoPicker()">
       <div id="ed-picker-sheet" onclick="event.stopPropagation()">
         <div style="padding:16px 16px 0;">
           <div style="font-size:1rem;font-weight:700;color:var(--brun);margin-bottom:4px;">📸 Changer la photo</div>
           <div style="font-size:.73rem;color:var(--doux);margin-bottom:8px;">Uploader depuis ton appareil ou coller un lien</div>
-          <button onclick="document.getElementById('picker-file-input').click()" style="width:100%;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;">📱 Choisir depuis mon téléphone / galerie</button>
+          <label for="picker-file-input" style="width:100%;padding:13px;background:var(--brun);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Lato',sans-serif;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;">📱 Choisir depuis mon téléphone / galerie</label>
+          <input type="file" id="picker-file-input" accept="image/*" style="display:none" onchange="handlePickerFileUpload(this)"/>
           <div id="picker-upload-status" style="font-size:.75rem;color:var(--caramel);text-align:center;min-height:18px;margin-bottom:6px;"></div>
           <div style="font-size:.7rem;color:var(--doux);text-align:center;margin-bottom:8px;">— ou coller un lien —</div>
           <div style="display:flex;gap:7px;align-items:center;margin-bottom:12px;">
