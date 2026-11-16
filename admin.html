@@ -900,6 +900,17 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 
   <!-- ===== TAB PRODUITS ===== -->
   <div id="tab-produits" class="wrap" style="display:none;">
+    <!-- Gestion des catégories -->
+    <div style="background:#fff;border:1.5px solid var(--bordure);border-radius:12px;padding:12px 14px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-weight:700;font-size:.88rem;color:var(--brun);">🏷️ Catégories</div>
+        <button class="s-add-btn" onclick="openAddCategory()" style="font-size:.75rem;padding:5px 10px;">➕ Nouvelle catégorie</button>
+      </div>
+      <div id="categoriesList" style="display:flex;flex-wrap:wrap;gap:7px;">
+        <div style="font-size:.75rem;color:var(--doux);">Chargement…</div>
+      </div>
+    </div>
+    <!-- Catalogue produits -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <div class="section-title" style="margin-bottom:0;">🛍️ Catalogue produits</div>
       <button class="s-add-btn" onclick="openAddProduct()">➕ Ajouter un produit</button>
@@ -1095,6 +1106,7 @@ var manualLineCount=0;
 var allReviews=[];
 var activeMainTab="accueil";
 var allProducts=[];
+var allCategories=["Nouveau Délice","Viennoiseries salées","Viennoiseries sucrées","Mignardises salées","Mignardises sucrées","Délibox","Chocolat & Pain au beurre","Gâteaux & Créations","Tartes & Tartelettes salées","Autres délices gourmands"];
 var shopSettings={};
 
 // Stocks
@@ -1225,7 +1237,7 @@ function setMainTab(tab){
   if(tab==="stats")renderStats();
   if(tab==="clients")loadClients();
   if(tab==="avis"){loadReviews();}
-  if(tab==="produits"){loadAdminProducts();}
+  if(tab==="produits"){loadCategories().then(loadAdminProducts);}
   if(tab==="saveurs"){loadSaveursTab();}
   if(tab==="tresorerie"){loadTresorerie();}
   if(tab==="pdlsem"){loadProduitSemaine();}
@@ -2828,6 +2840,112 @@ async function deleteReview(id){
 }
 
 /* ====== PRODUITS ====== */
+/* ===== CATÉGORIES DYNAMIQUES ===== */
+function getCategoryOptions(selected){
+  return allCategories.map(function(c){
+    return '<option'+(c===selected?' selected':'')+'>'+c.replace(/&/g,'&amp;')+'</option>';
+  }).join('');
+}
+
+async function loadCategories(){
+  try{
+    var {data,error}=await sb.from('categories').select('*').order('sort_order',{ascending:true});
+    if(error)throw error;
+    if(data&&data.length){
+      allCategories=data.map(function(c){return c.name;});
+    }
+  }catch(e){}
+  renderCategoriesList();
+}
+
+function renderCategoriesList(){
+  var el=document.getElementById('categoriesList');
+  if(!el)return;
+  if(!allCategories.length){el.innerHTML='<div style="font-size:.75rem;color:var(--doux);">Aucune catégorie.</div>';return;}
+  el.innerHTML=allCategories.map(function(cat,i){
+    return '<div style="display:flex;align-items:center;gap:5px;background:var(--fond2);border:1.5px solid var(--bordure);border-radius:20px;padding:4px 10px 4px 8px;">'+
+      '<span style="font-size:.8rem;font-weight:600;color:var(--brun);">'+cat+'</span>'+
+      '<button onclick="openEditCategory('+i+')" style="background:none;border:none;cursor:pointer;font-size:.75rem;color:var(--caramel);padding:0 2px;" title="Renommer">✏️</button>'+
+      '<button onclick="deleteCategoryAt('+i+')" style="background:none;border:none;cursor:pointer;font-size:.75rem;color:#dc2626;padding:0 2px;" title="Supprimer">×</button>'+
+    '</div>';
+  }).join('');
+}
+
+function openAddCategory(){
+  openModal(
+    '<div class="bs-title">➕ Nouvelle catégorie</div>'+
+    '<label class="bs-label">Nom de la catégorie *</label>'+
+    '<input class="bs-input" id="catName" type="text" placeholder="Ex: Tartes tropicales" autofocus/>'+
+    '<button class="bs-btn-primary" onclick="saveNewCategory()">Créer la catégorie</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
+  );
+}
+
+async function saveNewCategory(){
+  var name=(document.getElementById('catName').value||'').trim();
+  if(!name){showNotif('Nom obligatoire');return;}
+  if(allCategories.indexOf(name)>=0){showNotif('Cette catégorie existe déjà');return;}
+  try{
+    var sortOrder=allCategories.length;
+    var {error}=await sb.from('categories').insert({name:name,sort_order:sortOrder});
+    if(error)throw error;
+    allCategories.push(name);
+    renderCategoriesList();
+    showNotif('✅ Catégorie créée !');
+    closeModal();
+  }catch(e){
+    // Table n'existe pas encore : ajouter localement
+    allCategories.push(name);
+    renderCategoriesList();
+    showNotif('Catégorie ajoutée (localement — crée la table categories dans Supabase pour la sauvegarder)');
+    closeModal();
+  }
+}
+
+function openEditCategory(idx){
+  var current=allCategories[idx]||'';
+  openModal(
+    '<div class="bs-title">✏️ Renommer la catégorie</div>'+
+    '<label class="bs-label">Nouveau nom *</label>'+
+    '<input class="bs-input" id="catEditName" type="text" value="'+current.replace(/"/g,'&quot;')+'"/>'+
+    '<button class="bs-btn-primary" onclick="saveEditCategory('+idx+')">Enregistrer</button>'+
+    '<button class="bs-btn-secondary" onclick="closeModal()">Annuler</button>'
+  );
+}
+
+async function saveEditCategory(idx){
+  var oldName=allCategories[idx];
+  var newName=(document.getElementById('catEditName').value||'').trim();
+  if(!newName){showNotif('Nom obligatoire');return;}
+  try{
+    var {error}=await sb.from('categories').update({name:newName}).eq('name',oldName);
+    if(error)throw error;
+    allCategories[idx]=newName;
+    renderCategoriesList();
+    showNotif('✅ Catégorie renommée !');
+    closeModal();
+  }catch(e){
+    allCategories[idx]=newName;
+    renderCategoriesList();
+    showNotif('Renommée (localement)');
+    closeModal();
+  }
+}
+
+async function deleteCategoryAt(idx){
+  var name=allCategories[idx];
+  var used=allProducts.filter(function(p){return p.category===name;}).length;
+  var msg='Supprimer la catégorie "'+name+'" ?'+(used?' ⚠️ '+used+' produit(s) l\'utilisent.':'');
+  if(!confirm(msg))return;
+  try{
+    var {error}=await sb.from('categories').delete().eq('name',name);
+    if(error)throw error;
+  }catch(e){}
+  allCategories.splice(idx,1);
+  renderCategoriesList();
+  showNotif('Catégorie supprimée.');
+}
+
 async function loadAdminProducts(){
   try{
     var {data,error}=await sb.from("products").select("*").order("sort_order").order("name");
@@ -2886,14 +3004,7 @@ function openAddProduct(){
     '<div><label class="bs-label">Emoji</label><input class="bs-input" id="pEmoji" type="text" placeholder="🧁" maxlength="2"/></div>'+
     '</div>'+
     '<label class="bs-label">Catégorie</label>'+
-    '<select class="bs-select" id="pCat">'+
-    '<option>Nouveau Délice</option>'+
-    '<option>Viennoiseries salées</option><option>Viennoiseries sucrées</option>'+
-    '<option>Mignardises salées</option><option>Mignardises sucrées</option>'+
-    '<option>Délibox</option><option>Chocolat &amp; Pain au beurre</option>'+
-    '<option>Gâteaux &amp; Créations</option><option>Tartes &amp; Tartelettes salées</option>'+
-    '<option>Autres délices gourmands</option>'+
-    '</select>'+
+    '<select class="bs-select" id="pCat">'+getCategoryOptions(null)+'</select>'+
     '<label class="bs-label">Description (optionnel)</label>'+
     '<textarea class="bs-textarea" id="pDesc" placeholder="Description du produit..."></textarea>'+
     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">'+
@@ -2931,8 +3042,7 @@ async function saveNewProduct(){
 function openEditProduct(id){
   var p=allProducts.find(function(x){return x.id===id;});
   if(!p)return;
-  var cats=["Nouveau Délice","Viennoiseries salées","Viennoiseries sucrées","Mignardises salées","Mignardises sucrées","Délibox","Chocolat & Pain au beurre","Gâteaux & Créations","Tartes & Tartelettes salées","Autres délices gourmands"];
-  var opts=cats.map(function(c){return'<option'+(c===p.category?" selected":"")+'>'+c+'</option>';}).join("");
+  var opts=getCategoryOptions(p.category);
   openModal(
     '<div class="bs-title">✏️ Modifier le produit</div>'+
     '<label class="bs-label">Nom *</label><input class="bs-input" id="epName" type="text" value="'+(p.name||"").replace(/"/g,"&quot;")+'"/>'+
