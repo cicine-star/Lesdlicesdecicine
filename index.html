@@ -115,14 +115,14 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .btn-cmd{display:block;margin:12px auto 0;max-width:280px;background:var(--brun);color:#fff;font-weight:700;font-size:.84rem;padding:12px;border-radius:40px;text-align:center;text-decoration:none;}
 
 /* HORAIRES */
-.horaires-section{padding:12px 14px;background:#fff;border-top:1.5px solid var(--bordure);}
-.hor-ferme-note{font-size:.7rem;font-weight:700;color:#ef4444;text-align:center;margin-bottom:8px;letter-spacing:.03em;}
-.horaires-cols{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px;}
-.hor-col{display:flex;flex-direction:column;gap:4px;}
-.hor-row{display:flex;justify-content:space-between;align-items:center;padding:5px 9px;border-radius:8px;font-size:.7rem;}
-.hor-row.today{background:var(--fond2);border:1.5px solid var(--bordure);}
+.horaires-section{padding:10px 14px;background:#fff;border-top:1.5px solid var(--bordure);}
+.hor-list{display:flex;flex-direction:column;gap:4px;margin:8px 0 10px;}
+.hor-line{display:flex;justify-content:space-between;align-items:center;font-size:.74rem;padding:5px 10px;border-radius:8px;}
+.hor-line.hor-ferme{color:#ef4444;font-weight:700;background:#fff1f2;}
+.hor-line.today{background:var(--fond2);border:1.5px solid var(--bordure);}
 .hor-jour{font-weight:700;color:var(--brun);}
-.hor-heure{color:var(--doux);font-weight:600;font-size:.68rem;}
+.hor-line.hor-ferme .hor-jour{color:#ef4444;}
+.hor-heure{color:var(--doux);font-weight:600;}
 .hor-badge-today{font-size:.5rem;font-weight:700;background:var(--fuchsia);color:#fff;padding:1px 5px;border-radius:10px;margin-left:4px;letter-spacing:.04em;text-transform:uppercase;vertical-align:middle;}
 .hor-wa{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--fond);border:1.5px solid var(--bordure);border-radius:30px;padding:8px 14px;text-decoration:none;font-size:.72rem;font-weight:700;color:var(--brun);}
 
@@ -392,8 +392,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 <!-- HORAIRES -->
 <div class="horaires-section" id="section-horaires">
   <div class="section-title" style="font-size:1.2rem;margin-bottom:2px;">Mes horaires 🕐</div>
-  <p class="hor-ferme-note">🔴 Fermée le lundi</p>
-  <div class="horaires-cols" id="horairesGrid"></div>
+  <div class="hor-list" id="horairesGrid"></div>
   <a href="https://wa.me/596696111440" target="_blank" class="hor-wa">💬 Une question ? Écrivez-moi sur WhatsApp</a>
 </div>
 
@@ -534,27 +533,16 @@ function closeSidebar(){document.getElementById("sbPanel").classList.remove("ope
 
 // Section horaires
 (function(){
-  function fmtHM(m){return Math.floor(m/60)+"h"+(m%60===0?"00":String(m%60).padStart(2,"0"));}
-  var schedule={0:[8*60+30,16*60+30],2:[7*60+30,18*60],3:[7*60+30,18*60],4:[7*60+30,18*60],5:[7*60+30,18*60],6:[7*60+30,17*60]};
-  // Col gauche : Mar(2) Mer(3) Jeu(4) Ven(5) — Col droite : Sam(6) Dim(0)
-  var cols=[[2,3,4,5],[6,0]];
-  var jours={0:"Dimanche",2:"Mardi",3:"Mercredi",4:"Jeudi",5:"Vendredi",6:"Samedi"};
   var now=new Date(new Date().toLocaleString("en-US",{timeZone:"America/Martinique"}));
   var todayIdx=now.getDay();
+  var isMar=(todayIdx>=2&&todayIdx<=5),isSam=(todayIdx===6),isDim=(todayIdx===0),isLun=(todayIdx===1);
   var grid=document.getElementById("horairesGrid");
   if(!grid)return;
   var html="";
-  cols.forEach(function(col){
-    html+='<div class="hor-col">';
-    col.forEach(function(i){
-      var s=schedule[i];
-      var isToday=(i===todayIdx);
-      html+='<div class="hor-row'+(isToday?" today":"")+'"><span class="hor-jour">'+jours[i]+(isToday?'<span class="hor-badge-today">auj.</span>':'')+'</span>';
-      html+='<span class="hor-heure">'+fmtHM(s[0])+'–'+fmtHM(s[1])+'</span>';
-      html+='</div>';
-    });
-    html+='</div>';
-  });
+  html+='<div class="hor-line hor-ferme'+(isLun?" today":"")+'"><span class="hor-jour">🔴 Lundi'+(isLun?'<span class="hor-badge-today">auj.</span>':'')+'</span><span class="hor-heure">Fermée</span></div>';
+  html+='<div class="hor-line'+(isMar?" today":"")+'"><span class="hor-jour">Mardi – Vendredi'+(isMar?'<span class="hor-badge-today">auj.</span>':'')+'</span><span class="hor-heure">7h30 – 18h00</span></div>';
+  html+='<div class="hor-line'+(isSam?" today":"")+'"><span class="hor-jour">Samedi'+(isSam?'<span class="hor-badge-today">auj.</span>':'')+'</span><span class="hor-heure">7h30 – 17h00</span></div>';
+  html+='<div class="hor-line'+(isDim?" today":"")+'"><span class="hor-jour">Dimanche'+(isDim?'<span class="hor-badge-today">auj.</span>':'')+'</span><span class="hor-heure">8h30 – 16h30</span></div>';
   grid.innerHTML=html;
 })();
 

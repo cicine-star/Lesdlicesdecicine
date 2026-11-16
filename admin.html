@@ -4168,47 +4168,45 @@ async function sdSaveTexts(){
   setTimeout(function(){initWysiwygEditor();},400);
 }
 
-/* ===== UPLOAD PHOTO DEPUIS L'APPAREIL ===== */
-async function uploadPhotoToStorage(file){
-  var ext=(file.name||'photo.jpg').split('.').pop().toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
-  var fileName='upload-'+Date.now()+'.'+ext;
-  var {data,error}=await sb.storage.from('photos').upload(fileName,file,{upsert:true,contentType:file.type});
-  if(error)throw error;
-  var {data:{publicUrl}}=sb.storage.from('photos').getPublicUrl(fileName);
-  return publicUrl;
+/* ===== PHOTO DEPUIS L'APPAREIL (FileReader — fonctionne sans Supabase Storage) ===== */
+function readFileAsDataURL(file){
+  return new Promise(function(resolve,reject){
+    var reader=new FileReader();
+    reader.onload=function(e){resolve(e.target.result);};
+    reader.onerror=function(){reject(new Error('Impossible de lire le fichier'));};
+    reader.readAsDataURL(file);
+  });
 }
 
-async function handlePickerFileUpload(input){
+function handlePickerFileUpload(input){
   var file=input.files&&input.files[0];
   if(!file)return;
   var status=document.getElementById('picker-upload-status');
-  if(status)status.textContent='⏳ Upload en cours...';
-  try{
-    var url=await uploadPhotoToStorage(file);
-    if(status)status.textContent='✅ Photo uploadée !';
-    applyPhoto(url);
+  if(status)status.textContent='⏳ Chargement...';
+  readFileAsDataURL(file).then(function(dataUrl){
+    if(status)status.textContent='✅ Photo prête !';
+    applyPhoto(dataUrl);
     input.value='';
-  }catch(e){
-    if(status)status.textContent='❌ Erreur : '+e.message;
+  }).catch(function(e){
+    if(status)status.textContent='❌ '+e.message;
     input.value='';
-  }
+  });
 }
 
 var _productPhotoTargetId=null;
-async function handleProductPhotoUpload(input){
+function handleProductPhotoUpload(input){
   var file=input.files&&input.files[0];
   if(!file||!_productPhotoTargetId)return;
-  showNotif('⏳ Upload en cours...');
-  try{
-    var url=await uploadPhotoToStorage(file);
+  showNotif('⏳ Chargement...');
+  readFileAsDataURL(file).then(function(dataUrl){
     var field=document.getElementById(_productPhotoTargetId);
-    if(field)field.value=url;
-    showNotif('✅ Photo uploadée !');
+    if(field)field.value=dataUrl;
+    showNotif('✅ Photo prête !');
     input.value='';
-  }catch(e){
-    showNotif('❌ Erreur upload : '+e.message);
+  }).catch(function(e){
+    showNotif('❌ '+e.message);
     input.value='';
-  }
+  });
 }
 function triggerProductPhotoUpload(fieldId){
   _productPhotoTargetId=fieldId;
