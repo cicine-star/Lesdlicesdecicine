@@ -452,11 +452,11 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 
 <!-- LIENS RAPIDES -->
 <div class="quick" id="section-quick">
-  <div class="quick-grid">
-    <a href="devis.html" class="ql"><span class="ql-ico">✨</span>Devis</a>
-    <a href="realisations.html" class="ql"><span class="ql-ico">📸</span>Réalisations</a>
-    <a href="apropos.html" class="ql"><span class="ql-ico">💕</span>À propos</a>
-    <a href="cgv.html" class="ql"><span class="ql-ico">📄</span>CGV</a>
+  <div class="quick-grid" id="quickGrid">
+    <a href="devis.html" class="ql" id="ql-0"><span class="ql-ico" id="ql-0-ico">✨</span><span id="ql-0-label">Devis</span></a>
+    <a href="realisations.html" class="ql" id="ql-1"><span class="ql-ico" id="ql-1-ico">📸</span><span id="ql-1-label">Réalisations</span></a>
+    <a href="apropos.html" class="ql" id="ql-2"><span class="ql-ico" id="ql-2-ico">💕</span><span id="ql-2-label">À propos</span></a>
+    <a href="cgv.html" class="ql" id="ql-3"><span class="ql-ico" id="ql-3-ico">📄</span><span id="ql-3-label">CGV</span></a>
   </div>
 </div>
 
@@ -608,6 +608,18 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
     }catch(e){}}
     // À propos
     setText("site-about-bio",s.about_bio);
+    // Liens rapides
+    if(s.quick_links){try{
+      var ql=JSON.parse(s.quick_links);
+      ql.forEach(function(item,i){
+        var a=document.getElementById('ql-'+i);
+        if(a&&item.href)a.href=item.href;
+        var ico=document.getElementById('ql-'+i+'-ico');
+        if(ico&&item.ico)ico.textContent=item.ico;
+        var lbl=document.getElementById('ql-'+i+'-label');
+        if(lbl&&item.label)lbl.textContent=item.label;
+      });
+    }catch(e){}}
     // CTA
     setText("site-cta-title",s.cta_title);setText("site-cta-sub",s.cta_sub);
     setFz("site-cta-title","cta_title_size","1.6rem");setFz("site-cta-sub","cta_sub_size","0.73rem");

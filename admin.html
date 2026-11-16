@@ -4106,6 +4106,21 @@ function showSDTab(tab){
         '<label class="bs-label">Titre</label><input class="bs-input" id="sdt_cta_title" value="'+escHtml(shopSettings.cta_title||'')+'"/>'+
         '<label class="bs-label">Sous-titre</label><input class="bs-input" id="sdt_cta_sub" value="'+escHtml(shopSettings.cta_sub||'')+'"/>'+
         '</div>'+
+        (function(){
+          var ql=[{ico:'✨',label:'Devis',href:'devis.html'},{ico:'📸',label:'Réalisations',href:'realisations.html'},{ico:'💕',label:'À propos',href:'apropos.html'},{ico:'📄',label:'CGV',href:'cgv.html'}];
+          if(shopSettings.quick_links){try{ql=JSON.parse(shopSettings.quick_links);}catch(e){}}
+          var h='<div class="ed-card"><div class="ed-card-title">⚡ Liens rapides</div>';
+          for(var i=0;i<4;i++){
+            var q=ql[i]||{ico:'',label:'',href:''};
+            h+='<div style="display:grid;grid-template-columns:60px 1fr 1fr;gap:6px;margin-bottom:8px;align-items:center;">';
+            h+='<input class="bs-input" id="ql_ico_'+i+'" style="margin:0;text-align:center;" value="'+escHtml(q.ico||'')+'" placeholder="emoji"/>';
+            h+='<input class="bs-input" id="ql_lbl_'+i+'" style="margin:0;" value="'+escHtml(q.label||'')+'" placeholder="Libellé"/>';
+            h+='<input class="bs-input" id="ql_href_'+i+'" style="margin:0;" value="'+escHtml(q.href||'')+'" placeholder="Lien"/>';
+            h+='</div>';
+          }
+          h+='</div>';
+          return h;
+        })()+
         '<button class="bs-btn-primary" onclick="sdSaveTexts()">💾 Sauvegarder tous les textes</button>';
       break;
     case 'email':
@@ -4166,6 +4181,15 @@ async function sdSaveTexts(){
     var el=document.getElementById(fields[key]);
     return {key:key,value:el?el.value.trim():''};
   }).filter(function(p){return p.value;});
+  // Liens rapides
+  var qlArr=[];
+  for(var i=0;i<4;i++){
+    var ico=document.getElementById('ql_ico_'+i);
+    var lbl=document.getElementById('ql_lbl_'+i);
+    var href=document.getElementById('ql_href_'+i);
+    if(ico&&lbl&&href)qlArr.push({ico:(ico.value||'').trim(),label:(lbl.value||'').trim(),href:(href.value||'').trim()});
+  }
+  if(qlArr.length)pairs.push({key:'quick_links',value:JSON.stringify(qlArr)});
   if(!pairs.length){showNotif("Aucun texte à sauvegarder");return;}
   var {error}=await sb.from('settings').upsert(pairs,{onConflict:'key'});
   if(error){showNotif('Erreur : '+error.message);return;}
