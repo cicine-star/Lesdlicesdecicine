@@ -369,6 +369,23 @@ var SB_URL="https://uousxxvrgcyvyaahdtda.supabase.co";
 var SB_KEY="sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm";
 var sb=supabase.createClient(SB_URL,SB_KEY);
 
+// Bannière ouvert/fermé
+(function(){
+  var now=new Date(new Date().toLocaleString("en-US",{timeZone:"America/Martinique"}));
+  var day=now.getDay();
+  var mins=now.getHours()*60+now.getMinutes();
+  var schedule={0:[8*60+30,16*60+30],1:null,2:[7*60+30,18*60],3:[7*60+30,18*60],4:[7*60+30,18*60],5:[7*60+30,18*60],6:[7*60+30,17*60]};
+  var today=schedule[day];
+  var isOpen=today&&mins>=today[0]&&mins<today[1];
+  if(!isOpen){
+    var bar=document.createElement("div");
+    bar.style.cssText="background:#fff1f2;border-bottom:1.5px solid #fecdd3;padding:9px 14px;font-size:.77rem;font-weight:600;color:#9f1239;display:flex;align-items:center;justify-content:space-between;gap:10px;";
+    bar.innerHTML='<span>🔴 Boutique actuellement fermée — les commandes sont bien enregistrées !</span><a href="https://wa.me/596696111440" target="_blank" style="color:#9f1239;text-decoration:underline;white-space:nowrap;">💬 Urgence ?</a>';
+    var nav=document.querySelector("nav");
+    if(nav&&nav.parentNode)nav.parentNode.insertBefore(bar,nav.nextSibling);
+  }
+})();
+
 // Pré-sélection produit de la semaine via URL params
 var _pdsInfo=null;
 (function(){
@@ -702,8 +719,37 @@ async function envoyerCommande(){
   var discMsg=discPct2>0?"<br><br>🎁 Réduction <strong>-"+discPct2+"%</strong> appliquée — vous avez économisé <strong>"+discSaved.toFixed(2).replace(".",",")+"€</strong>.":"";
   document.getElementById("confirmMsg").innerHTML=
     "Merci <strong>"+nom+"</strong> ! Votre commande du <strong>"+fmtDateLabel(selectedDate)+"</strong> a bien été enregistrée."+discMsg+"<br><br>💕 Cicine a bien reçu votre commande et vous contactera pour confirmation.";
-  document.getElementById("btnWaNotif").style.display="none";
-  document.getElementById("waNotifNote").style.display="none";
+  // Message WhatsApp formaté
+  var waLines=[];
+  waLines.push("🧁 *Nouvelle commande — Les Délices de Cicine*");
+  waLines.push("");
+  waLines.push("👤 *"+nom+"*");
+  waLines.push("📱 "+tel);
+  waLines.push("📅 "+fmtDateLabel(selectedDate));
+  waLines.push("📦 "+(deliveryType==="livraison"?"Livraison":"Retrait en boutique"));
+  if(adresse)waLines.push("📍 "+adresse);
+  waLines.push("");
+  waLines.push("🛍️ *Commande :*");
+  items.forEach(function(it){
+    var lineTotal=(it.price*it.qty).toFixed(2).replace(".",",");
+    waLines.push("• "+it.name+" x"+it.qty+" — "+lineTotal+"€");
+  });
+  if(discPct2>0){
+    waLines.push("");
+    waLines.push("🎁 Réduction -"+discPct2+"% : -"+discSaved.toFixed(2).replace(".",",")+"€"+(discCode?" (code : "+discCode+")":""));
+  }
+  waLines.push("");
+  waLines.push("💰 *Total : "+total.toFixed(2).replace(".",",")+"€*");
+  if(note){waLines.push("");waLines.push("📝 "+note);}
+  var waMsg=encodeURIComponent(waLines.join("\n"));
+  var waUrl="https://wa.me/596696111440?text="+waMsg;
+  var waBtn=document.getElementById("btnWaNotif");
+  if(waBtn){
+    waBtn.style.display="block";
+    waBtn.textContent="💬 Envoyer ma commande sur WhatsApp";
+    waBtn.onclick=function(){window.open(waUrl,"_blank");};
+  }
+  document.getElementById("waNotifNote").style.display="block";
 }
 
 function toggleCat(id){
