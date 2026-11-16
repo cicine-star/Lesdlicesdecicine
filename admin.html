@@ -115,6 +115,11 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .item-row:last-child{border-bottom:none;}
 .oc-total{display:flex;justify-content:space-between;font-weight:700;font-size:.86rem;margin:6px 0 3px;}
 .oc-acompte{font-size:.76rem;color:var(--fuchsia);font-weight:700;margin-bottom:7px;}
+.oc-pay-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:8px;}
+.oc-pay-label{font-size:.74rem;font-weight:600;color:var(--doux);}
+.pay-btn{padding:5px 11px;border-radius:20px;border:1.5px solid #ddd;font-size:.72rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;background:#f5f5f0;color:#555;}
+.pay-btn.pay-acompte-active{background:#fef3c7;color:#92400e;border-color:#fcd34d;}
+.pay-btn.pay-complet-active{background:#d1fae5;color:#065f46;border-color:#6ee7b7;}
 .oc-addr{font-size:.76rem;color:var(--doux);background:var(--fond);border-radius:7px;padding:5px 9px;margin-bottom:7px;}
 .oc-note{font-size:.76rem;color:var(--doux);font-style:italic;background:var(--carte);border-left:3px solid var(--caramel);padding:5px 9px;border-radius:0 7px 7px 0;margin-bottom:7px;}
 .oc-actions{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px;}
@@ -1375,6 +1380,11 @@ function renderOrders(){
     html+='<div class="oc-body"><div class="items-list">'+itemsHtml+'</div>';
     html+='<div class="oc-total"><span>Total</span><span>'+total+'€</span></div>';
     html+='<div class="oc-acompte">Acompte 50% : '+acompte+'€</div>';
+    var pSt=o.payment_status||"none";
+    html+='<div class="oc-pay-row"><span class="oc-pay-label">💶 Paiement :</span>';
+    html+='<button class="pay-btn'+(pSt==="acompte"?" pay-acompte-active":"")+'" onclick="setPaymentStatus(\''+id+'\',\'acompte\')">Acompte reçu ✓</button>';
+    html+='<button class="pay-btn'+(pSt==="complet"?" pay-complet-active":"")+'" onclick="setPaymentStatus(\''+id+'\',\'complet\')">Tout réglé ✓</button>';
+    html+='</div>';
     html+=addrHtml+noteHtml;
     html+='<div class="oc-actions">'+actHtml+'</div>';
     html+='<div class="admin-note-row"><input type="text" placeholder="Note interne..." id="anote-'+id+'" value="'+adminNoteVal+'"/><button onclick="saveAdminNote(\''+id+'\')">Sauvegarder</button></div>';
@@ -1597,6 +1607,8 @@ async function doConfirmAcompte(){
     lines.push("");
     lines.push("🙏 Je te demande un acompte de "+acompte+"€ via "+payLabel+" pour confirmer ta réservation.");
     if(link){lines.push("");lines.push("👉 "+link);}
+    lines.push("");
+    lines.push("⚠️ Sans règlement de l'acompte, la commande ne pourra pas être validée.");
   }
   lines.push("");
   lines.push("À très vite ! 💕");
@@ -1609,6 +1621,12 @@ async function doConfirmSilent(id){
   for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].status="confirmed";break;}}
   renderOrders();updateStats();
   showNotif("Commande confirmée !");
+}
+async function setPaymentStatus(id,status){
+  await sb.from("orders").update({payment_status:status}).eq("id",id);
+  for(var i=0;i<allOrders.length;i++){if(allOrders[i].id==id){allOrders[i].payment_status=status;break;}}
+  renderOrders();
+  showNotif(status==="complet"?"✅ Paiement complet enregistré !":"💶 Acompte enregistré !");
 }
 async function saveAdminNote(id){
   var el=document.getElementById("anote-"+id);
