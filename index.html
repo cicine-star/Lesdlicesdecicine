@@ -197,7 +197,10 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .gallery-scroll-wrap{background:var(--fond);padding:14px 0 14px 14px;border-top:1.5px solid var(--bordure);}
 .gallery-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-right:14px;}
 .gallery-scroll::-webkit-scrollbar{display:none;}
-.gallery-img{flex:0 0 auto;width:148px;height:148px;border-radius:14px;object-fit:cover;display:block;box-shadow:0 3px 10px rgba(92,46,14,.13);}
+.gallery-img{flex:0 0 auto;width:148px;height:148px;border-radius:14px;object-fit:cover;display:block;box-shadow:0 3px 10px rgba(92,46,14,.13);cursor:pointer;}
+#glb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px;}
+#glb img{max-width:95vw;max-height:82vh;border-radius:14px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+#glb-close{color:#fff;font-size:.85rem;opacity:.8;cursor:pointer;background:rgba(255,255,255,.12);padding:7px 20px;border-radius:30px;border:none;font-family:'Lato',sans-serif;}
 
 /* STICKY COMMANDER */
 .sticky-cmd{position:fixed;bottom:0;left:0;right:0;z-index:8900;background:#fff;border-top:1.5px solid var(--bordure);padding:10px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 -4px 18px rgba(92,46,14,.13);}
@@ -438,15 +441,15 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
     <a href="realisations.html" style="font-size:.72rem;font-weight:700;color:var(--caramel);text-decoration:none;white-space:nowrap;margin-left:10px;">Tout voir →</a>
   </div>
   <div class="gallery-scroll" id="galleryScroll">
-    <img src="photos/gateau-rouge-roses.jpg" class="gallery-img" alt="Gâteau décoré roses rouges — Les Délices de Cicine"/>
-    <img src="photos/gateau-tropical.jpg" class="gallery-img" alt="Gâteau tropical fruité — pâtisserie artisanale Martinique"/>
-    <img src="photos/gateau-babyshower.jpg" class="gallery-img" alt="Gâteau baby shower personnalisé — Les Délices de Cicine"/>
-    <img src="photos/gateau-rouge-dollars.jpg" class="gallery-img" alt="Gâteau anniversaire rouge et doré — Le Vauclin Martinique"/>
-    <img src="photos/cupcakes-valentin.jpg" class="gallery-img" alt="Cupcakes Saint-Valentin — Les Délices de Cicine"/>
-    <img src="photos/gateau-chiffre.jpg" class="gallery-img" alt="Gâteau chiffre personnalisé — pâtisserie artisanale"/>
-    <img src="photos/gateau-communion.jpg" class="gallery-img" alt="Gâteau communion première — Les Délices de Cicine Le Vauclin"/>
-    <img src="photos/delibox.jpg" class="gallery-img" alt="Délibox assortiment pâtisseries — Les Délices de Cicine"/>
-    <img src="photos/viennoiseries.jpg" class="gallery-img" alt="Viennoiseries artisanales fraîches — pâtisserie Le Vauclin"/>
+    <img src="photos/gateau-rouge-roses.jpg" class="gallery-img" onclick="openGlb(this.src)" alt="Gâteau décoré roses rouges — Les Délices de Cicine"/>
+    <img src="photos/gateau-tropical.jpg" class="gallery-img" onclick="openGlb(this.src)" alt="Gâteau tropical fruité — pâtisserie artisanale Martinique"/>
+    <img src="photos/gateau-babyshower.jpg" class="gallery-img" onclick="openGlb(this.src)" alt="Gâteau baby shower personnalisé — Les Délices de Cicine"/>
+    <img src="photos/gateau-rouge-dollars.jpg" class="gallery-img" onclick="openGlb(this.src)" alt="Gâteau anniversaire rouge et doré — Le Vauclin Martinique"/>
+    <img src="photos/cupcakes-valentin.jpg" class="gallery-img" onclick="openGlb(this.src)" alt="Cupcakes Saint-Valentin — Les Délices de Cicine"/>
+    <img src="photos/gateau-chiffre.jpg" class="gallery-img" onclick="openGlb(this.src)" alt="Gâteau chiffre personnalisé — pâtisserie artisanale"/>
+    <img src="photos/gateau-communion.jpg" class="gallery-img" onclick="openGlb(this.src)" alt="Gâteau communion première — Les Délices de Cicine Le Vauclin"/>
+    <img src="photos/delibox.jpg" class="gallery-img" onclick="openGlb(this.src)" alt="Délibox assortiment pâtisseries — Les Délices de Cicine"/>
+    <img src="photos/viennoiseries.jpg" class="gallery-img" onclick="openGlb(this.src)" alt="Viennoiseries artisanales fraîches — pâtisserie Le Vauclin"/>
   </div>
 </div>
 
@@ -603,7 +606,7 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
       var mp=JSON.parse(s.mosaic_photos);
       var gallery=document.getElementById("galleryScroll");
       if(gallery&&Array.isArray(mp)&&mp.length){
-        gallery.innerHTML=mp.map(function(url){return '<img src="'+url+'" class="gallery-img" alt="Création"/>';}).join('');
+        gallery.innerHTML=mp.map(function(url){return '<img src="'+url+'" class="gallery-img" onclick="openGlb(this.src)" alt="Création"/>';}).join('');
       }
     }catch(e){}}
     // À propos
@@ -708,6 +711,16 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
     }).join("");
   }catch(e){}
 })();
+</script>
+<!-- LIGHTBOX -->
+<div id="glb" onclick="closeGlb()">
+  <img id="glb-img" src="" alt=""/>
+  <button id="glb-close" onclick="closeGlb()">✕ Appuyer pour fermer</button>
+</div>
+<script>
+function openGlb(src){var el=document.getElementById("glb");document.getElementById("glb-img").src=src;el.style.display="flex";}
+function closeGlb(){document.getElementById("glb").style.display="none";document.getElementById("glb-img").src="";}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeGlb();});
 </script>
 </body>
 </html>

@@ -3489,6 +3489,8 @@ async function loadSettings(){
     if(error)return;
     shopSettings={};
     (data||[]).forEach(function(s){shopSettings[s.key]=s.value;});
+    if(shopSettings.mosaic_photos){try{var mp=JSON.parse(shopSettings.mosaic_photos);if(Array.isArray(mp))mosaicPhotos=mp;}catch(e){}}
+    if(shopSettings.cat_cards){try{var cc=JSON.parse(shopSettings.cat_cards);if(Array.isArray(cc))catCards=cc;}catch(e){}}
     applySettingsColors();
     renderSettings();
   }catch(e){}
@@ -3706,6 +3708,7 @@ var ED_SECTIONS_CFG=[
   {key:'social',label:'Réseaux sociaux',emoji:'📱',domId:'section-social',fields:[]},
   {key:'avis',label:'Avis clients',emoji:'💬',domId:'section-avis',fields:[]},
   {key:'mosaic',label:'Mosaïque photos',emoji:'📸',domId:'section-mosaic',fields:[]},
+  {key:'catcards',label:'Catégories photos',emoji:'📂',domId:'section-catcards',fields:[]},
   {key:'cta',label:"Appel à l'action",emoji:'🌟',domId:'section-cta',
    fields:[
     {type:'text',id:'site-cta-title',label:'Titre'},
@@ -3813,12 +3816,70 @@ function renderSecPanel(cfg){
   });
   if(cfg.key==='mosaic'){
     html=renderMosaicPanel();
+  }else if(cfg.key==='catcards'){
+    html='<div class="ed-card-title">📂 Catégories photos</div>'+renderCatCardsPanel();
   }else if(!cfg.fields.length){
     html='<div style="text-align:center;padding:18px 0;color:var(--doux);font-size:.8rem;line-height:1.7;">Cette section n\'a pas de contenu modifiable.<br/>Tu peux l\'afficher, la masquer ou la déplacer.</div>';
   }
   document.getElementById('sec-panel-fields').innerHTML=html;
 }
 
+function renderCatCardsPanel(){
+  var html='<div style="display:flex;flex-direction:column;gap:10px;" id="catCardsEditor">';
+  catCards.forEach(function(c,i){
+    var thumb=c.url?'<img src="'+c.url+'" style="width:52px;height:52px;border-radius:8px;object-fit:cover;border:1.5px solid var(--bordure);flex-shrink:0;" onerror="this.style.display=\'none\'"/>'
+      :'<div style="width:52px;height:52px;border-radius:8px;background:var(--fond2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">'+c.emoji+'</div>';
+    html+='<div style="display:flex;align-items:center;gap:8px;background:var(--fond2);border-radius:10px;padding:8px;">'+
+      thumb+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="display:flex;gap:5px;margin-bottom:4px;">'+
+          '<input class="bs-input" id="cc_ico_'+i+'" value="'+escHtml(c.emoji||'')+'" style="width:52px;text-align:center;padding:5px;font-size:1rem;margin:0;" placeholder="emoji"/>'+
+          '<input class="bs-input" id="cc_lbl_'+i+'" value="'+escHtml(c.label||'')+'" style="flex:1;padding:5px;margin:0;" placeholder="Libellé"/>'+
+        '</div>'+
+        '<label for="cc_file_'+i+'" style="display:inline-block;padding:5px 10px;background:var(--brun);color:#fff;border-radius:20px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:\'Lato\',sans-serif;">📷 '+(c.url?'Changer photo':'Ajouter photo')+'</label>'+
+        '<input type="file" id="cc_file_'+i+'" accept="image/*" style="display:none" onchange="setCatCardPhoto('+i+',this)"/>'+
+        (c.url?'<button onclick="removeCatCardPhoto('+i+')" style="margin-left:6px;background:none;border:none;color:#dc2626;font-size:.8rem;cursor:pointer;font-family:\'Lato\',sans-serif;">✕ Retirer</button>':'')+
+      '</div>'+
+    '</div>';
+  });
+  html+='</div>'+
+    '<button class="bs-btn-green" onclick="saveCatCards()" style="width:100%;margin-top:12px;">💾 Sauvegarder les catégories</button>';
+  return html;
+}
+function setCatCardPhoto(idx,input){
+  var file=input.files&&input.files[0];
+  if(!file){return;}
+  readFileAsDataURL(file).then(function(dataUrl){
+    catCards[idx].url=dataUrl;
+    var ico=document.getElementById('cc_ico_'+idx);
+    var lbl=document.getElementById('cc_lbl_'+idx);
+    if(ico)catCards[idx].emoji=ico.value||catCards[idx].emoji;
+    if(lbl)catCards[idx].label=lbl.value||catCards[idx].label;
+    var fields=document.getElementById('sec-panel-fields');
+    if(fields){var panelHtml=renderCatCardsPanel();fields.innerHTML='<div class="ed-card-title">📂 Catégories photos</div>'+panelHtml;}
+    input.value='';
+    saveCatCards();
+  }).catch(function(e){alert('Erreur : '+e.message);input.value='';});
+}
+function removeCatCardPhoto(idx){
+  catCards[idx].url='';
+  var fields=document.getElementById('sec-panel-fields');
+  if(fields){var panelHtml=renderCatCardsPanel();fields.innerHTML='<div class="ed-card-title">📂 Catégories photos</div>'+panelHtml;}
+  saveCatCards();
+}
+function saveCatCards(){
+  catCards.forEach(function(c,i){
+    var ico=document.getElementById('cc_ico_'+i);
+    var lbl=document.getElementById('cc_lbl_'+i);
+    if(ico)c.emoji=ico.value||c.emoji;
+    if(lbl)c.label=lbl.value||c.label;
+  });
+  sb.from('settings').upsert([{key:'cat_cards',value:JSON.stringify(catCards)}],{onConflict:'key'})
+    .then(function(r){
+      if(r.error)showNotif('❌ Erreur : '+r.error.message);
+      else showNotif('✅ Catégories sauvegardées !');
+    });
+}
 function renderMosaicPanel(){
   var thumbs='';
   mosaicPhotos.forEach(function(src,i){
@@ -4331,6 +4392,16 @@ async function loadAllSiteSettings(){
 /* ====== SECTIONS STATE ====== */
 var pageLayout={order:['hero','specs','banner','pdlsem','how','pourquoi','social','avis','mosaic','cta','quick'],hidden:[]};
 var mosaicPhotos=['photos/gateau-rouge-dollars.jpg','photos/cupcakes-valentin.jpg','photos/gateau-chiffre.jpg'];
+var catCards=[
+  {emoji:'🎂',label:'Gâteaux d\'anniversaire',url:''},
+  {emoji:'🧁',label:'Cupcakes',url:''},
+  {emoji:'🎀',label:'Événements & fêtes',url:''},
+  {emoji:'🎁',label:'Idées cadeaux',url:''},
+  {emoji:'🥐',label:'Viennoiseries',url:''},
+  {emoji:'🍔',label:'Salé',url:''},
+  {emoji:'🍫',label:'Chocolat',url:''},
+  {emoji:'🍞',label:'Pain artisanal',url:''},
+];
 function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 
 /* ====== COMPTES CLIENTS ====== */

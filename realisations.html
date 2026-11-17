@@ -114,31 +114,15 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
   <h3 style="font-family:'Dancing Script',cursive;font-size:1.4rem;color:var(--brun);margin-bottom:10px;">Mes créations par catégorie</h3>
   <div class="hdiv"><hr/><span>♡</span><hr/></div>
 
-  <div class="gallery-grid">
-    <div class="gcard">
-      <div class="gcard-img">🎂</div>
-    </div>
-    <div class="gcard">
-      <div class="gcard-img">🧁</div>
-    </div>
-    <div class="gcard">
-      <div class="gcard-img">🎀</div>
-    </div>
-    <div class="gcard">
-      <div class="gcard-img">🎁</div>
-    </div>
-    <div class="gcard">
-      <div class="gcard-img">🥐</div>
-    </div>
-    <div class="gcard">
-      <div class="gcard-img">🍔</div>
-    </div>
-    <div class="gcard">
-      <div class="gcard-img">🍫</div>
-    </div>
-    <div class="gcard">
-      <div class="gcard-img">🍞</div>
-    </div>
+  <div class="gallery-grid" id="catGrid">
+    <div class="gcard"><div class="gcard-img">🎂</div></div>
+    <div class="gcard"><div class="gcard-img">🧁</div></div>
+    <div class="gcard"><div class="gcard-img">🎀</div></div>
+    <div class="gcard"><div class="gcard-img">🎁</div></div>
+    <div class="gcard"><div class="gcard-img">🥐</div></div>
+    <div class="gcard"><div class="gcard-img">🍔</div></div>
+    <div class="gcard"><div class="gcard-img">🍫</div></div>
+    <div class="gcard"><div class="gcard-img">🍞</div></div>
   </div>
 
   <!-- Notice -->
@@ -158,6 +142,7 @@ footer p{font-size:.77rem;color:#c4a898;margin-bottom:4px;}
   <span id="lb-close">✕ Appuyer pour fermer</span>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 function openSidebar(){document.getElementById("sbPanel").classList.add("open");document.getElementById("sbOverlay").classList.add("open");document.body.style.overflow="hidden";}
 function closeSidebar(){document.getElementById("sbPanel").classList.remove("open");document.getElementById("sbOverlay").classList.remove("open");document.body.style.overflow="";}
@@ -165,6 +150,26 @@ function closeSidebar(){document.getElementById("sbPanel").classList.remove("ope
 function openLb(src){var lb=document.getElementById("lb");document.getElementById("lbImg").src=src;lb.style.display="flex";}
 function closeLb(){document.getElementById("lb").style.display="none";}
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeLb();});
+
+// Chargement des catégories depuis Supabase
+(async function(){
+  try{
+    var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publishable_MhxgfdKYdDI6NHLszuXl5A_3B4sOplm");
+    var {data}=await SB.from("settings").select("key,value").eq("key","cat_cards");
+    if(!data||!data.length)return;
+    var cards=JSON.parse(data[0].value);
+    if(!Array.isArray(cards))return;
+    var grid=document.getElementById("catGrid");
+    if(!grid)return;
+    grid.innerHTML=cards.map(function(c){
+      var media=c.url
+        ?'<div class="gcard-img" style="cursor:pointer;" onclick="openLb(\''+c.url.replace(/'/g,"\\'")+'\')">'+'<img src="'+c.url+'" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.innerHTML=\'<span style=font-size:3.5rem>\'+\''+( c.emoji||'🎂').replace(/'/g,"\\'")+'\'</span>\'"/></div>'
+        :'<div class="gcard-img"><span style="font-size:3.5rem">'+(c.emoji||'🎂')+'</span></div>';
+      var label=c.label?'<div class="gcard-label">'+c.label+'</div>':'';
+      return '<div class="gcard">'+media+label+'</div>';
+    }).join('');
+  }catch(e){}
+})();
 </script>
 
 <footer>
