@@ -149,6 +149,20 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
 .toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);background:var(--brun);color:#fff;padding:10px 20px;border-radius:12px;font-size:.84rem;font-weight:700;z-index:9998;box-shadow:0 4px 18px rgba(0,0,0,.22);animation:slideDown .3s ease;white-space:nowrap;pointer-events:none;}
 @keyframes slideDown{from{opacity:0;top:50px;}to{opacity:1;top:68px;}}
 
+/* MONTANT LIBRE */
+.ml-btn{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:linear-gradient(135deg,var(--fuchsia),#c0306a);color:#fff;border:none;border-radius:12px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.ml-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9100;display:none;align-items:flex-end;justify-content:center;}
+.ml-modal.open{display:flex;}
+.ml-sheet{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 36px;width:100%;max-width:560px;}
+.ml-title{font-family:"Dancing Script",cursive;font-size:1.3rem;color:var(--brun);margin-bottom:14px;text-align:center;}
+.ml-label{display:block;font-size:.72rem;font-weight:700;color:var(--texte);margin-bottom:5px;}
+.ml-input{width:100%;padding:12px 14px;border:1.5px solid var(--bordure);border-radius:10px;font-size:.95rem;font-family:"Lato",sans-serif;outline:none;color:var(--texte);background:var(--fond);margin-bottom:12px;}
+.ml-input:focus{border-color:var(--caramel);}
+.ml-amt{font-size:1.3rem;font-weight:700;text-align:right;}
+.ml-btns{display:flex;gap:8px;margin-top:4px;}
+.ml-cancel{flex:1;padding:12px;background:#fff;color:var(--brun);border:2px solid var(--bordure);border-radius:40px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+.ml-add{flex:2;padding:12px;background:var(--fuchsia);color:#fff;border:none;border-radius:40px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:"Lato",sans-serif;}
+
 @media(min-width:600px){.prod-grid{grid-template-columns:repeat(3,1fr);}}
 @media(min-width:900px){
   #tab-vente{flex-direction:row !important;}
@@ -245,6 +259,22 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
         <div class="hist-sec-title">Ventes d'aujourd'hui</div>
         <div id="histList"><p class="hist-empty">Aucune vente pour l'instant</p></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MONTANT LIBRE MODAL -->
+<div class="ml-modal" id="mlModal" onclick="if(event.target===this)closeMlModal()">
+  <div class="ml-sheet">
+    <div class="modal-handle"></div>
+    <div class="ml-title">➕ Montant libre</div>
+    <label class="ml-label">Description</label>
+    <input class="ml-input" id="mlDesc" type="text" placeholder="Ex : Gâteau commande spéciale" maxlength="80"/>
+    <label class="ml-label">Montant (€)</label>
+    <input class="ml-input ml-amt" id="mlAmt" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0,00"/>
+    <div class="ml-btns">
+      <button class="ml-cancel" onclick="closeMlModal()">Annuler</button>
+      <button class="ml-add" onclick="addMontantLibre()">Ajouter au panier</button>
     </div>
   </div>
 </div>
@@ -347,20 +377,38 @@ function setTab(tab){
 
 /* ---- CATS & PRODUCTS ---- */
 function renderCats(){
-  document.getElementById("catScroll").innerHTML=CATS.map(c=>`<div class="cat-chip${c.id===activeCat?" active":""}" onclick="setCat('${c.id}')">${c.label}</div>`).join("");
+  document.getElementById("catScroll").innerHTML=CATS.map(c=>`<div class="cat-chip${c.id===activeCat?" active":""" onclick="setCat('${c.id}')">${c.label}</div>`).join("");
 }
 function setCat(id){activeCat=id;renderCats();renderProds();}
 function renderProds(){
   var list=activeCat==="all"?PRODUCTS:PRODUCTS.filter(p=>p.cat===activeCat);
-  document.getElementById("prodGrid").innerHTML=list.map(p=>{
+  var mlBtn='<button class="ml-btn" onclick="openMlModal()">➕ Montant libre</button>';
+  document.getElementById("prodGrid").innerHTML=mlBtn+list.map(p=>{
     var inCart=cart.find(c=>c.name===p.name);
     var qty=inCart?inCart.qty:0;
-    return`<button class="prod-btn" onclick="addToCart('${p.name.replace(/'/g,"\\'")}',${p.price})">
+    return`<button class="prod-btn" onclick="addToCart('${p.name.replace(/'/g,"\\'")}",${p.price})">
       ${qty>0?`<span class="prod-badge">×${qty}</span>`:""}
       <span class="prod-name">${p.name}</span>
       <span class="prod-price">${euro(p.price)}</span>
     </button>`;
   }).join("");
+}
+
+/* ---- MONTANT LIBRE ---- */
+function openMlModal(){
+  document.getElementById("mlDesc").value="";
+  document.getElementById("mlAmt").value="";
+  document.getElementById("mlModal").classList.add("open");
+  setTimeout(()=>document.getElementById("mlDesc").focus(),150);
+}
+function closeMlModal(){document.getElementById("mlModal").classList.remove("open");}
+function addMontantLibre(){
+  var desc=(document.getElementById("mlDesc").value||"").trim();
+  var amt=parseFloat(document.getElementById("mlAmt").value);
+  if(!desc){document.getElementById("mlDesc").focus();return;}
+  if(!amt||amt<=0){document.getElementById("mlAmt").focus();return;}
+  addToCart(desc,amt);
+  closeMlModal();
 }
 
 /* ---- CART ---- */
@@ -401,8 +449,8 @@ function renderCart(){
         <span class="ci-name">${item.name}</span>
         <div class="ci-ctrl">
           <button class="ci-minus" onclick="removeFromCart('${item.name.replace(/'/g,"\\'")}')">−</button>
-          <input type="number" class="ci-qty-input" value="${item.qty}" min="1" oninput="setQty('${item.name.replace(/'/g,"\\'")}',this.value)"/>
-          <button class="ci-plus" onclick="addToCart('${item.name.replace(/'/g,"\\'")}',${item.price})">+</button>
+          <input type="number" class="ci-qty-input" value="${item.qty}" min="1" oninput="setQty('${item.name.replace(/'/g,"\\'")}",this.value)"/>
+          <button class="ci-plus" onclick="addToCart('${item.name.replace(/'/g,"\\'")}",${item.price})">+</button>
         </div>
         <span class="ci-sub">${euro(item.price*item.qty)}</span>
       </div>`).join("");
