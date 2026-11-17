@@ -462,6 +462,8 @@ body{font-family:"Lato",sans-serif;background:var(--fond);color:var(--texte);fon
     <input type="password" id="pwInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()"/>
     <button onclick="doLogin()">Se connecter</button>
     <p class="login-err" id="loginErr">Email ou mot de passe incorrect.</p>
+    <button onclick="resetPassword()" style="background:none;border:none;color:var(--caramel);font-size:.8rem;cursor:pointer;margin-top:4px;text-decoration:underline;">Mot de passe oublié ?</button>
+    <p id="resetMsg" style="display:none;font-size:.78rem;color:#2e7d32;margin-top:6px;text-align:center;"></p>
   </div>
 </div>
 
@@ -1154,6 +1156,15 @@ async function doLogin(){
   }else{
     showDashboard();
   }
+}
+async function resetPassword(){
+  var email=(document.getElementById("loginEmail").value||"").trim();
+  if(!email){document.getElementById("loginErr").textContent="Entre ton email d'abord.";document.getElementById("loginErr").style.display="block";return;}
+  var {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/admin.html'});
+  var msg=document.getElementById("resetMsg");
+  if(error){msg.style.color="#c62828";msg.textContent="Erreur : "+error.message;}
+  else{msg.style.color="#2e7d32";msg.textContent="✅ Email envoyé ! Vérifie ta boîte mail.";}
+  msg.style.display="block";
 }
 async function logout(){
   localStorage.removeItem("cicine_admin");
