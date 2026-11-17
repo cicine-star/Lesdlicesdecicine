@@ -4187,12 +4187,22 @@ function showSDTab(tab){
         '<div class="ed-card-title">💕 À propos — Cicine</div>'+
         '<label class="bs-label">Présentation (texte sous ton nom)</label>'+
         '<textarea class="bs-input" id="sdt_about_bio" rows="3" style="resize:vertical;">'+escHtml(shopSettings.about_bio||'')+'</textarea>'+
+        '<label class="bs-label" style="margin-top:10px;">Photo ronde (section À propos)</label>'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">'+
+        (shopSettings.about_photo?'<img src="'+shopSettings.about_photo+'" id="prev-about-photo" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--caramel);">':'<div id="prev-about-photo" style="width:52px;height:52px;border-radius:50%;background:#f0e0d6;border:2px dashed var(--caramel);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📷</div>')+
+        '<label style="cursor:pointer;background:var(--caramel);color:#fff;padding:7px 14px;border-radius:8px;font-size:.82rem;font-weight:700;">📷 Changer<input type="file" accept="image/*" style="display:none" onchange="uploadSettingPhoto(\'about_photo\',this,\'prev-about-photo\',true)"/></label>'+
+        '</div>'+
         '</div>'+
         '<div class="ed-card">'+
         '<div class="ed-card-title">🏠 Page d\'accueil — Bandeau</div>'+
         '<label class="bs-label">Titre principal</label><input class="bs-input" id="sdt_hero_title" value="'+escHtml(shopSettings.hero_title||'')+'"/>'+
         '<label class="bs-label">Sous-titre</label><input class="bs-input" id="sdt_hero_sub" value="'+escHtml(shopSettings.hero_subtitle||'')+'"/>'+
         '<label class="bs-label">Bouton commander</label><input class="bs-input" id="sdt_hero_btn" value="'+escHtml(shopSettings.hero_btn||'')+'"/>'+
+        '<label class="bs-label" style="margin-top:10px;">Photo pâtissière (bandeau hero)</label>'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">'+
+        (shopSettings.hero_mascotte?'<img src="'+shopSettings.hero_mascotte+'" id="prev-hero-mascotte" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--caramel);">':'<div id="prev-hero-mascotte" style="width:52px;height:52px;border-radius:50%;background:#f0e0d6;border:2px dashed var(--caramel);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🧁</div>')+
+        '<label style="cursor:pointer;background:var(--caramel);color:#fff;padding:7px 14px;border-radius:8px;font-size:.82rem;font-weight:700;">📷 Changer<input type="file" accept="image/*" style="display:none" onchange="uploadSettingPhoto(\'hero_mascotte\',this,\'prev-hero-mascotte\',true)"/></label>'+
+        '</div>'+
         '</div>'+
         '<div class="ed-card">'+
         '<div class="ed-card-title">🎂 Nos Spécialités</div>'+
@@ -4333,6 +4343,26 @@ function readFileAsDataURL(file){
     reader.onerror=function(){reject(new Error('Impossible de lire le fichier'));};
     reader.readAsDataURL(file);
   });
+}
+
+async function uploadSettingPhoto(key,input,previewId,round){
+  var file=input.files&&input.files[0];
+  if(!file)return;
+  showNotif('⏳ Compression en cours...');
+  try{
+    var dataUrl=await readFileAsDataURL(file);
+    var {error}=await sb.from('settings').upsert([{key:key,value:dataUrl}],{onConflict:'key'});
+    if(error)throw error;
+    shopSettings[key]=dataUrl;
+    var prev=document.getElementById(previewId);
+    if(prev){
+      var img=document.createElement('img');
+      img.src=dataUrl;img.id=previewId;
+      img.style.cssText='width:52px;height:52px;'+(round?'border-radius:50%;':'')+'object-fit:cover;border:2px solid var(--caramel);';
+      prev.parentNode.replaceChild(img,prev);
+    }
+    showNotif('✅ Photo mise à jour !');
+  }catch(e){showNotif('Erreur : '+e.message);}
 }
 
 function handlePickerFileUpload(input){

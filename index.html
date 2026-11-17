@@ -288,7 +288,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
       </div>
     </div>
     <div class="hero-img">
-      <img src="mascotte.png" class="hero-mascotte" alt="Cicine"/>
+      <img src="mascotte.png" class="hero-mascotte" id="site-hero-mascotte" alt="Cicine"/>
     </div>
   </div>
   <svg class="hero-wave" viewBox="0 0 375 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -318,7 +318,7 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 
 <!-- QUI SUIS-JE -->
 <div class="about-cicine" id="section-about">
-  <img src="photos/gateau-babyshower.jpg" class="about-cicine-img" alt="Cicine"/>
+  <img src="photos/gateau-babyshower.jpg" class="about-cicine-img" id="site-about-photo" alt="Cicine"/>
   <div>
     <div class="about-cicine-name">Bonjour, c'est Cicine ! 🩷</div>
     <div class="about-cicine-bio" id="site-about-bio">Pâtissière passionnée basée au Vauclin, en Martinique. Je prépare chaque création à la main, avec amour et les meilleurs ingrédients — pour que chaque bouchée soit un moment de bonheur.</div>
@@ -613,6 +613,8 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
     }catch(e){}}
     // À propos
     setText("site-about-bio",s.about_bio);
+    setSrc("site-about-photo",s.about_photo);
+    setSrc("site-hero-mascotte",s.hero_mascotte);
     // Liens rapides
     if(s.quick_links){try{
       var ql=JSON.parse(s.quick_links);
