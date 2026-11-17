@@ -401,7 +401,8 @@ var _pdsInfo=null;
   if(banner){
     document.getElementById("pds-emoji").textContent=emoji;
     document.getElementById("pds-nom").textContent=produit;
-    if(prix)document.getElementById("pds-prix").textContent=prix.toFixed(2).replace(".",",")+"€";
+    var prixEl=document.getElementById("pds-prix");
+    if(prixEl){if(params.get("surdevis")==="1")prixEl.textContent="Sur devis";else if(prix)prixEl.textContent=prix.toFixed(2).replace(".",",")+"€";}
     banner.style.display="block";
   }
   injectPdsRow();
@@ -822,13 +823,13 @@ function renderProductsHTML(data){
       '</div>'+
       '<div class="cat-body'+(isOpen?" open":"")+'" id="cb-'+id+'">';
     catMap[cat].forEach(function(p){
-      var price=parseFloat(p.price||0);
-      var priceStr=price%1===0?price.toFixed(0):price.toFixed(2);
-      priceStr=priceStr.replace(".",",")+"€";
-      priceStr=aPartir?'à partir de '+priceStr:priceStr+'/pièce';
+      var isSurDevis=(p.price==null);
+      var price=isSurDevis?0:parseFloat(p.price||0);
+      var priceStr=isSurDevis?'Sur devis':(price%1===0?price.toFixed(0):price.toFixed(2)).replace(".",",")+"€";
+      if(!isSurDevis)priceStr=aPartir?'à partir de '+priceStr:priceStr+'/pièce';
       var photoHtml=p.image_url?'<img src="'+p.image_url+'" style="width:40px;height:40px;object-fit:cover;border-radius:8px;flex-shrink:0;margin-right:8px;" alt="" onerror="this.style.display=\'none\'"/>':'';
       var newBadge=isNd?'<span style="background:var(--fuchsia);color:#fff;font-size:.5rem;font-weight:700;padding:2px 6px;border-radius:20px;margin-left:5px;vertical-align:middle;text-transform:uppercase;letter-spacing:.05em;">NOUVEAU</span>':'';
-      html+='<div class="ir" data-n="'+p.name.replace(/"/g,"&quot;")+'" data-p="'+price+'"'+(isNd?' style="border-color:var(--fuchsia);background:#fff5f8;"':'')+'>'+
+      html+='<div class="ir" data-n="'+p.name.replace(/"/g,"&quot;")+'" data-p="'+price+'"'+(isSurDevis?' data-surdevis="1"':'')+''+(isNd?' style="border-color:var(--fuchsia);background:#fff5f8;"':'')+'>'+
         '<div class="il"><input type="checkbox" onchange="maj()"/>'+
         photoHtml+
         '<div>'+

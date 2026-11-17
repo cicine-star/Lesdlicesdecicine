@@ -695,12 +695,13 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
     if(!data||!data.length){return;}
     document.getElementById("section-nouveau-delice").style.display="block";
     document.getElementById("ndScroll").innerHTML=data.map(function(p){
-      var price=parseFloat(p.price||0);
-      var priceStr=(price%1===0?price.toFixed(0):price.toFixed(2)).replace(".",",")+"€";
+      var isSurDevis=(p.price==null);
+      var price=isSurDevis?0:parseFloat(p.price||0);
+      var priceStr=isSurDevis?'Sur devis':(price%1===0?price.toFixed(0):price.toFixed(2)).replace(".",",")+"€";
       var mediaHtml=p.image_url
         ?'<img src="'+p.image_url+'" class="nd-img" alt="'+p.name+'" onerror="this.parentNode.innerHTML=\'<div class=nd-emoji>'+( p.emoji||"🧁")+'</div>\'">'
         :'<div class="nd-emoji">'+(p.emoji||"🧁")+'</div>';
-      return '<a href="commander.html?produit='+encodeURIComponent(p.name)+'&prix='+(price||"")+'&emoji='+encodeURIComponent(p.emoji||"🧁")+'" class="nd-card" style="text-decoration:none;">'+
+      return '<a href="commander.html?produit='+encodeURIComponent(p.name)+'&prix='+(price||"")+(isSurDevis?"&surdevis=1":"")+'&emoji='+encodeURIComponent(p.emoji||"🧁")+'" class="nd-card" style="text-decoration:none;">'+
         '<div class="nd-badge">NOUVEAU</div>'+
         mediaHtml+
         '<div class="nd-info">'+
