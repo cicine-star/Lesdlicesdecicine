@@ -296,6 +296,22 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
   </svg>
 </div>
 
+<!-- QUI SUIS-JE -->
+<div class="about-cicine" id="section-about">
+  <img src="photos/gateau-babyshower.jpg" class="about-cicine-img" id="site-about-photo" alt="Cicine"/>
+  <div>
+    <div class="about-cicine-name">Bonjour, c'est Cicine ! 🩷</div>
+    <div class="about-cicine-bio" id="site-about-bio">Pâtissière passionnée basée au Vauclin, en Martinique. Je prépare chaque création à la main, avec amour et les meilleurs ingrédients — pour que chaque bouchée soit un moment de bonheur.</div>
+  </div>
+</div>
+
+<!-- HORAIRES -->
+<div class="horaires-section" id="section-horaires">
+  <div class="section-title" style="font-size:1.2rem;margin-bottom:2px;">Mes horaires 🕐</div>
+  <div class="hor-list" id="horairesGrid"></div>
+  <a href="https://wa.me/596696111440" target="_blank" class="hor-wa">💬 Une question ? Écrivez-moi sur WhatsApp</a>
+</div>
+
 <!-- SPÉCIALITÉS avec photos en fond -->
 <div class="specs" id="section-specs">
   <div class="section-title">Mes spécialités</div>
@@ -313,15 +329,6 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
       <img src="photos/delibox.jpg" alt="Délibox" id="site-spec3-img"/>
       <div class="spec-overlay"><div class="spec-name" id="site-spec3-name">Délibox</div></div>
     </a>
-  </div>
-</div>
-
-<!-- QUI SUIS-JE -->
-<div class="about-cicine" id="section-about">
-  <img src="photos/gateau-babyshower.jpg" class="about-cicine-img" id="site-about-photo" alt="Cicine"/>
-  <div>
-    <div class="about-cicine-name">Bonjour, c'est Cicine ! 🩷</div>
-    <div class="about-cicine-bio" id="site-about-bio">Pâtissière passionnée basée au Vauclin, en Martinique. Je prépare chaque création à la main, avec amour et les meilleurs ingrédients — pour que chaque bouchée soit un moment de bonheur.</div>
   </div>
 </div>
 
@@ -391,13 +398,6 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
     </div>
   </div>
   <a href="commander.html" class="btn-cmd">Passer ma commande</a>
-</div>
-
-<!-- HORAIRES -->
-<div class="horaires-section" id="section-horaires">
-  <div class="section-title" style="font-size:1.2rem;margin-bottom:2px;">Mes horaires 🕐</div>
-  <div class="hor-list" id="horairesGrid"></div>
-  <a href="https://wa.me/596696111440" target="_blank" class="hor-wa">💬 Une question ? Écrivez-moi sur WhatsApp</a>
 </div>
 
 <!-- PHOTO SPLIT — Pourquoi Cicine -->
@@ -643,14 +643,12 @@ var SB=supabase.createClient("https://uousxxvrgcyvyaahdtda.supabase.co","sb_publ
     setHref("site-ig",s.social_instagram);setHref("site-fb",s.social_facebook);
     if(s.social_whatsapp){var wa=document.getElementById("site-wa");if(wa)wa.href="https://wa.me/"+s.social_whatsapp.replace(/\D/g,"");}
     // Ordre et visibilité des sections
-    if(s.page_layout){try{
-      var pl=JSON.parse(s.page_layout);
-      var container=document.getElementById("page-sections");
-      if(container){
-        (pl.hidden||[]).forEach(function(id){var el=document.getElementById("section-"+id);if(el)el.style.display="none";});
-        (pl.order||[]).forEach(function(id){var el=document.getElementById("section-"+id);if(el)container.appendChild(el);});
-      }
-    }catch(e){}}
+    var SECTION_ORDER=["hero","about","horaires","specs","banner","pdlsem","nouveau-delice","how","pourquoi","social","avis","mosaic","quick","cta"];
+    var container=document.getElementById("page-sections");
+    if(container){
+      if(s.page_layout){try{var pl=JSON.parse(s.page_layout);(pl.hidden||[]).forEach(function(id){var el=document.getElementById("section-"+id);if(el)el.style.display="none";});}catch(e){}}
+      SECTION_ORDER.forEach(function(id){var el=document.getElementById("section-"+id);if(el)container.appendChild(el);});
+    }
   }catch(e){}
 })();
 
