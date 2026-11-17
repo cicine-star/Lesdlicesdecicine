@@ -4223,14 +4223,23 @@ function readFileAsDataURL(file){
 
 function handlePickerFileUpload(input){
   var file=input.files&&input.files[0];
-  if(!file)return;
+  if(!file){alert('Aucun fichier sélectionné.');return;}
   var status=document.getElementById('picker-upload-status');
-  if(status)status.textContent='⏳ Chargement...';
+  if(status)status.textContent='⏳ Compression en cours...';
   readFileAsDataURL(file).then(function(dataUrl){
-    if(status)status.textContent='✅ Photo prête !';
+    if(status)status.textContent='✅ OK — sauvegarde...';
     applyPhoto(dataUrl);
+    // Sauvegarde automatique des photos de galerie
+    if(_edPickerSkey&&_edPickerSkey.startsWith('mosaic_photo_')){
+      sb.from('settings').upsert([{key:'mosaic_photos',value:JSON.stringify(mosaicPhotos)}],{onConflict:'key'})
+        .then(function(r){
+          if(r.error){showNotif('❌ Erreur sauvegarde : '+r.error.message);alert('Erreur : '+r.error.message);}
+          else{showNotif('✅ Photo sauvegardée !');}
+        });
+    }
     input.value='';
   }).catch(function(e){
+    alert('Erreur photo : '+e.message);
     if(status)status.textContent='❌ '+e.message;
     input.value='';
   });
