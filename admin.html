@@ -3705,12 +3705,7 @@ var ED_SECTIONS_CFG=[
    ]},
   {key:'social',label:'Réseaux sociaux',emoji:'📱',domId:'section-social',fields:[]},
   {key:'avis',label:'Avis clients',emoji:'💬',domId:'section-avis',fields:[]},
-  {key:'mosaic',label:'Mosaïque photos',emoji:'📸',domId:'section-mosaic',
-   fields:[
-    {type:'photo',id:'site-mosaic1',label:'Photo 1',key:'mosaic_photo_0'},
-    {type:'photo',id:'site-mosaic2',label:'Photo 2',key:'mosaic_photo_1'},
-    {type:'photo',id:'site-mosaic3',label:'Photo 3',key:'mosaic_photo_2'},
-   ]},
+  {key:'mosaic',label:'Mosaïque photos',emoji:'📸',domId:'section-mosaic',fields:[]},
   {key:'cta',label:"Appel à l'action",emoji:'🌟',domId:'section-cta',
    fields:[
     {type:'text',id:'site-cta-title',label:'Titre'},
@@ -3816,12 +3811,58 @@ function renderSecPanel(cfg){
       '</div>';
     }
   });
-  if(!cfg.fields.length){
+  if(cfg.key==='mosaic'){
+    html=renderMosaicPanel();
+  }else if(!cfg.fields.length){
     html='<div style="text-align:center;padding:18px 0;color:var(--doux);font-size:.8rem;line-height:1.7;">Cette section n\'a pas de contenu modifiable.<br/>Tu peux l\'afficher, la masquer ou la déplacer.</div>';
   }
   document.getElementById('sec-panel-fields').innerHTML=html;
 }
 
+function renderMosaicPanel(){
+  var thumbs='';
+  mosaicPhotos.forEach(function(src,i){
+    if(!src)return;
+    thumbs+='<div style="position:relative;">'+
+      '<img src="'+src+'" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1.5px solid var(--bordure);display:block;background:var(--fond2);" onerror="this.style.opacity=.3"/>'+
+      '<button onclick="removeMosaicPhoto('+i+')" style="position:absolute;top:-7px;right:-7px;width:22px;height:22px;background:#dc2626;color:#fff;border-radius:50%;border:none;font-size:.7rem;font-weight:700;cursor:pointer;line-height:1;">✕</button>'+
+    '</div>';
+  });
+  return '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;" id="mosaicThumbGrid">'+thumbs+'</div>'+
+    '<label for="mosaic-add-input" style="display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:11px;background:var(--brun);color:#fff;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:\'Lato\',sans-serif;">➕ Ajouter une photo</label>'+
+    '<input type="file" id="mosaic-add-input" accept="image/*" style="display:none" onchange="addMosaicPhotoFromInput(this)"/>'+
+    (mosaicPhotos.filter(Boolean).length?'<div style="font-size:.7rem;color:var(--doux);text-align:center;margin-top:7px;">'+mosaicPhotos.filter(Boolean).length+' photo(s) — appuyez sur ✕ pour en supprimer une</div>':'');
+}
+function addMosaicPhotoFromInput(input){
+  var file=input.files&&input.files[0];
+  if(!file){return;}
+  showNotif('⏳ Chargement...');
+  readFileAsDataURL(file).then(function(dataUrl){
+    mosaicPhotos.push(dataUrl);
+    saveMosaicPhotos();
+    var fields=document.getElementById('sec-panel-fields');
+    if(fields)fields.innerHTML=renderMosaicPanel();
+    input.value='';
+  }).catch(function(e){
+    alert('Erreur : '+e.message);
+    input.value='';
+  });
+}
+function removeMosaicPhoto(idx){
+  if(!confirm('Supprimer cette photo de la galerie ?'))return;
+  mosaicPhotos.splice(idx,1);
+  saveMosaicPhotos();
+  var fields=document.getElementById('sec-panel-fields');
+  if(fields)fields.innerHTML=renderMosaicPanel();
+}
+function saveMosaicPhotos(){
+  var val=JSON.stringify(mosaicPhotos.filter(Boolean));
+  sb.from('settings').upsert([{key:'mosaic_photos',value:val}],{onConflict:'key'})
+    .then(function(r){
+      if(r.error){showNotif('❌ Erreur : '+r.error.message);}
+      else{showNotif('✅ Galerie sauvegardée ('+mosaicPhotos.filter(Boolean).length+' photos) !');}
+    });
+}
 function applySecTextField(input){
   var domId=input.getAttribute('data-dom-id');
   if(!domId)return;
