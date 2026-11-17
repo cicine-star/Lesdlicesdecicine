@@ -127,12 +127,22 @@ nav{position:sticky;top:0;z-index:99;background:#fff;border-bottom:1.5px solid v
 .hor-wa{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--fond);border:1.5px solid var(--bordure);border-radius:30px;padding:8px 14px;text-decoration:none;font-size:.72rem;font-weight:700;color:var(--brun);}
 
 /* DOUBLE PHOTO — photo à gauche, texte à droite */
-.split-section{padding:20px 14px 24px;background:#fff;border-top:1.5px solid var(--bordure);}
-.pq-cards{display:flex;flex-direction:column;gap:11px;margin-top:14px;}
-.pq-card{display:flex;align-items:flex-start;gap:13px;background:var(--fond);border:1.5px solid var(--bordure);border-radius:14px;padding:14px 15px;}
-.pq-ico{font-size:1.9rem;flex-shrink:0;width:38px;text-align:center;line-height:1;}
-.pq-title{font-weight:800;font-size:.88rem;color:var(--brun);margin-bottom:3px;}
-.pq-text{font-size:.78rem;color:var(--doux);line-height:1.55;}
+.split-section{display:flex;gap:0;overflow:hidden;border-top:1.5px solid var(--bordure);}
+.split-img{width:42%;flex-shrink:0;position:relative;}
+.split-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.split-text{flex:1;background:var(--brun);padding:20px 16px;display:flex;flex-direction:column;justify-content:center;}
+.split-title{font-family:"Dancing Script",cursive;font-size:1.4rem;color:#f0e0d6;margin-bottom:10px;}
+.pq-cards{display:flex;flex-direction:column;gap:10px;}
+.pq-card{display:flex;align-items:flex-start;gap:10px;}
+.pq-ico{font-size:1.4rem;flex-shrink:0;width:28px;text-align:center;line-height:1.3;}
+.pq-title{font-weight:800;font-size:.82rem;color:#fff;margin-bottom:2px;}
+.pq-text{font-size:.74rem;color:rgba(255,255,255,.85);line-height:1.5;}
+@media(max-width:520px){
+  .split-section{flex-direction:column;}
+  .split-img{width:100%;height:190px;}
+  .split-text{padding:18px 16px;}
+  .split-title{font-size:1.25rem;}
+}
 
 /* RÉSEAUX SOCIAUX */
 .social-strip{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px 14px;background:var(--fond2);border-top:1.5px solid var(--bordure);}
@@ -392,20 +402,24 @@ footer p{font-size:.72rem;color:#c4a898;margin-bottom:3px;}
 
 <!-- PHOTO SPLIT — Pourquoi Cicine -->
 <div class="split-section" id="section-pourquoi">
-  <div class="section-title">Pourquoi Cicine ?</div>
-  <div class="section-sub">Une pâtissière passionnée, pour vous 🩷</div>
-  <div class="pq-cards">
-    <div class="pq-card">
-      <div class="pq-ico" id="site-pq1-icon">🤍</div>
-      <div><div class="pq-title" id="site-pq1-title">Fait maison</div><div class="pq-text" id="site-pq1-text">Je prépare tout avec amour et les meilleurs produits, sans compromis</div></div>
-    </div>
-    <div class="pq-card">
-      <div class="pq-ico" id="site-pq2-icon">✨</div>
-      <div><div class="pq-title" id="site-pq2-title">Sur mesure</div><div class="pq-text" id="site-pq2-text">Vos couleurs, vos saveurs — je crée chaque commande rien que pour vous</div></div>
-    </div>
-    <div class="pq-card">
-      <div class="pq-ico" id="site-pq3-icon">📍</div>
-      <div><div class="pq-title" id="site-pq3-title">Le Vauclin</div><div class="pq-text" id="site-pq3-text">Je vous attends au Vauclin ou je livre chez vous en Martinique</div></div>
+  <div class="split-img">
+    <img src="photos/gateau-babyshower.jpg" alt="Création Cicine" id="site-pourquoi-img"/>
+  </div>
+  <div class="split-text">
+    <div class="split-title">Pourquoi Cicine ?</div>
+    <div class="pq-cards">
+      <div class="pq-card">
+        <div class="pq-ico" id="site-pq1-icon">🤍</div>
+        <div><div class="pq-title" id="site-pq1-title">Fait maison</div><div class="pq-text" id="site-pq1-text">Je prépare tout avec amour et les meilleurs produits, sans compromis</div></div>
+      </div>
+      <div class="pq-card">
+        <div class="pq-ico" id="site-pq2-icon">✨</div>
+        <div><div class="pq-title" id="site-pq2-title">Sur mesure</div><div class="pq-text" id="site-pq2-text">Vos couleurs, vos saveurs — je crée chaque commande rien que pour vous</div></div>
+      </div>
+      <div class="pq-card">
+        <div class="pq-ico" id="site-pq3-icon">📍</div>
+        <div><div class="pq-title" id="site-pq3-title">Le Vauclin</div><div class="pq-text" id="site-pq3-text">Je vous attends au Vauclin ou je livre chez vous en Martinique</div></div>
+      </div>
     </div>
   </div>
 </div>
